@@ -1,0 +1,14 @@
+{
+  "version": "1",
+  "runtime": "deno",
+  "entrypoint": "index.ts",
+  "compilerOptions": {
+    "lib": ["deno.window"],
+    "types": ["deno.window"],
+    "target": "esnext",
+    "module": "esnext"
+  },
+  "imports": {
+    "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2.38.4"
+  }
+}

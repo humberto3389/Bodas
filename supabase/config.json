@@ -1,0 +1,10 @@
+{
+  "db": {
+    "seed": "seed.sql"
+  },
+  "functions": {
+    "upload_media": {
+      "runtime": "deno"
+    }
+  }
+}
