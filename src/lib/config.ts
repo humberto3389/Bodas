@@ -1,7 +1,7 @@
 // Configuración del sistema de alquiler
 export const SYSTEM_CONFIG = {
   // Dominio principal donde está desplegado el sistema
-  MAIN_DOMAIN: 'vercel.app', // Dominio de Vercel para desarrollo
+  MAIN_DOMAIN: import.meta.env.VITE_MAIN_DOMAIN || window.location.hostname,
 
   // Configuración de planes
   PLANS: {
@@ -49,43 +49,45 @@ export const SYSTEM_CONFIG = {
 export function getClientUrl(subdomain: string): string {
   if (!subdomain) return '#';
 
-  // Para desarrollo local, usamos una ruta interna
-  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-    return `/invitacion/${subdomain}`;
+  const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+  const mainDomain = import.meta.env.VITE_MAIN_DOMAIN || 'vercel.app';
+
+  // Si no estamos en un dominio personalizado (ej: estamos en .vercel.app o local)
+  // usamos la ruta de subdirectorio que es más compatible
+  if (isLocal || window.location.hostname.endsWith('.vercel.app')) {
+    const origin = window.location.origin;
+    return `${origin}/invitacion/${subdomain}`;
   }
 
-  const mainDomain = import.meta.env.VITE_MAIN_DOMAIN || 'vercel.app';
-  // Si estamos en Vercel, el formato suele ser subdomain-invitacion.vercel.app
-  return `https://${subdomain}-invitacion.${mainDomain}`;
+  // Si hay un dominio personalizado configurado, intentamos usar subdominios
+  return `https://${subdomain}.${mainDomain}`;
 }
 
 // Función para verificar si estamos en el dominio principal
 export function isMainDomain(): boolean {
   const hostname = window.location.hostname;
+  const isVercelSubdomain = hostname.endsWith('.vercel.app') && !hostname.includes('-invitacion');
+
   return hostname === SYSTEM_CONFIG.MAIN_DOMAIN ||
     hostname === `www.${SYSTEM_CONFIG.MAIN_DOMAIN}` ||
-    hostname === 'invitacion-eight-cyan.vercel.app';
+    isVercelSubdomain ||
+    hostname === 'localhost' ||
+    hostname === '127.0.0.1';
 }
 
-// Función para obtener el subdominio actual
+// Función para obtener el subdominio actual (desde el hostname)
 export function getCurrentSubdomain(): string | null {
   const hostname = window.location.hostname;
 
-  // Si es el dominio principal de Vercel
-  if (hostname === 'invitacion-eight-cyan.vercel.app') {
+  // Si estamos en local o es un dominio de Vercel estándar, no hay subdominio de cliente en el hostname
+  if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname.endsWith('.vercel.app')) {
     return null;
   }
 
-  // Si es un subdominio de Vercel
-  if (hostname.endsWith('.vercel.app')) {
-    const prefix = hostname.replace('.vercel.app', '');
-    return prefix.replace('-invitacion', '');
-  }
-
-  // Para dominios personalizados
+  // Para dominios personalizados: cliente.bodas.com -> cliente
   const parts = hostname.split('.');
   if (parts.length <= 2) {
-    return null; // Estamos en el dominio principal
+    return null; // Es el dominio raíz
   }
 
   return parts[0];
