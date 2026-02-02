@@ -53,19 +53,19 @@ export function useInvitation(subdomain?: string, initialData?: ClientToken) {
     // Realtime: Escuchar cambios en mensajes (solo para actualizaciones en tiempo real)
     // NOTA: La carga inicial viene del BFF, pero escuchamos cambios para mantener UI actualizada
     useEffect(() => {
-        const client = initialData || urlClient;
-        if (!client?.id) return;
+        const currentClient = initialData || urlClient;
+        if (!currentClient?.id) return;
 
         const channel = supabase
-            .channel(`messages-${client.id}`)
+            .channel(`messages-${currentClient.id}`)
             .on('postgres_changes',
-                { event: '*', schema: 'public', table: 'messages', filter: `client_id=eq.${client.id}` },
+                { event: '*', schema: 'public', table: 'messages', filter: `client_id=eq.${currentClient.id}` },
                 async () => {
                     // Solo recargar mensajes cuando hay cambios (no toda la página)
                     const { data, error } = await supabase
                         .from('messages')
                         .select('*')
-                        .eq('client_id', client.id)
+                        .eq('client_id', currentClient.id)
                         .order('created_at', { ascending: false })
                         .limit(30); // Límite para mantener consistencia con BFF
                     if (!error && data) setMessages(data);
@@ -77,6 +77,9 @@ export function useInvitation(subdomain?: string, initialData?: ClientToken) {
             supabase.removeChannel(channel);
         };
     }, [urlClient?.id, initialData?.id]);
+
+    // Calcular client usando useMemo para que se actualice cuando cambien las dependencias
+    const client = useMemo(() => initialData || urlClient, [initialData, urlClient]);
 
     const submitRSVP = useCallback(async (data: {
         name: string;
