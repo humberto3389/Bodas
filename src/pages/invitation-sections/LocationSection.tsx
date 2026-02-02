@@ -8,32 +8,32 @@ interface LocationSectionProps {
 // Asegura que 12:XX se muestre correctamente como PM
 function formatTimeRobust(timeStr: string): string {
     if (!timeStr) return '';
-    
+
     // 1. Limpieza básica
     let clean = timeStr.trim();
-    
+
     // 2. Detectar si viene con AM/PM explícito (dirty data)
     const hasPM = /PM/i.test(clean);
     const hasAM = /AM/i.test(clean);
-    
+
     // 3. Extraer horas y minutos
     const match = clean.match(/(\d{1,2}):(\d{1,2})/);
     if (!match) return ''; // Retornar vacío si no hay match, o podría ser '12:00 p. m.'
-    
+
     let h = parseInt(match[1], 10);
     const m = parseInt(match[2], 10);
-    
+
     // 4. Corrección de ambigüedad si venía con sufijo
     if (hasPM && h < 12) h += 12;
     if (hasAM && h === 12) h = 0;
-    
+
     // 5. Formato 12h
     // h=12 (12 PM) -> p. m.
     // h=0  (12 AM) -> a. m.
     const ampm = h >= 12 ? 'p. m.' : 'a. m.';
     let h12 = h % 12;
     if (h12 === 0) h12 = 12;
-    
+
     return `${h12}:${String(m).padStart(2, '0')} ${ampm}`;
 }
 
@@ -65,11 +65,11 @@ export function LocationSection({ clientData }: LocationSectionProps) {
     return (
         <section
             id="ubicacion"
-            className="relative py-24 bg-transparent overflow-hidden"
+            className="relative py-12 bg-transparent overflow-hidden"
         >
             <div className="section-container">
                 {/* Header */}
-                <div className="text-center mb-20 relative">
+                <div className="text-center mb-10 relative">
                     <div className="absolute inset-0 -z-10 flex justify-center items-center pointer-events-none">
                         <div className="w-[300px] h-[300px] bg-rose-100/40 blur-[80px] rounded-full" />
                     </div>
@@ -208,7 +208,7 @@ export function LocationSection({ clientData }: LocationSectionProps) {
                         whileInView={{ opacity: 1 }}
                         viewport={{ once: true }}
                         transition={{ delay: 0.9 }}
-                        className="text-center mt-14"
+                        className="text-center mt-8"
                     >
                         <p className="text-xs font-bold tracking-[0.25em] uppercase text-slate-400">
                             Ceremonia y Recepción en el mismo lugar

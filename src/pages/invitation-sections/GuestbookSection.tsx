@@ -27,9 +27,9 @@ export function GuestbookSection({ messages, onSendMessage }: GuestbookSectionPr
     };
 
     return (
-        <section id="muro" className="py-20 bg-transparent px-4 relative overflow-hidden">
+        <section id="muro" className="py-12 bg-transparent px-4 relative overflow-hidden">
             <div className="section-container">
-                <div className="text-center mb-16 relative">
+                <div className="text-center mb-10 relative">
                     {/* Halo decorativo de título */}
                     <div className="absolute inset-0 -z-10 flex justify-center items-center pointer-events-none">
                         <div className="w-[300px] h-[300px] bg-rose-100/40 blur-[80px] rounded-full" />
@@ -61,7 +61,7 @@ export function GuestbookSection({ messages, onSendMessage }: GuestbookSectionPr
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     onSubmit={handleSubmit}
-                    className="card-luxe p-8 sm:p-12 mb-20 max-w-3xl mx-auto"
+                    className="card-luxe p-8 sm:p-12 mb-10 max-w-3xl mx-auto"
                 >
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-10 mb-10">
                         <div className="space-y-2">

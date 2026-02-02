@@ -35,9 +35,9 @@ export function RSVPSection({ onSubmit }: RSVPSectionProps) {
     };
 
     return (
-        <section id="rsvp" className="py-20 bg-transparent px-4 relative overflow-hidden">
+        <section id="rsvp" className="py-12 bg-transparent px-4 relative overflow-hidden">
             <div className="max-w-3xl mx-auto relative z-10">
-                <div className="text-center mb-16 relative">
+                <div className="text-center mb-10 relative">
                     <div className="absolute inset-0 -z-10 flex justify-center items-center pointer-events-none">
                         <div className="w-[300px] h-[300px] bg-rose-100/40 blur-[80px] rounded-full" />
                     </div>

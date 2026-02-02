@@ -10,13 +10,13 @@ export function VerseSection({ clientData }: VerseSectionProps) {
     if (!bibleVerse && !invitationText) return null;
 
     return (
-        <section className="relative py-32 overflow-hidden">
+        <section className="relative py-12 overflow-hidden">
             {/* Halos decorativos deluxe */}
             <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-[#f59e0b]/05 rounded-full blur-[140px] pointer-events-none" />
             <div className="absolute bottom-0 right-0 w-96 h-96 bg-[#f59e0b]/05 rounded-full blur-[120px] pointer-events-none" />
 
             <div className="section-container relative z-10 text-center">
-                <div className="max-w-4xl mx-auto space-y-24">
+                <div className="max-w-4xl mx-auto space-y-12">
                     {/* Badge editorial */}
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}

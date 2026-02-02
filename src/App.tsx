@@ -145,7 +145,7 @@ export default function App({ clientData: propData }: AppProps) {
 
           {/* Cuenta Regresiva (Premium+) - Lazy loaded */}
           {(planType === 'premium' || planType === 'deluxe') && (
-            <section id="cuenta-regresiva" className="py-16 relative">
+            <section id="cuenta-regresiva" className="py-10 relative">
               <div className="max-w-7xl mx-auto px-4">
                 <Suspense fallback={<div className="h-32" />}>
                   <Countdown date={client.weddingDate} time={client.weddingTime} />

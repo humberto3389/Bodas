@@ -40,10 +40,10 @@ export function GallerySection({ clientData, images: propImages }: GallerySectio
     if (loading || images.length === 0) return null;
 
     return (
-        <section id="galeria" className="py-20 relative overflow-hidden bg-transparent">
+        <section id="galeria" className="py-12 relative overflow-hidden bg-transparent">
             <div className="section-container">
 
-                <div className="text-center mb-16 relative">
+                <div className="text-center mb-10 relative">
                     <div className="absolute inset-0 -z-10 flex justify-center items-center pointer-events-none">
                         <div className="w-[300px] h-[300px] bg-rose-100/40 blur-[80px] rounded-full" />
                     </div>
