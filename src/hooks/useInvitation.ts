@@ -29,15 +29,11 @@ export function useInvitation(subdomain?: string, initialData?: ClientToken) {
                     setVideos(bffData.videos || []);
                     setPadrinos(bffData.padrinos || []);
                 } catch (e) {
-                    console.error("Error loading client from BFF:", e);
-                    // Fallback: intentar carga directa solo si el BFF falla
-                    try {
-                        const { fetchClientBySubdomain } = await import('../lib/auth-system');
-                        const data = await fetchClientBySubdomain(subdomain);
-                        if (data) setUrlClient(data);
-                    } catch (fallbackError) {
-                        console.error("Error en fallback:", fallbackError);
-                    }
+                    console.error("[useInvitation] Error loading client from BFF:", e);
+                    // ❌ ELIMINADO: Fallback a consulta directa. La página pública DEBE usar solo el BFF.
+                    // Si el BFF falla, mostrar error al usuario en lugar de hacer consulta directa.
+                    // Esto asegura que NO haya consultas directas a Supabase desde el frontend público.
+                    setUrlClient(null);
                 } finally {
                     setLoading(false);
                 }

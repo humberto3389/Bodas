@@ -33,6 +33,8 @@ interface AppProps {
 
 export default function App({ clientData: propData }: AppProps) {
   const { subdomain } = useParams<{ subdomain: string }>();
+  // ✅ Solo usar ClientAuthContext si NO hay subdomain (área de admin)
+  // Si hay subdomain, es página pública y debe usar solo el BFF
   const { client: authClient } = useClientAuth();
   const { toasts, removeToast } = useToast();
 
@@ -83,7 +85,19 @@ export default function App({ clientData: propData }: AppProps) {
   if (!client) {
     return (
       <div className="min-h-screen flex items-center justify-center p-4">
-        <p className="font-elegant tracking-widest text-slate-400">Cargando invitación...</p>
+        <div className="max-w-md w-full bg-white rounded-[3rem] p-12 shadow-2xl text-center border border-slate-100">
+          <div className="text-6xl mb-6">⚠️</div>
+          <h1 className="font-elegant text-3xl text-slate-800 mb-4 tracking-widest uppercase">Error al Cargar Invitación</h1>
+          <p className="text-slate-500 mb-8 leading-relaxed font-light">
+            No se pudieron cargar los datos de la invitación. Por favor, intenta recargar la página o contacta a los anfitriones.
+          </p>
+          <button
+            onClick={() => window.location.reload()}
+            className="bg-gradient-to-r from-rose-400 to-amber-500 text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg transition-all"
+          >
+            Recargar Página
+          </button>
+        </div>
       </div>
     );
   }
