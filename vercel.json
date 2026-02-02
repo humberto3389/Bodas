@@ -6,7 +6,27 @@
       "destination": "/assets/$1"
     },
     {
-      "source": "/((?!assets/).*)",
+      "source": "/invitacion/:subdomain*",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/admin/:path*",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/client-admin/:path*",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/panel/:path*",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/login",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/(.*)",
       "destination": "/index.html"
     }
   ]
