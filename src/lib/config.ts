@@ -9,21 +9,21 @@ export const SYSTEM_CONFIG = {
       name: 'Básico',
       duration: 30, // días
       maxGuests: 50,
-      price: 100,
+      price: 30,
       features: ['Sitio web personalizado', 'Galería de fotos (30)', '1 Video (2 min)', 'RSVP (50)', 'Mensajes (50)', 'Padrinos']
     },
     premium: {
       name: 'Premium',
       duration: 60, // días
       maxGuests: 200,
-      price: 200,
+      price: 50,
       features: ['Sitio web personalizado', 'Galería de fotos (80)', '3 Videos (5 min)', 'RSVP (200)', 'Mensajes (200)', 'Countdown', 'Música de fondo', 'Padrinos']
     },
     deluxe: {
       name: 'Deluxe',
       duration: 90, // días
       maxGuests: 999999, // Ilimitado visualmente
-      price: 300,
+      price: 80,
       features: ['Invitados ILIMITADOS', 'Fotos ilimitadas', 'Videos ilimitados (10 min c/u)', 'RSVP Ilimitado', 'Mensajes Ilimitados', 'Animaciones avanzadas', 'Video de fondo', 'Padrinos']
     }
   },

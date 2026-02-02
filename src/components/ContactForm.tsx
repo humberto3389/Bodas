@@ -185,7 +185,7 @@ export default function ContactForm({ selectedPlan }: ContactFormProps) {
               <option value="">Selecciona un plan (opcional)</option>
               {Object.entries(SYSTEM_CONFIG.PLANS).map(([key, plan]) => (
                 <option key={key} value={key}>
-                  {plan.name} - ${plan.price} ({plan.duration} días)
+                  {plan.name} - S/ {plan.price} ({plan.duration} días)
                 </option>
               ))}
             </select>
