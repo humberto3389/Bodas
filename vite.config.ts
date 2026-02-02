@@ -9,12 +9,27 @@ export default defineConfig({
     target: 'esnext',
     minify: 'esbuild',
     sourcemap: false,
+    cssMinify: true,
     rollupOptions: {
       output: {
-        manualChunks: {
-          vendor: ['react', 'react-dom'],
-          animations: ['framer-motion'],
-          gallery: ['swiper']
+        manualChunks: (id) => {
+          // Vendor chunks
+          if (id.includes('node_modules')) {
+            if (id.includes('react') || id.includes('react-dom')) {
+              return 'vendor-react';
+            }
+            if (id.includes('framer-motion')) {
+              return 'vendor-animations';
+            }
+            if (id.includes('swiper')) {
+              return 'vendor-gallery';
+            }
+            if (id.includes('@supabase')) {
+              return 'vendor-supabase';
+            }
+            // Other node_modules
+            return 'vendor-other';
+          }
         },
         assetFileNames: (assetInfo) => {
           if (assetInfo.name && assetInfo.name.endsWith('.css')) {
@@ -28,7 +43,8 @@ export default defineConfig({
     },
     chunkSizeWarningLimit: 1000,
     cssCodeSplit: true,
-    assetsInlineLimit: 4096
+    assetsInlineLimit: 4096,
+    reportCompressedSize: false // Mejora velocidad de build
   },
   optimizeDeps: {
     include: ['react', 'react-dom', 'framer-motion', 'swiper', '@supabase/supabase-js'],

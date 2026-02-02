@@ -109,6 +109,9 @@ export function GallerySection({ clientData }: GallerySectionProps) {
                                                 src={img.url}
                                                 alt="Momento"
                                                 className="w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-105"
+                                                loading={isCenter ? "eager" : "lazy"}
+                                                decoding="async"
+                                                fetchPriority={isCenter ? "high" : "low"}
                                             />
                                             {/* Minimal Overlay */}
                                             <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center">
@@ -153,6 +156,8 @@ export function GallerySection({ clientData }: GallerySectionProps) {
                             <img
                                 src={images[selectedImage].url}
                                 className="w-auto h-auto max-h-[85vh] object-contain rounded-lg shadow-2xl"
+                                loading="eager"
+                                fetchPriority="high"
                             />
                             <button className="mt-8 text-slate-800 hover:text-rose-500 transition-colors flex items-center gap-2 text-xs font-bold tracking-[0.3em] uppercase">
                                 Cerrar

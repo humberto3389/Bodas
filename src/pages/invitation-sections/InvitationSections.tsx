@@ -42,6 +42,8 @@ export function VideoSection({ clientData }: { clientData: any }) {
                 className="w-full h-full object-cover"
                 poster={poster}
                 playsInline
+                preload="metadata"
+                loading="lazy"
             />
         );
     };
@@ -169,6 +171,8 @@ export function VideoSection({ clientData }: { clientData: any }) {
                                                         src={clientData.heroBackgroundUrl}
                                                         className="w-full h-full object-cover opacity-60"
                                                         alt="Video thumbnail"
+                                                        loading="lazy"
+                                                        decoding="async"
                                                     />
                                                     <div className="absolute inset-0 flex items-center justify-center">
                                                         <div className="p-4 rounded-full bg-white/10 backdrop-blur-md border border-white/20">

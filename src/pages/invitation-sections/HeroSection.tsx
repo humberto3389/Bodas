@@ -86,16 +86,31 @@ export function HeroSection({ clientData }: HeroSectionProps) {
                         <video
                             ref={videoRef}
                             autoPlay loop muted={!heroVideoAudioEnabled} playsInline
+                            preload="metadata"
                             className="h-full w-full object-cover brightness-[0.7] contrast-[1.1]"
                         >
                             <source src={heroVideo} type="video/mp4" />
-                            <img src={heroBg} className="h-full w-full object-cover" alt="Boda" />
+                            <img 
+                                src={heroBg} 
+                                className="h-full w-full object-cover" 
+                                alt="Boda"
+                                loading="eager"
+                                fetchPriority="high"
+                            />
                         </video>
                     ) : (
                         <div
                             className="h-full w-full bg-cover bg-center brightness-[0.7] transition-transform duration-[20s] hover:scale-110"
                             style={{ backgroundImage: `url(${heroBg})` }}
-                        />
+                        >
+                            <img 
+                                src={heroBg} 
+                                alt="Boda" 
+                                className="hidden"
+                                loading="eager"
+                                fetchPriority="high"
+                            />
+                        </div>
                     )}
                 </motion.div>
                 {/* Dynamic Overlays */}

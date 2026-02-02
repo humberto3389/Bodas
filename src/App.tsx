@@ -4,23 +4,26 @@ import { useClientAuth } from './contexts/ClientAuthContext';
 import { LoadingSpinner } from './components/LoadingSpinner';
 import { ToastContainer } from './components/Toast';
 import { useToast } from './hooks/useToast';
-import { Countdown } from './components/Countdown';
 import { useInvitation } from './hooks/useInvitation';
-import { FloatingParticles } from './components/SharedParticles';
-import { DeluxeEffects } from './components/DeluxeEffects';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense, lazy } from 'react';
 import { AudioProvider } from './contexts/AudioContext';
 
-// Secciones modularizadas
+// Componentes críticos para el render inicial (cargados inmediatamente)
 import { HeroSection } from './pages/invitation-sections/HeroSection';
 import { VerseSection } from './pages/invitation-sections/VerseSection';
-import { GallerySection } from './pages/invitation-sections/GallerySection';
-import { LocationSection } from './pages/invitation-sections/LocationSection';
-import { RSVPSection } from './pages/invitation-sections/RSVPSection';
-import { GuestbookSection } from './pages/invitation-sections/GuestbookSection';
-import { BackgroundMusic } from './pages/invitation-sections/BackgroundMusic';
-import { VideoSection, InvitationFooter } from './pages/invitation-sections/InvitationSections';
-import { PadrinosSection } from './pages/invitation-sections/PadrinosSection';
+
+// Componentes lazy-loaded (cargados bajo demanda)
+const Countdown = lazy(() => import('./components/Countdown').then(m => ({ default: m.Countdown })));
+const FloatingParticles = lazy(() => import('./components/SharedParticles').then(m => ({ default: m.FloatingParticles })));
+const DeluxeEffects = lazy(() => import('./components/DeluxeEffects').then(m => ({ default: m.DeluxeEffects })));
+const GallerySection = lazy(() => import('./pages/invitation-sections/GallerySection').then(m => ({ default: m.GallerySection })));
+const LocationSection = lazy(() => import('./pages/invitation-sections/LocationSection').then(m => ({ default: m.LocationSection })));
+const RSVPSection = lazy(() => import('./pages/invitation-sections/RSVPSection').then(m => ({ default: m.RSVPSection })));
+const GuestbookSection = lazy(() => import('./pages/invitation-sections/GuestbookSection').then(m => ({ default: m.GuestbookSection })));
+const BackgroundMusic = lazy(() => import('./pages/invitation-sections/BackgroundMusic').then(m => ({ default: m.BackgroundMusic })));
+const VideoSection = lazy(() => import('./pages/invitation-sections/InvitationSections').then(m => ({ default: m.VideoSection })));
+const InvitationFooter = lazy(() => import('./pages/invitation-sections/InvitationSections').then(m => ({ default: m.InvitationFooter })));
+const PadrinosSection = lazy(() => import('./pages/invitation-sections/PadrinosSection').then(m => ({ default: m.PadrinosSection })));
 
 import type { ClientToken } from './lib/auth-system';
 
@@ -93,17 +96,21 @@ export default function App({ clientData: propData }: AppProps) {
   return (
     <AudioProvider>
       <div className={`relative min-h-screen selection:bg-amber-100 selection:text-amber-900 overflow-x-hidden ${hasPremiumVisuals ? 'premium-visuals-active' : ''} transition-colors duration-500`}>
-        {/* Deluxe Visual Animations */}
+        {/* Deluxe Visual Animations - Lazy loaded */}
         {planType === 'deluxe' && (
-          <DeluxeEffects
-            config={client.advancedAnimations}
-            eventDate={client.weddingDate}
-          />
+          <Suspense fallback={null}>
+            <DeluxeEffects
+              config={client.advancedAnimations}
+              eventDate={client.weddingDate}
+            />
+          </Suspense>
         )}
 
-        {/* Partículas básicas para otros planes si se activan (fallback) */}
+        {/* Partículas básicas para otros planes si se activan (fallback) - Lazy loaded */}
         {planType !== 'deluxe' && client.advancedAnimations?.enabled && (
-          <FloatingParticles mobile={isMobile} />
+          <Suspense fallback={null}>
+            <FloatingParticles mobile={isMobile} />
+          </Suspense>
         )}
 
         {/* Design System Overlays */}
@@ -115,35 +122,55 @@ export default function App({ clientData: propData }: AppProps) {
           {/* Versículo e Invitación (Todos los planes) */}
           <VerseSection clientData={client} />
 
-          {/* Cuenta Regresiva (Premium+) */}
+          {/* Cuenta Regresiva (Premium+) - Lazy loaded */}
           {(planType === 'premium' || planType === 'deluxe') && (
             <section id="cuenta-regresiva" className="py-16 relative">
               <div className="max-w-7xl mx-auto px-4">
-                <Countdown date={client.weddingDate} time={client.weddingTime} />
+                <Suspense fallback={<div className="h-32" />}>
+                  <Countdown date={client.weddingDate} time={client.weddingTime} />
+                </Suspense>
               </div>
             </section>
           )}
 
-          <GallerySection clientData={client} />
+          <Suspense fallback={<div className="h-[550px]" />}>
+            <GallerySection clientData={client} />
+          </Suspense>
 
-          <VideoSection clientData={client} />
+          <Suspense fallback={null}>
+            <VideoSection clientData={client} />
+          </Suspense>
 
-          {/* Padrinos (Premium+) */}
+          {/* Padrinos (Premium+) - Lazy loaded */}
           {(planType === 'premium' || planType === 'deluxe') && client?.id && (
-            <PadrinosSection clientId={client.id} />
+            <Suspense fallback={null}>
+              <PadrinosSection clientId={client.id} />
+            </Suspense>
           )}
 
-          <LocationSection clientData={client} />
+          <Suspense fallback={<div className="h-96" />}>
+            <LocationSection clientData={client} />
+          </Suspense>
 
-          <RSVPSection onSubmit={submitRSVP} />
+          <Suspense fallback={<div className="h-96" />}>
+            <RSVPSection onSubmit={submitRSVP} />
+          </Suspense>
 
-          <GuestbookSection messages={messages} onSendMessage={submitMessage} />
+          <Suspense fallback={<div className="h-96" />}>
+            <GuestbookSection messages={messages} onSendMessage={submitMessage} />
+          </Suspense>
         </main>
 
-        <InvitationFooter clientData={client} />
+        <Suspense fallback={null}>
+          <InvitationFooter clientData={client} />
+        </Suspense>
 
-        {/* Música de Fondo */}
-        {bgAudioSrc && <BackgroundMusic src={bgAudioSrc} />}
+        {/* Música de Fondo - Lazy loaded */}
+        {bgAudioSrc && (
+          <Suspense fallback={null}>
+            <BackgroundMusic src={bgAudioSrc} />
+          </Suspense>
+        )}
 
         <ToastContainer toasts={toasts} onClose={removeToast} />
       </div>
