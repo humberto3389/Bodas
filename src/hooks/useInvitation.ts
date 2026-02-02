@@ -11,6 +11,7 @@ export function useInvitation(subdomain?: string, initialData?: ClientToken, ref
     const [galleryImages, setGalleryImages] = useState<{ name: string; url: string }[]>([]);
     const [videos, setVideos] = useState<{ name: string; url: string }[]>([]);
     const [padrinos, setPadrinos] = useState<any[]>([]);
+    const [refreshTrigger, setRefreshTrigger] = useState(0);
 
     // Cargar datos por subdominio desde el BFF (solo para página pública)
     useEffect(() => {
@@ -19,7 +20,8 @@ export function useInvitation(subdomain?: string, initialData?: ClientToken, ref
                 setLoading(true);
                 try {
                     // ✅ USAR BFF en lugar de consulta directa
-                    const bffData = await fetchWeddingDataFromBFF(subdomain, refresh);
+                    // Si el refreshTrigger es > 0, significa que hubo un cambio en tiempo real, forzamos bypass
+                    const bffData = await fetchWeddingDataFromBFF(subdomain, refresh || refreshTrigger > 0);
                     const mappedClient = mapClientDataFromBFF(bffData.client);
                     setUrlClient(mappedClient);
                     // Los mensajes vienen del BFF, pero los actualizamos en tiempo real
@@ -44,7 +46,7 @@ export function useInvitation(subdomain?: string, initialData?: ClientToken, ref
             setUrlClient(initialData);
             setLoading(false);
         }
-    }, [subdomain, initialData, refresh]);
+    }, [subdomain, initialData, refresh, refreshTrigger]);
 
     // Realtime: Escuchar cambios en mensajes (solo para actualizaciones en tiempo real)
     // NOTA: La carga inicial viene del BFF, pero escuchamos cambios para mantener UI actualizada
@@ -65,6 +67,27 @@ export function useInvitation(subdomain?: string, initialData?: ClientToken, ref
                         .order('created_at', { ascending: false })
                         .limit(30); // Límite para mantener consistencia con BFF
                     if (!error && data) setMessages(data);
+                }
+            )
+            .subscribe();
+
+        return () => {
+            supabase.removeChannel(channel);
+        };
+    }, [urlClient?.id, initialData?.id]);
+
+    // Realtime: Escuchar cambios en la tabla 'clients' para actualizar datos automáticamente
+    useEffect(() => {
+        const currentClient = initialData || urlClient;
+        if (!currentClient?.id) return;
+
+        const channel = supabase
+            .channel(`client-live-updates-${currentClient.id}`)
+            .on('postgres_changes',
+                { event: 'UPDATE', schema: 'public', table: 'clients', filter: `id=eq.${currentClient.id}` },
+                () => {
+                    console.log("[useInvitation] Cambio detectado en datos del cliente, actualizando UI...");
+                    setRefreshTrigger(prev => prev + 1);
                 }
             )
             .subscribe();
