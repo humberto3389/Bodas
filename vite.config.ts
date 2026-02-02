@@ -13,7 +13,7 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: (id) => {
-          // Vendor chunks
+          // Vendor chunks - optimizado para mejor code splitting
           if (id.includes('node_modules')) {
             if (id.includes('react') || id.includes('react-dom')) {
               return 'vendor-react';
@@ -27,8 +27,24 @@ export default defineConfig({
             if (id.includes('@supabase')) {
               return 'vendor-supabase';
             }
+            if (id.includes('react-router')) {
+              return 'vendor-router';
+            }
+            if (id.includes('react-hook-form')) {
+              return 'vendor-forms';
+            }
+            if (id.includes('howler')) {
+              return 'vendor-audio';
+            }
             // Other node_modules
             return 'vendor-other';
+          }
+          // Separar componentes de invitación en chunks más pequeños
+          if (id.includes('/invitation-sections/')) {
+            const name = id.split('/').pop()?.replace('.tsx', '').replace('.ts', '');
+            if (name && ['GallerySection', 'RSVPSection', 'GuestbookSection', 'LocationSection'].includes(name)) {
+              return `invitation-${name.toLowerCase()}`;
+            }
           }
         },
         assetFileNames: (assetInfo) => {
@@ -41,7 +57,7 @@ export default defineConfig({
         entryFileNames: 'assets/[name].[hash].js'
       }
     },
-    chunkSizeWarningLimit: 1000,
+    chunkSizeWarningLimit: 500,
     cssCodeSplit: true,
     assetsInlineLimit: 4096,
     reportCompressedSize: false // Mejora velocidad de build

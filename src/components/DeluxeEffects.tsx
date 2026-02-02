@@ -255,12 +255,12 @@ const CrystalParallax = () => {
             {/* Diamante Izquierda */}
             <motion.div
                 style={{ y: yA, rotate }}
-                className="absolute top-[15%] -left-[50px] w-48 h-48 border-[2px] border-amber-500/30 rotate-45 backdrop-blur-[1px]"
+                className="absolute top-[15%] -left-[30px] sm:-left-[50px] w-24 h-24 sm:w-32 sm:h-32 md:w-48 md:h-48 border-[1px] sm:border-[2px] border-amber-500/30 rotate-45 backdrop-blur-[1px] scale-75 sm:scale-100"
             />
             {/* Círculo Derecha */}
             <motion.div
                 style={{ y: yB }}
-                className="absolute top-[60%] -right-[50px] w-64 h-64 border-[2px] border-rose-500/30 rounded-full"
+                className="absolute top-[60%] -right-[30px] sm:-right-[50px] w-32 h-32 sm:w-40 sm:h-40 md:w-64 md:h-64 border-[1px] sm:border-[2px] border-rose-500/30 rounded-full scale-75 sm:scale-100"
             />
         </div>
     );

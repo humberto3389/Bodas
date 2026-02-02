@@ -73,7 +73,7 @@ export function HeroSection({ clientData }: HeroSectionProps) {
     }, [showVideo, heroVideoAudioEnabled, isInView, requestFocus, releaseFocus]);
 
     return (
-        <section ref={ref} className="relative h-[100svh] w-full overflow-hidden flex items-center justify-center bg-black">
+        <section ref={ref} className="relative min-h-[100svh] w-full overflow-visible flex items-center justify-center bg-black py-8 sm:py-0">
             {/* Media Background */}
             <div className="absolute inset-0 z-0 overflow-hidden">
                 <motion.div
@@ -148,7 +148,7 @@ export function HeroSection({ clientData }: HeroSectionProps) {
             )}
 
             {/* Content */}
-            <div className="relative z-10 text-center text-white px-6 max-w-5xl">
+            <div className="relative z-10 text-center text-white px-4 sm:px-6 max-w-5xl w-full">
                 <motion.div
                     initial={{ opacity: 0, y: 40 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -158,21 +158,21 @@ export function HeroSection({ clientData }: HeroSectionProps) {
                         initial={{ opacity: 0, scale: 0.8 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: 0.5, duration: 1 }}
-                        className="inline-block mb-10"
+                        className="inline-block mb-6 sm:mb-10"
                     >
-                        <span className="px-6 py-2 rounded-full bg-white/5 backdrop-blur-xl border border-white/20 text-[10px] sm:text-xs tracking-[0.5em] font-light uppercase text-rose-100 shadow-2xl">
+                        <span className="px-4 sm:px-6 py-2 rounded-full bg-white/5 backdrop-blur-xl border border-white/20 text-[9px] sm:text-xs tracking-[0.3em] sm:tracking-[0.5em] font-light uppercase text-rose-100 shadow-2xl break-words">
                             Nuestra Historia Comienza
                         </span>
                     </motion.div>
 
-                    <h1 className="flex flex-col items-center gap-2 mb-12">
+                    <h1 className="flex flex-col items-center gap-1 sm:gap-2 mb-8 sm:mb-12">
                         {groom || bride ? (
                             <>
                                 <motion.span
                                     initial={{ opacity: 0, x: -30 }}
                                     animate={{ opacity: 1, x: 0 }}
                                     transition={{ delay: 0.8, duration: 1 }}
-                                    className={`font-elegant text-5xl sm:text-8xl md:text-9xl tracking-tighter drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)] leading-tight ${foilClass}`}
+                                    className={`font-elegant text-4xl sm:text-6xl md:text-8xl lg:text-9xl tracking-tighter drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)] leading-[1.1] sm:leading-tight ${foilClass}`}
                                 >
                                     {groom}
                                 </motion.span>
@@ -180,7 +180,7 @@ export function HeroSection({ clientData }: HeroSectionProps) {
                                     initial={{ opacity: 0, rotate: -45, scale: 0 }}
                                     animate={{ opacity: 1, rotate: 0, scale: 1 }}
                                     transition={{ delay: 1.2, duration: 0.8, type: "spring" }}
-                                    className="font-brush text-4xl sm:text-6xl text-gold drop-shadow-lg my-2 italic"
+                                    className="font-brush text-3xl sm:text-5xl md:text-6xl text-gold drop-shadow-lg my-1 sm:my-2 italic"
                                 >
                                     &
                                 </motion.span>
@@ -188,13 +188,13 @@ export function HeroSection({ clientData }: HeroSectionProps) {
                                     initial={{ opacity: 0, x: 30 }}
                                     animate={{ opacity: 1, x: 0 }}
                                     transition={{ delay: 1.5, duration: 1 }}
-                                    className={`font-elegant text-5xl sm:text-8xl md:text-9xl tracking-tighter drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)] leading-tight ${foilClass}`}
+                                    className={`font-elegant text-4xl sm:text-6xl md:text-8xl lg:text-9xl tracking-tighter drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)] leading-[1.1] sm:leading-tight ${foilClass}`}
                                 >
                                     {bride}
                                 </motion.span>
                             </>
                         ) : (
-                            <span className={`font-elegant text-5xl sm:text-8xl md:text-9xl tracking-tighter drop-shadow-2xl ${foilClass}`}>{couple}</span>
+                            <span className={`font-elegant text-4xl sm:text-6xl md:text-8xl lg:text-9xl tracking-tighter drop-shadow-2xl leading-[1.1] sm:leading-tight ${foilClass}`}>{couple}</span>
                         )}
                     </h1>
 
@@ -202,27 +202,27 @@ export function HeroSection({ clientData }: HeroSectionProps) {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: 2, duration: 1 }}
-                        className="flex flex-col items-center gap-6 mb-14"
+                        className="flex flex-col items-center gap-4 sm:gap-6 mb-10 sm:mb-14"
                     >
-                        <div className="h-px w-24 bg-gradient-to-r from-transparent via-gold to-transparent opacity-60" />
-                        <div className="space-y-2">
-                            <p className="text-xs sm:text-sm tracking-widest font-light text-rose-100 uppercase italic">{clientData.weddingType || 'Boda'}</p>
-                            <p className="text-xl sm:text-2xl font-elegant tracking-[0.2em] text-white/90">{dateStr}</p>
+                        <div className="h-px w-16 sm:w-24 bg-gradient-to-r from-transparent via-gold to-transparent opacity-60" />
+                        <div className="space-y-1 sm:space-y-2 px-2">
+                            <p className="text-[10px] sm:text-xs md:text-sm tracking-wider sm:tracking-widest font-light text-rose-100 uppercase italic">{clientData.weddingType || 'Boda'}</p>
+                            <p className="text-lg sm:text-xl md:text-2xl font-elegant tracking-[0.1em] sm:tracking-[0.2em] text-white/90 break-words">{dateStr}</p>
                         </div>
-                        <div className="h-px w-24 bg-gradient-to-r from-transparent via-gold to-transparent opacity-60" />
+                        <div className="h-px w-16 sm:w-24 bg-gradient-to-r from-transparent via-gold to-transparent opacity-60" />
                     </motion.div>
 
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 2.5, duration: 0.8 }}
-                        className="flex flex-col sm:flex-row justify-center items-center gap-6"
+                        className="flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-6 w-full px-4 sm:px-0"
                     >
                         <motion.a
                             whileHover={{ scale: 1.05, boxShadow: "0 0 25px rgba(251, 113, 133, 0.4)" }}
                             whileTap={{ scale: 0.95 }}
                             href="#rsvp"
-                            className="w-full sm:w-auto px-10 py-4 rounded-full bg-gradient-to-r from-rose-400 to-amber-500 text-white font-bold text-xs tracking-widest uppercase shadow-xl transition-all border border-rose-400/20"
+                            className="w-full sm:w-auto px-8 sm:px-10 py-3 sm:py-4 rounded-full bg-gradient-to-r from-rose-400 to-amber-500 text-white font-bold text-[10px] sm:text-xs tracking-wide sm:tracking-widest uppercase shadow-xl transition-all border border-rose-400/20"
                         >
                             Confirmar Asistencia
                         </motion.a>
@@ -230,7 +230,7 @@ export function HeroSection({ clientData }: HeroSectionProps) {
                             whileHover={{ scale: 1.05, backgroundColor: "rgba(255,255,255,0.2)" }}
                             whileTap={{ scale: 0.95 }}
                             href="#galeria"
-                            className="w-full sm:w-auto px-10 py-4 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 text-white font-bold text-xs tracking-widest uppercase hover:shadow-lg transition-all"
+                            className="w-full sm:w-auto px-8 sm:px-10 py-3 sm:py-4 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 text-white font-bold text-[10px] sm:text-xs tracking-wide sm:tracking-widest uppercase hover:shadow-lg transition-all"
                         >
                             Nuestra Galería
                         </motion.a>
