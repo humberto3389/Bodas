@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import { supabase } from '../lib/supabase';
+import { compressImageForWeb } from '../utils/compressImage';
 
 export type MediaFile = { name: string; path: string; created: string; isSystem?: boolean };
 export type UploadProgress = { isUploading: boolean; progress: number; fileName: string };
@@ -86,10 +87,10 @@ export function useUploader(clientId: string | null, clientToken?: string) {
 
         let fileToUpload = file;
 
-        // Compresión básica de imágenes antes de subir
-        if (bucket === 'gallery' && file.type.startsWith('image/')) {
+        // Compresión de imágenes usando la utilidad centralizada
+        if (file.type.startsWith('image/')) {
             try {
-                fileToUpload = await compressImage(file);
+                fileToUpload = await compressImageForWeb(file);
             } catch (e) {
                 console.warn('Compression failed, uploading original:', e);
             }
@@ -155,54 +156,4 @@ export function useUploader(clientId: string | null, clientToken?: string) {
         uploadFile,
         getPublicUrl
     };
-}
-async function compressImage(file: File): Promise<File> {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = (event) => {
-            const img = new Image();
-            img.src = event.target?.result as string;
-            img.onload = () => {
-                const canvas = document.createElement('canvas');
-                let width = img.width;
-                let height = img.height;
-
-                // Max resolution 1600px
-                const MAX_WIDTH = 1600;
-                const MAX_HEIGHT = 1600;
-
-                if (width > height) {
-                    if (width > MAX_WIDTH) {
-                        height *= MAX_WIDTH / width;
-                        width = MAX_WIDTH;
-                    }
-                } else {
-                    if (height > MAX_HEIGHT) {
-                        width *= MAX_HEIGHT / height;
-                        height = MAX_HEIGHT;
-                    }
-                }
-
-                canvas.width = width;
-                canvas.height = height;
-                const ctx = canvas.getContext('2d');
-                ctx?.drawImage(img, 0, 0, width, height);
-
-                canvas.toBlob((blob) => {
-                    if (blob) {
-                        const compressedFile = new File([blob], file.name, {
-                            type: 'image/jpeg',
-                            lastModified: Date.now(),
-                        });
-                        resolve(compressedFile);
-                    } else {
-                        reject(new Error('Canvas to Blob failed'));
-                    }
-                }, 'image/jpeg', 0.8); // 80% quality
-            };
-            img.onerror = (e) => reject(e);
-        };
-        reader.onerror = (e) => reject(e);
-    });
 }

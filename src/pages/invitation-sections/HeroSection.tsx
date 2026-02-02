@@ -87,6 +87,7 @@ export function HeroSection({ clientData }: HeroSectionProps) {
                             ref={videoRef}
                             autoPlay loop muted={!heroVideoAudioEnabled} playsInline
                             preload="metadata"
+                            poster={heroBg}
                             className="h-full w-full object-cover brightness-[0.7] contrast-[1.1]"
                         >
                             <source src={heroVideo} type="video/webm" />

@@ -101,6 +101,8 @@ export function GallerySection({ clientData, images: propImages }: GallerySectio
                                                 loading={isCenter ? "eager" : "lazy"}
                                                 decoding="async"
                                                 fetchPriority={isCenter ? "high" : "low"}
+                                                width={800}
+                                                height={1000}
                                             />
                                             {/* Minimal Overlay */}
                                             <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center">
@@ -147,6 +149,8 @@ export function GallerySection({ clientData, images: propImages }: GallerySectio
                                 className="w-auto h-auto max-h-[85vh] object-contain rounded-lg shadow-2xl"
                                 loading="eager"
                                 fetchPriority="high"
+                                width={1200}
+                                height={1500}
                             />
                             <button className="mt-8 text-slate-800 hover:text-rose-500 transition-colors flex items-center gap-2 text-xs font-bold tracking-[0.3em] uppercase">
                                 Cerrar

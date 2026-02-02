@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { supabase } from '../lib/supabase'
 import { LoadingSpinner } from './LoadingSpinner'
 import { motion, AnimatePresence } from 'framer-motion'
+import { compressImageForWeb } from '../utils/compressImage'
 
 interface AdminUploaderProps {
   title: string
@@ -105,15 +106,20 @@ export default function AdminUploader({
           onProgress({ isUploading: true, progress: 0, fileName: file.name })
         }
 
+        let fileToUpload = file;
+        if (file.type.startsWith('image/')) {
+          fileToUpload = await compressImageForWeb(file);
+        }
+
         if (onUpload) {
-          const url = await onUpload(bucket, file);
+          const url = await onUpload(bucket, fileToUpload);
           if (!url) throw new Error('Error al subir archivo');
         } else {
-          const fileName = file.name
+          const fileName = fileToUpload.name
 
           const { error } = await supabase.storage
             .from(bucket)
-            .upload(`${fileName}`, file, {
+            .upload(`${fileName}`, fileToUpload, {
               cacheControl: '3600',
               upsert: true
             })
@@ -122,7 +128,7 @@ export default function AdminUploader({
         }
 
         if (onProgress) {
-          onProgress({ isUploading: false, progress: 100, fileName: file.name })
+          onProgress({ isUploading: false, progress: 100, fileName: fileToUpload.name })
         }
       }
 

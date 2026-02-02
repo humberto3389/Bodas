@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase'
 import { getCurrentClientData } from '../lib/client-data'
 import { validateClientToken, authenticateClientWithToken, type ClientToken } from '../lib/auth-system'
 import { formatTimeDisplay } from '../lib/timezone-utils'
+import { compressImageForWeb } from '../utils/compressImage'
 
 import { ToastContainer } from '../components/Toast'
 
@@ -377,11 +378,16 @@ export default function Admin() {
   const handleUpload = async (bucket: 'gallery' | 'audio' | 'videos', file: File): Promise<string | null> => {
     if (!clientId) return null
     try {
-      let folder = bucket === 'gallery' ? 'hero' : bucket === 'audio' ? 'audio' : 'video'
-      const path = `${clientId}/${folder}/${file.name}`
-      const blob = new Blob([file], { type: file.type })
+      let fileToUpload = file;
+      if (file.type.startsWith('image/')) {
+        fileToUpload = await compressImageForWeb(file);
+      }
 
-      const { error: uploadError } = await supabase.storage.from(bucket).upload(path, blob, { upsert: true, contentType: file.type })
+      let folder = bucket === 'gallery' ? 'hero' : bucket === 'audio' ? 'audio' : 'video'
+      const path = `${clientId}/${folder}/${fileToUpload.name}`
+      const blob = new Blob([fileToUpload], { type: fileToUpload.type })
+
+      const { error: uploadError } = await supabase.storage.from(bucket).upload(path, blob, { upsert: true, contentType: fileToUpload.type })
 
       if (uploadError) throw uploadError
 

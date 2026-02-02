@@ -17,7 +17,7 @@ export function BackgroundMusic({ src, shouldPlay = true }: { src: string; shoul
         audio.src = src;
         audio.loop = true;
         audio.volume = 0.4;
-        audio.preload = 'auto';
+        audio.preload = 'metadata'; // Optimización: no cargar el audio completo inicialmente
         audioRef.current = audio;
 
         const handlePlay = () => setIsPlaying(true);
@@ -26,20 +26,12 @@ export function BackgroundMusic({ src, shouldPlay = true }: { src: string; shoul
         audio.addEventListener('play', handlePlay);
         audio.addEventListener('pause', handlePause);
 
-        const playPromise = audio.play();
-        if (playPromise) {
-            playPromise
-                .then(() => {
-                    setIsPlaying(true);
-                    setNeedsUnlock(false);
-                })
-                .catch(() => {
-                    setNeedsUnlock(true);
-                });
-        }
+        // Ya no intentamos reproducir automáticamente en el montaje
+        // setNeedsUnlock(true); // Mostrar botón de "Activar música" si no se puede auto-reproducir
+        // Eliminamos el bloque playPromise inicial para evitar carga innecesaria
 
         const unlock = () => {
-            if (audioRef.current && audioRef.current.paused) {
+            if (audioRef.current && audioRef.current.paused && effectivelyPlaying) {
                 audioRef.current.play().catch(() => { });
                 setNeedsUnlock(false);
             }
@@ -48,6 +40,11 @@ export function BackgroundMusic({ src, shouldPlay = true }: { src: string; shoul
         const events = ['click', 'keydown', 'pointerdown', 'touchstart'];
         events.forEach(e => document.addEventListener(e, unlock));
 
+        // Si effectivelyPlaying es true pero no hay interacción, mostramos el botón de desbloqueo
+        if (effectivelyPlaying) {
+            setNeedsUnlock(true);
+        }
+
         return () => {
             audio.pause();
             audio.src = '';
@@ -55,7 +52,7 @@ export function BackgroundMusic({ src, shouldPlay = true }: { src: string; shoul
             audio.removeEventListener('pause', handlePause);
             events.forEach(e => document.removeEventListener(e, unlock));
         };
-    }, [src]);
+    }, [src, effectivelyPlaying]);
 
     useEffect(() => {
         if (!audioRef.current) return;
