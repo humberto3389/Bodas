@@ -26,11 +26,27 @@ let cachedData: Record<string, CachedData> = {};
 let cacheExpiry: Record<string, number> = {};
 const CACHE_TTL_MS = 5 * 60 * 1000; // 5 MINUTOS de vida de caché
 
-// --- CLIENTE DE SUPABASE (SEGÚN VARIABLES DE ENTORNO) ---
-const supabase = createClient(
-  process.env.SUPABASE_URL || '',
-  process.env.SUPABASE_ANON_KEY || ''
-);
+// --- FUNCIÓN PARA OBTENER CLIENTE DE SUPABASE ---
+function getSupabaseClient() {
+  // ✅ CORRECTO para funciones serverless (API Routes) - usar process.env
+  const supabaseUrl = process.env.SUPABASE_URL;
+  const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
+
+  // Logs de debug para verificar variables de entorno
+  console.log('[BFF Debug] SUPABASE_URL:', supabaseUrl ? 'Definida' : 'UNDEFINED');
+  console.log('[BFF Debug] SUPABASE_ANON_KEY:', supabaseAnonKey ? 'Definida' : 'UNDEFINED');
+
+  // Validación explícita antes de crear el cliente
+  if (!supabaseUrl || !supabaseAnonKey) {
+    const errorMsg = 'Las variables de entorno de Supabase no están configuradas en el servidor. ' +
+      `SUPABASE_URL: ${supabaseUrl ? 'OK' : 'FALTA'}, ` +
+      `SUPABASE_ANON_KEY: ${supabaseAnonKey ? 'OK' : 'FALTA'}`;
+    console.error('[BFF Error]', errorMsg);
+    throw new Error(errorMsg);
+  }
+
+  return createClient(supabaseUrl, supabaseAnonKey);
+}
 
 // --- FUNCIÓN PARA OBTENER DATOS (CON CACHÉ) ---
 async function getPublicPageData(subdomain: string): Promise<CachedData> {
@@ -46,6 +62,9 @@ async function getPublicPageData(subdomain: string): Promise<CachedData> {
   console.log(`[BFF] Caché expirada para ${subdomain}, consultando Supabase...`);
 
   try {
+    // Obtener cliente de Supabase (con validación de variables de entorno)
+    const supabase = getSupabaseClient();
+
     // 2. CONSULTAS PARALELIZADAS Y OPTIMIZADAS
     // Consulta 1: Datos del cliente
     const { data: clientData, error: clientError } = await supabase
@@ -155,6 +174,12 @@ async function getPublicPageData(subdomain: string): Promise<CachedData> {
 
 // --- MANEJADOR DE LA API ---
 export default async function handler(req: VercelRequest, res: VercelResponse) {
+  // Log inicial para verificar variables de entorno al inicio del handler
+  console.log('[BFF Handler] Iniciando handler. Variables disponibles:', {
+    SUPABASE_URL: process.env.SUPABASE_URL ? 'Definida' : 'UNDEFINED',
+    SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY ? 'Definida' : 'UNDEFINED'
+  });
+
   // Solo permitir GET
   if (req.method && req.method !== 'GET') {
     res.status(405);
