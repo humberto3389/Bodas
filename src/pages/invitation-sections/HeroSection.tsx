@@ -26,8 +26,8 @@ export function HeroSection({ clientData }: HeroSectionProps) {
     const bride = clientData?.brideName;
     const couple = clientData?.clientName;
     const planType = clientData?.planType || 'basic';
-    const heroBg = clientData?.heroBackgroundUrl || '/boda.jpg';
-    const heroVideo = clientData?.heroBackgroundVideoUrl || '/hero.mp4';
+    const heroBg = clientData?.heroBackgroundUrl || '/boda.webp';
+    const heroVideo = clientData?.heroBackgroundVideoUrl || '/hero.webm';
     const heroDisplayMode = clientData?.heroDisplayMode || 'image';
     const heroVideoAudioEnabled = clientData?.heroVideoAudioEnabled || false;
     const advancedAnimations = clientData?.advancedAnimations;
@@ -89,10 +89,10 @@ export function HeroSection({ clientData }: HeroSectionProps) {
                             preload="metadata"
                             className="h-full w-full object-cover brightness-[0.7] contrast-[1.1]"
                         >
-                            <source src={heroVideo} type="video/mp4" />
-                            <img 
-                                src={heroBg} 
-                                className="h-full w-full object-cover" 
+                            <source src={heroVideo} type="video/webm" />
+                            <img
+                                src={heroBg}
+                                className="h-full w-full object-cover"
                                 alt="Boda"
                                 loading="eager"
                                 fetchPriority="high"
@@ -103,9 +103,9 @@ export function HeroSection({ clientData }: HeroSectionProps) {
                             className="h-full w-full bg-cover bg-center brightness-[0.7] transition-transform duration-[20s] hover:scale-110"
                             style={{ backgroundImage: `url(${heroBg})` }}
                         >
-                            <img 
-                                src={heroBg} 
-                                alt="Boda" 
+                            <img
+                                src={heroBg}
+                                alt="Boda"
                                 className="hidden"
                                 loading="eager"
                                 fetchPriority="high"

@@ -103,7 +103,7 @@ export default function App({ clientData: propData }: AppProps) {
   }
 
   // Configuración de Audio
-  const bgAudioSrc = (planType === 'premium' || planType === 'deluxe') ? (client.backgroundAudioUrl || '/audio.mp3') : undefined;
+  const bgAudioSrc = (planType === 'premium' || planType === 'deluxe') ? (client.backgroundAudioUrl || '/audio.ogg') : undefined;
 
 
   // Opciones visuales premium

@@ -87,7 +87,7 @@ export function ClientAuthProvider({ children }: ClientAuthProviderProps) {
 
                 backgroundAudioUrl: (supabaseData.background_audio_url && !supabaseData.background_audio_url.includes('audioRos.mp3'))
                   ? supabaseData.background_audio_url
-                  : (merged.backgroundAudioUrl || '/audio.mp3'),
+                  : (merged.backgroundAudioUrl || '/audio.ogg'),
 
                 heroBackgroundUrl: supabaseData.hero_background_url || merged.heroBackgroundUrl,
                 heroBackgroundVideoUrl: supabaseData.hero_background_video_url || merged.heroBackgroundVideoUrl,

@@ -88,7 +88,7 @@ export default function Admin() {
     bibleVerseBook: clientLike?.bibleVerseBook || '1 Corintios 13',
     invitationText: clientLike?.invitationText || 'Están cordialmente invitados a celebrar con nosotros este día tan especial.',
     backgroundAudioUrl: clientLike?.backgroundAudioUrl || '',
-    heroBackgroundUrl: clientLike?.heroBackgroundUrl || '/boda.jpg',
+    heroBackgroundUrl: clientLike?.heroBackgroundUrl || '/boda.webp',
     heroBackgroundVideoUrl: clientSession?.heroBackgroundVideoUrl || '',
     heroDisplayMode: (clientSession?.heroDisplayMode || 'image') as 'image' | 'video',
     heroVideoAudioEnabled: clientSession?.heroVideoAudioEnabled || false,
@@ -261,9 +261,9 @@ export default function Admin() {
     const loadFiles = async () => {
       const [imgs, auds, vids] = await Promise.all([listClientFiles('gallery'), listClientFiles('audio'), listClientFiles('videos')])
 
-      setImageFiles([{ name: 'Imagen por Defecto', path: '/boda.jpg', created: new Date().toISOString(), isSystem: true }, ...imgs])
-      setAudioFiles([{ name: 'Música por Defecto', path: '/audio.mp3', created: new Date().toISOString(), isSystem: true }, ...auds])
-      setVideoFiles([{ name: 'Video por Defecto', path: '/hero.mp4', created: new Date().toISOString(), isSystem: true }, ...vids])
+      setImageFiles([{ name: 'Imagen por Defecto', path: '/boda.webp', created: new Date().toISOString(), isSystem: true }, ...imgs])
+      setAudioFiles([{ name: 'Música por Defecto', path: '/audio.ogg', created: new Date().toISOString(), isSystem: true }, ...auds])
+      setVideoFiles([{ name: 'Video por Defecto', path: '/hero.webm', created: new Date().toISOString(), isSystem: true }, ...vids])
     }
     loadFiles()
     const i = setInterval(loadFiles, 10000)
@@ -388,9 +388,9 @@ export default function Admin() {
       // Refresh list
       const [imgs, auds, vids] = await Promise.all([listClientFiles('gallery'), listClientFiles('audio'), listClientFiles('videos')])
 
-      setImageFiles([{ name: 'Imagen por Defecto', path: '/boda.jpg', created: new Date().toISOString(), isSystem: true }, ...imgs])
-      setAudioFiles([{ name: 'Música por Defecto', path: '/audio.mp3', created: new Date().toISOString(), isSystem: true }, ...auds])
-      setVideoFiles([{ name: 'Video por Defecto', path: '/hero.mp4', created: new Date().toISOString(), isSystem: true }, ...vids])
+      setImageFiles([{ name: 'Imagen por Defecto', path: '/boda.webp', created: new Date().toISOString(), isSystem: true }, ...imgs])
+      setAudioFiles([{ name: 'Música por Defecto', path: '/audio.ogg', created: new Date().toISOString(), isSystem: true }, ...auds])
+      setVideoFiles([{ name: 'Video por Defecto', path: '/hero.webm', created: new Date().toISOString(), isSystem: true }, ...vids])
 
       const { data } = supabase.storage.from(bucket).getPublicUrl(path)
       return data.publicUrl
