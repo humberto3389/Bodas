@@ -50,16 +50,17 @@ export function getClientUrl(subdomain: string): string {
   if (!subdomain) return '#';
 
   const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-  const mainDomain = import.meta.env.VITE_MAIN_DOMAIN || 'vercel.app';
+  const isVercel = window.location.hostname.includes('vercel.app');
 
-  // Si no estamos en un dominio personalizado (ej: estamos en .vercel.app o local)
-  // usamos la ruta de subdirectorio que es más compatible
-  if (isLocal || window.location.hostname.endsWith('.vercel.app')) {
-    const origin = window.location.origin;
-    return `${origin}/invitacion/${subdomain}`;
+  // Forzamos el uso de la ruta de subdirectorio para Vercel y Local
+  // Esto evita el problema de los subdominios no registrados en Vercel
+  if (isLocal || isVercel) {
+    // Usamos origin para asegurarnos de que el protocolo (http/https) y el dominio sean correctos
+    return `${window.location.origin}/invitacion/${subdomain}`;
   }
 
   // Si hay un dominio personalizado configurado, intentamos usar subdominios
+  const mainDomain = import.meta.env.VITE_MAIN_DOMAIN || 'vercel.app';
   return `https://${subdomain}.${mainDomain}`;
 }
 
