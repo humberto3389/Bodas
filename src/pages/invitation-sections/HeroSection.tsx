@@ -26,7 +26,7 @@ export function HeroSection({ clientData }: HeroSectionProps) {
     const bride = clientData?.brideName;
     const couple = clientData?.clientName;
     const planType = clientData?.planType || 'basic';
-    const heroBg = clientData?.heroBackgroundUrl || '/boda.webp';
+    const heroBg = clientData?.heroBackgroundUrl || '/boda.avif';
     const heroVideo = clientData?.heroBackgroundVideoUrl || '/hero.webm';
     const heroDisplayMode = clientData?.heroDisplayMode || 'image';
     const heroVideoAudioEnabled = clientData?.heroVideoAudioEnabled || false;

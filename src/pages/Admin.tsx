@@ -89,7 +89,7 @@ export default function Admin() {
     bibleVerseBook: clientLike?.bibleVerseBook || '1 Corintios 13',
     invitationText: clientLike?.invitationText || 'Están cordialmente invitados a celebrar con nosotros este día tan especial.',
     backgroundAudioUrl: clientLike?.backgroundAudioUrl || '',
-    heroBackgroundUrl: clientLike?.heroBackgroundUrl || '/boda.webp',
+    heroBackgroundUrl: clientLike?.heroBackgroundUrl || '/boda.avif',
     heroBackgroundVideoUrl: clientSession?.heroBackgroundVideoUrl || '',
     heroDisplayMode: (clientSession?.heroDisplayMode || 'image') as 'image' | 'video',
     heroVideoAudioEnabled: clientSession?.heroVideoAudioEnabled || false,
@@ -262,7 +262,7 @@ export default function Admin() {
     const loadFiles = async () => {
       const [imgs, auds, vids] = await Promise.all([listClientFiles('gallery'), listClientFiles('audio'), listClientFiles('videos')])
 
-      setImageFiles([{ name: 'Imagen por Defecto', path: '/boda.webp', created: new Date().toISOString(), isSystem: true }, ...imgs])
+      setImageFiles([{ name: 'Imagen por Defecto', path: '/boda.avif', created: new Date().toISOString(), isSystem: true }, ...imgs])
       setAudioFiles([{ name: 'Música por Defecto', path: '/audio.ogg', created: new Date().toISOString(), isSystem: true }, ...auds])
       setVideoFiles([{ name: 'Video por Defecto', path: '/hero.webm', created: new Date().toISOString(), isSystem: true }, ...vids])
     }
@@ -298,7 +298,7 @@ export default function Admin() {
       let audioUrl: string | null = null
       if (['premium', 'deluxe'].includes(currentPlanType) && editForm.backgroundAudioUrl) {
         const trimmed = editForm.backgroundAudioUrl.trim()
-        if (trimmed && trimmed.includes('supabase.co')) {
+        if (trimmed && (trimmed.includes('supabase.co') || trimmed.startsWith('/'))) {
           audioUrl = trimmed
         }
       }
@@ -306,7 +306,7 @@ export default function Admin() {
       let heroVideoUrl: string | null = null
       if (currentPlanType === 'deluxe' && editForm.heroBackgroundVideoUrl) {
         const trimmed = editForm.heroBackgroundVideoUrl.trim()
-        if (trimmed && trimmed.includes('supabase.co')) {
+        if (trimmed && (trimmed.includes('supabase.co') || trimmed.startsWith('/'))) {
           heroVideoUrl = trimmed
         }
       }
@@ -339,7 +339,7 @@ export default function Admin() {
           is_reception_same_as_ceremony: editForm.isReceptionSameAsCeremony,
           invitation_text: editForm.invitationText || null,
           background_audio_url: audioUrl,
-          hero_background_url: (editForm.heroBackgroundUrl && editForm.heroBackgroundUrl.includes('supabase.co')) ? editForm.heroBackgroundUrl : null,
+          hero_background_url: (editForm.heroBackgroundUrl && (editForm.heroBackgroundUrl.includes('supabase.co') || editForm.heroBackgroundUrl.startsWith('/'))) ? editForm.heroBackgroundUrl : null,
           hero_background_video_url: heroVideoUrl,
           hero_display_mode: editForm.heroDisplayMode || 'image',
           hero_video_audio_enabled: editForm.heroVideoAudioEnabled,
@@ -357,7 +357,7 @@ export default function Admin() {
         ...clientSession,
         ...editForm as any, // lazy spread, be careful
         backgroundAudioUrl: audioUrl || undefined,
-        heroBackgroundUrl: (editForm.heroBackgroundUrl?.includes('supabase.co') ? editForm.heroBackgroundUrl : undefined),
+        heroBackgroundUrl: (editForm.heroBackgroundUrl && (editForm.heroBackgroundUrl.includes('supabase.co') || editForm.heroBackgroundUrl.startsWith('/'))) ? editForm.heroBackgroundUrl : undefined,
         heroBackgroundVideoUrl: heroVideoUrl || undefined,
         advancedAnimations: advancedAnimations,
         weddingDate: editForm.weddingDate ? new Date(editForm.weddingDate) : clientSession.weddingDate,

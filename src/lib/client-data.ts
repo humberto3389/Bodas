@@ -70,7 +70,7 @@ export function getCurrentClientData(): ClientData | null {
         bibleVerse: clientToken.bibleVerse || 'El amor es paciente, es bondadoso… el amor nunca deja de ser.',
         invitationText: clientToken.invitationText || 'Están cordialmente invitados a celebrar con nosotros este día tan especial.',
         backgroundAudioUrl: clientToken.backgroundAudioUrl || undefined,
-        heroBackgroundUrl: clientToken.heroBackgroundUrl || '/boda.webp',
+        heroBackgroundUrl: clientToken.heroBackgroundUrl || '/boda.avif',
         heroBackgroundVideoUrl: clientToken.heroBackgroundVideoUrl || undefined,
         heroDisplayMode: clientToken.heroDisplayMode || 'image',
         heroVideoAudioEnabled: clientToken.heroVideoAudioEnabled || false,
