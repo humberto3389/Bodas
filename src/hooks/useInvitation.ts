@@ -3,7 +3,7 @@ import { supabase } from '../lib/supabase';
 import type { ClientToken } from '../lib/auth-system';
 import { fetchWeddingDataFromBFF, mapClientDataFromBFF } from '../lib/bff-client';
 
-export function useInvitation(subdomain?: string, initialData?: ClientToken) {
+export function useInvitation(subdomain?: string, initialData?: ClientToken, refresh: boolean = false) {
     const [urlClient, setUrlClient] = useState<ClientToken | null>(null);
     const [loading, setLoading] = useState(!!subdomain);
     const [messages, setMessages] = useState<any[]>([]);
@@ -19,7 +19,7 @@ export function useInvitation(subdomain?: string, initialData?: ClientToken) {
                 setLoading(true);
                 try {
                     // ✅ USAR BFF en lugar de consulta directa
-                    const bffData = await fetchWeddingDataFromBFF(subdomain);
+                    const bffData = await fetchWeddingDataFromBFF(subdomain, refresh);
                     const mappedClient = mapClientDataFromBFF(bffData.client);
                     setUrlClient(mappedClient);
                     // Los mensajes vienen del BFF, pero los actualizamos en tiempo real
@@ -44,7 +44,7 @@ export function useInvitation(subdomain?: string, initialData?: ClientToken) {
             setUrlClient(initialData);
             setLoading(false);
         }
-    }, [subdomain, initialData]);
+    }, [subdomain, initialData, refresh]);
 
     // Realtime: Escuchar cambios en mensajes (solo para actualizaciones en tiempo real)
     // NOTA: La carga inicial viene del BFF, pero escuchamos cambios para mantener UI actualizada

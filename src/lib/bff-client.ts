@@ -65,12 +65,19 @@ export interface BFFWeddingData {
 /**
  * Obtiene los datos de la invitación desde el BFF
  */
-export async function fetchWeddingDataFromBFF(subdomain: string): Promise<BFFWeddingData> {
-  const response = await fetch(`/api/public/wedding-data?subdomain=${encodeURIComponent(subdomain)}`);
-  
+export async function fetchWeddingDataFromBFF(subdomain: string, refresh: boolean = false): Promise<BFFWeddingData> {
+  const url = new URL(`${window.location.origin}/api/public/wedding-data`);
+  url.searchParams.append('subdomain', subdomain);
+  if (refresh) {
+    url.searchParams.append('refresh', 'true');
+    url.searchParams.append('t', Date.now().toString()); // Cache busting adicional
+  }
+
+  const response = await fetch(url.toString());
+
   if (!response.ok) {
     throw new Error(`Error al cargar datos: ${response.status} ${response.statusText}`);
   }
-  
+
   return await response.json();
 }

@@ -24,7 +24,7 @@ interface CachedData {
 
 let cachedData: Record<string, CachedData> = {};
 let cacheExpiry: Record<string, number> = {};
-const CACHE_TTL_MS = 5 * 60 * 1000; // 5 MINUTOS de vida de caché
+const CACHE_TTL_MS = 15 * 1000; // 15 SEGUNDOS de vida de caché (antes 5 min)
 
 // --- FUNCIÓN PARA OBTENER CLIENTE DE SUPABASE ---
 function getSupabaseClient() {
@@ -49,17 +49,21 @@ function getSupabaseClient() {
 }
 
 // --- FUNCIÓN PARA OBTENER DATOS (CON CACHÉ) ---
-async function getPublicPageData(subdomain: string): Promise<CachedData> {
+async function getPublicPageData(subdomain: string, bypassCache: boolean = false): Promise<CachedData> {
   const now = Date.now();
   const cacheKey = subdomain;
 
-  // 1. VERIFICAR SI LA CACHÉ ES VÁLIDA
-  if (cachedData[cacheKey] && cacheExpiry[cacheKey] && now < cacheExpiry[cacheKey]) {
+  // 1. VERIFICAR SI LA CACHÉ ES VÁLIDA (Si no pedimos bypass)
+  if (!bypassCache && cachedData[cacheKey] && cacheExpiry[cacheKey] && now < cacheExpiry[cacheKey]) {
     console.log(`[BFF] Sirviendo datos desde caché para ${subdomain}.`);
     return cachedData[cacheKey];
   }
 
-  console.log(`[BFF] Caché expirada para ${subdomain}, consultando Supabase...`);
+  if (bypassCache) {
+    console.log(`[BFF] Bypass de caché solicitado para ${subdomain}, consultando Supabase...`);
+  } else {
+    console.log(`[BFF] Caché expirada para ${subdomain}, consultando Supabase...`);
+  }
 
   try {
     // Obtener cliente de Supabase (con validación de variables de entorno)
@@ -197,10 +201,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   // Configurar cabeceras de caché HTTP para el cliente y la CDN de Vercel
-  res.setHeader('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=60');
+  // s-maxage=1: Vercel mantiene la caché solo 1 segundo para cambios rápidos
+  // stale-while-revalidate=59: Sirve versión vieja mientras actualiza nueva por casi 1 min (optimización)
+  res.setHeader('Cache-Control', 'public, s-maxage=1, stale-while-revalidate=59');
 
   try {
-    const data = await getPublicPageData(subdomain);
+    const bypassCache = req.query?.refresh === 'true';
+    const data = await getPublicPageData(subdomain, bypassCache);
     res.status(200);
     res.json(data);
   } catch (error: any) {

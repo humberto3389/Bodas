@@ -46,6 +46,10 @@ export default function App({ clientData: propData }: AppProps) {
     return () => window.removeEventListener('resize', check);
   }, []);
 
+  // Detectar si venimos desde el panel de administración para forzar el refresco de datos
+  const searchParams = new URLSearchParams(window.location.search);
+  const shouldRefresh = searchParams.get('admin') === 'true' || searchParams.get('refresh') === 'true';
+
   const {
     client,
     loading,
@@ -57,7 +61,7 @@ export default function App({ clientData: propData }: AppProps) {
     galleryImages,
     videos,
     padrinos
-  } = useInvitation(subdomain, propData || authClient || undefined);
+  } = useInvitation(subdomain, propData || authClient || undefined, shouldRefresh);
 
   if (loading) {
     return (
