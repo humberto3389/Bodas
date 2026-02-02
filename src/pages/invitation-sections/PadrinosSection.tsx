@@ -1,8 +1,9 @@
 import { motion } from 'framer-motion';
-import { usePadrinos, type Padrino } from '../../hooks/usePadrinos';
+import type { Padrino } from '../../hooks/usePadrinos';
 
 interface PadrinosSectionProps {
     clientId: string;
+    padrinos?: Padrino[];
 }
 
 // Generate initials from name
@@ -14,11 +15,12 @@ function getInitials(name: string): string {
         .join('');
 }
 
-export function PadrinosSection({ clientId }: PadrinosSectionProps) {
-    const { activePadrinos, loading } = usePadrinos(clientId);
-
+export function PadrinosSection({ clientId, padrinos: propPadrinos }: PadrinosSectionProps) {
+    // ✅ USAR DATOS DEL BFF si están disponibles
+    const activePadrinos = propPadrinos?.filter(p => p.is_active) || [];
+    
     // Don't render if no active padrinos
-    if (loading || activePadrinos.length === 0) return null;
+    if (activePadrinos.length === 0) return null;
 
     return (
         <section id="padrinos" className="py-24 relative overflow-hidden">

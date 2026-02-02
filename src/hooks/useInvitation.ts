@@ -1,44 +1,74 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { supabase } from '../lib/supabase';
 import type { ClientToken } from '../lib/auth-system';
+import { fetchWeddingDataFromBFF, mapClientDataFromBFF } from '../lib/bff-client';
 
 export function useInvitation(subdomain?: string, initialData?: ClientToken) {
     const [urlClient, setUrlClient] = useState<ClientToken | null>(null);
     const [loading, setLoading] = useState(!!subdomain);
     const [messages, setMessages] = useState<any[]>([]);
+    // Datos adicionales del BFF
+    const [galleryImages, setGalleryImages] = useState<{ name: string; url: string }[]>([]);
+    const [videos, setVideos] = useState<{ name: string; url: string }[]>([]);
+    const [padrinos, setPadrinos] = useState<any[]>([]);
 
-    // Cargar datos por subdominio si es necesario
+    // Cargar datos por subdominio desde el BFF (solo para página pública)
     useEffect(() => {
-        if (subdomain) {
+        if (subdomain && !initialData) {
             const loadClient = async () => {
                 setLoading(true);
                 try {
-                    const { fetchClientBySubdomain } = await import('../lib/auth-system');
-                    const data = await fetchClientBySubdomain(subdomain);
-                    if (data) setUrlClient(data);
+                    // ✅ USAR BFF en lugar de consulta directa
+                    const bffData = await fetchWeddingDataFromBFF(subdomain);
+                    const mappedClient = mapClientDataFromBFF(bffData.client);
+                    setUrlClient(mappedClient);
+                    // Los mensajes vienen del BFF, pero los actualizamos en tiempo real
+                    setMessages(bffData.messages || []);
+                    // Datos adicionales del BFF
+                    setGalleryImages(bffData.galleryImages || []);
+                    setVideos(bffData.videos || []);
+                    setPadrinos(bffData.padrinos || []);
                 } catch (e) {
-                    console.error("Error loading preview client:", e);
+                    console.error("Error loading client from BFF:", e);
+                    // Fallback: intentar carga directa solo si el BFF falla
+                    try {
+                        const { fetchClientBySubdomain } = await import('../lib/auth-system');
+                        const data = await fetchClientBySubdomain(subdomain);
+                        if (data) setUrlClient(data);
+                    } catch (fallbackError) {
+                        console.error("Error en fallback:", fallbackError);
+                    }
                 } finally {
                     setLoading(false);
                 }
             };
             loadClient();
+        } else if (initialData) {
+            // Si ya tenemos datos iniciales, usarlos directamente
+            setUrlClient(initialData);
+            setLoading(false);
         }
-    }, [subdomain]);
+    }, [subdomain, initialData]);
 
-    // Realtime: Escuchar cambios en la data del cliente (para vista previa en vivo)
+    // Realtime: Escuchar cambios en mensajes (solo para actualizaciones en tiempo real)
+    // NOTA: La carga inicial viene del BFF, pero escuchamos cambios para mantener UI actualizada
     useEffect(() => {
-        if (!urlClient?.id || !subdomain) return;
+        const client = initialData || urlClient;
+        if (!client?.id) return;
 
         const channel = supabase
-            .channel(`client-updates-${urlClient.id}`)
+            .channel(`messages-${client.id}`)
             .on('postgres_changes',
-                { event: 'UPDATE', schema: 'public', table: 'clients', filter: `id=eq.${urlClient.id}` },
+                { event: '*', schema: 'public', table: 'messages', filter: `client_id=eq.${client.id}` },
                 async () => {
-                    // Recargar datos completos al detectar cambios
-                    const { fetchClientBySubdomain } = await import('../lib/auth-system');
-                    const data = await fetchClientBySubdomain(subdomain);
-                    if (data) setUrlClient(data);
+                    // Solo recargar mensajes cuando hay cambios (no toda la página)
+                    const { data, error } = await supabase
+                        .from('messages')
+                        .select('*')
+                        .eq('client_id', client.id)
+                        .order('created_at', { ascending: false })
+                        .limit(30); // Límite para mantener consistencia con BFF
+                    if (!error && data) setMessages(data);
                 }
             )
             .subscribe();
@@ -46,38 +76,7 @@ export function useInvitation(subdomain?: string, initialData?: ClientToken) {
         return () => {
             supabase.removeChannel(channel);
         };
-    }, [urlClient?.id, subdomain]);
-
-    const client = initialData || urlClient;
-
-    // Cargar mensajes del Libro de Visitas (Real-time)
-    useEffect(() => {
-        if (!client?.id) return;
-
-        const fetchMessages = async () => {
-            const { data, error } = await supabase
-                .from('messages')
-                .select('*')
-                .eq('client_id', client.id)
-                .order('created_at', { ascending: false });
-
-            if (!error && data) setMessages(data);
-        };
-
-        fetchMessages();
-
-        const channel = supabase
-            .channel(`messages-${client.id}`)
-            .on('postgres_changes',
-                { event: '*', schema: 'public', table: 'messages', filter: `client_id=eq.${client.id}` },
-                () => fetchMessages()
-            )
-            .subscribe();
-
-        return () => {
-            supabase.removeChannel(channel);
-        };
-    }, [client?.id]);
+    }, [urlClient?.id, initialData?.id]);
 
     const submitRSVP = useCallback(async (data: {
         name: string;
@@ -150,6 +149,10 @@ export function useInvitation(subdomain?: string, initialData?: ClientToken) {
         submitRSVP,
         submitMessage,
         isExpired,
-        planType
+        planType,
+        // Datos adicionales del BFF
+        galleryImages,
+        videos,
+        padrinos
     };
 }

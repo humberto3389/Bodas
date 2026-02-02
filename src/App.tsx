@@ -51,7 +51,10 @@ export default function App({ clientData: propData }: AppProps) {
     submitRSVP,
     submitMessage,
     isExpired,
-    planType
+    planType,
+    galleryImages,
+    videos,
+    padrinos
   } = useInvitation(subdomain, propData || authClient || undefined);
 
   if (loading) {
@@ -134,17 +137,17 @@ export default function App({ clientData: propData }: AppProps) {
           )}
 
           <Suspense fallback={<div className="h-[550px]" />}>
-            <GallerySection clientData={client} />
+            <GallerySection clientData={client} images={galleryImages} />
           </Suspense>
 
           <Suspense fallback={null}>
-            <VideoSection clientData={client} />
+            <VideoSection clientData={client} videos={videos} />
           </Suspense>
 
           {/* Padrinos (Premium+) - Lazy loaded */}
           {(planType === 'premium' || planType === 'deluxe') && client?.id && (
             <Suspense fallback={null}>
-              <PadrinosSection clientId={client.id} />
+              <PadrinosSection clientId={client.id} padrinos={padrinos} />
             </Suspense>
           )}
 

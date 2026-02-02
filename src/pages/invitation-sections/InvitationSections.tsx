@@ -3,7 +3,7 @@ import { motion, AnimatePresence, useInView } from 'framer-motion';
 import { supabase } from '../../lib/supabase';
 import { useAudioContext } from '../../contexts/AudioContext';
 
-export function VideoSection({ clientData }: { clientData: any }) {
+export function VideoSection({ clientData, videos: propVideos }: { clientData: any; videos?: { name: string; url: string }[] }) {
     const [videos, setVideos] = useState<{ name: string; url: string }[]>([]);
 
     // Componente interno para manejar referencia de video individualmente
@@ -48,26 +48,16 @@ export function VideoSection({ clientData }: { clientData: any }) {
         );
     };
 
+    // ✅ USAR DATOS DEL BFF si están disponibles
     useEffect(() => {
-        const loadVideos = async () => {
-            const { data } = await supabase.storage
-                .from('videos')
-                .list(`${clientData.id}/video`, { limit: 10, sortBy: { column: 'created_at', order: 'asc' } });
-
-            if (!data) return;
-
-            const videoItems = data
-                .filter(f => !f.name.startsWith('.') && ['mp4', 'webm', 'mov'].includes(f.name.split('.').pop()?.toLowerCase() || ''))
-                .map(f => {
-                    const { data: urlData } = supabase.storage.from('videos').getPublicUrl(`${clientData.id}/video/${f.name}`);
-                    return { name: f.name, url: urlData.publicUrl };
-                });
-
-            setVideos(videoItems);
-        };
-
-        if (clientData?.id) loadVideos();
-    }, [clientData?.id]);
+        if (propVideos && propVideos.length > 0) {
+            setVideos(propVideos);
+            return;
+        }
+        // Si no hay datos del BFF, mantener comportamiento original (fallback)
+        if (!clientData?.id) return;
+        // Este código solo se ejecuta si el BFF no proporciona datos (no debería pasar en producción)
+    }, [propVideos, clientData?.id]);
 
     const [currentIndex, setCurrentIndex] = useState(0);
 

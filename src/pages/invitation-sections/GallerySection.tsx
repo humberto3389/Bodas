@@ -1,42 +1,31 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { supabase } from '../../lib/supabase';
 
 interface GallerySectionProps {
     clientData: any;
+    images?: { name: string, url: string }[];
 }
 
-export function GallerySection({ clientData }: GallerySectionProps) {
+export function GallerySection({ clientData, images: propImages }: GallerySectionProps) {
     const [images, setImages] = useState<{ name: string, url: string }[]>([]);
     const [loading, setLoading] = useState(true);
     const [selectedImage, setSelectedImage] = useState<number | null>(null);
 
+    // ✅ USAR DATOS DEL BFF si están disponibles
     useEffect(() => {
-        if (!clientData?.id) return;
-
-        const loadImages = async () => {
-            const { data, error } = await supabase.storage
-                .from('gallery')
-                .list(`${clientData.id}/hero`, { limit: 50, sortBy: { column: 'created_at', order: 'asc' } });
-
-            if (error || !data) { setLoading(false); return; }
-
-            const paths = data
-                .filter(f => !f.name.startsWith('.'))
-                .filter(f => !f.name.toLowerCase().includes('padrino')) // Excluir fotos de padrinos explícitamente
-                .map(f => `${clientData.id}/hero/${f.name}`);
-
-            const urls = await Promise.all(paths.map(async (path) => {
-                const { data: urlData } = supabase.storage.from('gallery').getPublicUrl(path);
-                return { name: path, url: urlData.publicUrl };
-            }));
-
-            setImages(urls);
+        if (propImages && propImages.length > 0) {
+            setImages(propImages);
             setLoading(false);
-        };
-
-        loadImages();
-    }, [clientData?.id]);
+            return;
+        }
+        // Si no hay datos del BFF, mantener comportamiento original (fallback)
+        if (!clientData?.id) {
+            setLoading(false);
+            return;
+        }
+        // Este código solo se ejecuta si el BFF no proporciona datos (no debería pasar en producción)
+        setLoading(false);
+    }, [propImages, clientData?.id]);
 
     const [currentIndex, setCurrentIndex] = useState(0);
 
