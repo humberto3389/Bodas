@@ -13,40 +13,39 @@ export function useInvitation(subdomain?: string, initialData?: ClientToken, ref
     const [padrinos, setPadrinos] = useState<any[]>([]);
     const [refreshTrigger, setRefreshTrigger] = useState(0);
 
-    // Cargar datos por subdominio desde el BFF (solo para página pública)
+    // Cargar datos por subdominio desde el BFF
     useEffect(() => {
-        if (subdomain && !initialData) {
-            const loadClient = async () => {
-                setLoading(true);
-                try {
-                    // ✅ USAR BFF en lugar de consulta directa
-                    // Si el refreshTrigger es > 0, significa que hubo un cambio en tiempo real, forzamos bypass
-                    const bffData = await fetchWeddingDataFromBFF(subdomain, refresh || refreshTrigger > 0);
-                    const mappedClient = mapClientDataFromBFF(bffData.client);
-                    setUrlClient(mappedClient);
-                    // Los mensajes vienen del BFF, pero los actualizamos en tiempo real
-                    setMessages(bffData.messages || []);
-                    // Datos adicionales del BFF
-                    setGalleryImages(bffData.galleryImages || []);
-                    setVideos(bffData.videos || []);
-                    setPadrinos(bffData.padrinos || []);
-                } catch (e) {
-                    console.error("[useInvitation] Error loading client from BFF:", e);
-                    // ❌ ELIMINADO: Fallback a consulta directa. La página pública DEBE usar solo el BFF.
-                    // Si el BFF falla, mostrar error al usuario en lugar de hacer consulta directa.
-                    // Esto asegura que NO haya consultas directas a Supabase desde el frontend público.
-                    setUrlClient(null);
-                } finally {
-                    setLoading(false);
-                }
-            };
-            loadClient();
-        } else if (initialData) {
-            // Si ya tenemos datos iniciales, usarlos directamente
-            setUrlClient(initialData);
-            setLoading(false);
-        }
-    }, [subdomain, initialData, refresh, refreshTrigger]);
+        const loadClient = async () => {
+            if (!subdomain) return;
+
+            // Si es la carga inicial y ya tenemos initialData, podemos saltarnos la primera llamada al BFF
+            // PERO si refresh es true o refreshTrigger > 0, FORZAMOS la carga para actualizar.
+            if (initialData && refreshTrigger === 0 && !refresh && !urlClient) {
+                setUrlClient(initialData);
+                setLoading(false);
+                return;
+            }
+
+            setLoading(true);
+            try {
+                // ✅ USAR BFF
+                const bffData = await fetchWeddingDataFromBFF(subdomain, refresh || refreshTrigger > 0);
+                const mappedClient = mapClientDataFromBFF(bffData.client);
+                setUrlClient(mappedClient);
+                setMessages(bffData.messages || []);
+                setGalleryImages(bffData.galleryImages || []);
+                setVideos(bffData.videos || []);
+                setPadrinos(bffData.padrinos || []);
+            } catch (e) {
+                console.error("[useInvitation] Error loading client from BFF:", e);
+                if (!initialData) setUrlClient(null);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        loadClient();
+    }, [subdomain, refresh, refreshTrigger]); // Quitamos initialData de aquí para evitar loops, pero lo manejamos dentro
 
     // Realtime: Escuchar cambios en mensajes (solo para actualizaciones en tiempo real)
     // NOTA: La carga inicial viene del BFF, pero escuchamos cambios para mantener UI actualizada
@@ -81,18 +80,31 @@ export function useInvitation(subdomain?: string, initialData?: ClientToken, ref
         const currentClient = initialData || urlClient;
         if (!currentClient?.id) return;
 
+        console.log(`[useInvitation] Intentando suscribirse a cambios para cliente ${currentClient.id}...`);
+
         const channel = supabase
             .channel(`client-live-updates-${currentClient.id}`)
             .on('postgres_changes',
-                { event: 'UPDATE', schema: 'public', table: 'clients', filter: `id=eq.${currentClient.id}` },
-                () => {
-                    console.log("[useInvitation] Cambio detectado en datos del cliente, actualizando UI...");
+                {
+                    event: 'UPDATE',
+                    schema: 'public',
+                    table: 'clients',
+                    filter: `id=eq.${currentClient.id}`
+                },
+                (payload) => {
+                    console.log("[useInvitation] ⚡ ¡Cambio detectado en tiempo real!", payload);
                     setRefreshTrigger(prev => prev + 1);
                 }
             )
-            .subscribe();
+            .subscribe((status, err) => {
+                console.log(`[useInvitation] Suscripción 'clients' status: ${status}`, err ? err : "");
+                if (status === 'CHANNEL_ERROR') {
+                    console.error("[useInvitation] Error en canal de Realtime. Verifica que Realtime esté habilitado en la tabla 'clients'.");
+                }
+            });
 
         return () => {
+            console.log("[useInvitation] Limpiando canal de Realtime");
             supabase.removeChannel(channel);
         };
     }, [urlClient?.id, initialData?.id]);
