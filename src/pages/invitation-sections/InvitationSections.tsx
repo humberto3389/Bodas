@@ -196,7 +196,7 @@ export function VideoSection({ clientData, videos: propVideos }: { clientData: a
 
 export function InvitationFooter({ clientData }: { clientData: any }) {
     return (
-        <footer className="py-24 bg-slate-50 relative overflow-hidden border-t border-slate-100">
+        <footer className="py-24 bg-transparent relative overflow-hidden">
             <div className="max-w-7xl mx-auto px-6 relative z-10 flex flex-col items-center">
 
                 {/* Logo Minimalista */}
