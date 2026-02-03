@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useInView } from 'framer-motion';
 import { supabase } from '../../lib/supabase';
 import { useAudioContext } from '../../contexts/AudioContext';
+import { SectionTitle } from './SectionTitle';
 
 export function VideoSection({ clientData, videos: propVideos }: { clientData: any; videos?: { name: string; url: string }[] }) {
     const [videos, setVideos] = useState<{ name: string; url: string }[]>([]);
@@ -43,7 +44,6 @@ export function VideoSection({ clientData, videos: propVideos }: { clientData: a
                 poster={poster}
                 playsInline
                 preload="metadata"
-                loading="lazy"
             />
         );
     };
@@ -94,27 +94,9 @@ export function VideoSection({ clientData, videos: propVideos }: { clientData: a
     return (
         <section ref={ref} id="videos" className="py-20 relative overflow-hidden bg-transparent">
             <div className="section-container">
-                <div className="text-center mb-16 relative">
-                    {/* Halo decorativo de título */}
-                    <div className="absolute inset-0 -z-10 flex justify-center items-center pointer-events-none">
-                        <div className="w-[300px] h-[300px] bg-rose-100/40 blur-[80px] rounded-full" />
-                    </div>
-                    <motion.div
-                        className="inline-flex flex-col items-center gap-2 mb-6"
-                        initial={{ opacity: 0 }}
-                        whileInView={{ opacity: 1 }}
-                        transition={{ delay: 0.2 }}
-                        viewport={{ once: true }}
-                    >
-                        <span className="text-[10px] font-bold tracking-[0.4em] uppercase text-rose-500">
-                            Cinema
-                        </span>
-                        <div className="w-10 h-px bg-rose-200" />
-                    </motion.div>
-                    <h2 className="text-5xl sm:text-6xl font-elegant font-bold text-slate-800 mb-6 leading-tight">
-                        Nuestra Historia
-                    </h2>
-                </div>
+                <SectionTitle subtitle="Cinema">
+                    Nuestra Historia
+                </SectionTitle>
 
                 <div className="relative mt-12 h-[400px] sm:h-[600px] perspective-2000">
                     <AnimatePresence initial={false} mode="popLayout">
@@ -224,19 +206,19 @@ export function InvitationFooter({ clientData }: { clientData: any }) {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                 >
-                    <div className="w-16 h-16 rounded-full border border-slate-200 flex items-center justify-center text-slate-300">
+                    <div className="w-16 h-16 rounded-full border border-rose-100 flex items-center justify-center text-rose-500">
                         <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
                             <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
                         </svg>
                     </div>
-                    <span className="font-elegant text-3xl text-slate-800 tracking-tight">
-                        Suspiro<span className="text-rose-500">Nupcial</span>
+                    <span className="font-elegant text-3xl text-slate-900 tracking-tight">
+                        Suspiro<span className="text-rose-600">Nupcial</span>
                     </span>
                 </motion.div>
 
                 <div className="text-center mb-20 max-w-2xl">
-                    <h2 className="font-elegant text-5xl sm:text-7xl text-slate-800 mb-8 tracking-tighter leading-none">
-                        {clientData.groomName} <span className="text-rose-300 text-4xl align-middle">&</span> {clientData.brideName}
+                    <h2 className="font-elegant text-5xl sm:text-7xl text-slate-900 mb-8 tracking-tighter leading-none">
+                        {clientData.groomName} <span className="text-rose-600 text-4xl align-middle">&</span> {clientData.brideName}
                     </h2>
                     <p className="font-light text-slate-500 text-lg tracking-wide leading-relaxed">
                         Gracias por ser parte de nuestra historia.

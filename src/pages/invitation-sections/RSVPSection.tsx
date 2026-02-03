@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { SectionTitle } from './SectionTitle';
 import { useForm } from 'react-hook-form';
 
 interface RSVPSectionProps {
@@ -37,30 +38,12 @@ export function RSVPSection({ onSubmit }: RSVPSectionProps) {
     return (
         <section id="rsvp" className="py-12 bg-transparent px-4 relative overflow-hidden">
             <div className="max-w-3xl mx-auto relative z-10">
-                <div className="text-center mb-10 relative">
-                    <div className="absolute inset-0 -z-10 flex justify-center items-center pointer-events-none">
-                        <div className="w-[300px] h-[300px] bg-rose-100/40 blur-[80px] rounded-full" />
-                    </div>
-                    <motion.div
-                        className="inline-flex flex-col items-center gap-2 mb-6"
-                        initial={{ opacity: 0 }}
-                        whileInView={{ opacity: 1 }}
-                        transition={{ delay: 0.2 }}
-                        viewport={{ once: true }}
-                    >
-                        <span className="text-[10px] font-bold tracking-[0.4em] uppercase text-rose-500">
-                            Confirmar Asistencia
-                        </span>
-                        <div className="w-10 h-px bg-rose-500/40" />
-                    </motion.div>
-
-                    <h2 className="text-5xl sm:text-6xl font-elegant font-bold text-slate-900 mb-6 leading-tight">
-                        Confirma tu Asistencia
-                    </h2>
-                    <p className="text-lg text-slate-800/60 font-light tracking-wide max-w-lg mx-auto leading-relaxed">
-                        Será un honor para nosotros contar con tu presencia en este día tan especial.
-                    </p>
-                </div>
+                <SectionTitle subtitle="Confirmación">
+                    Confirma tu Asistencia
+                </SectionTitle>
+                <p className="text-lg text-slate-800/60 font-light tracking-wide max-w-lg mx-auto leading-relaxed text-center mb-16">
+                    Será un honor para nosotros contar con tu presencia en este día tan especial.
+                </p>
 
                 <motion.form
                     initial={{ opacity: 0, y: 30 }}
@@ -78,14 +61,14 @@ export function RSVPSection({ onSubmit }: RSVPSectionProps) {
                                 <button
                                     type="button"
                                     onClick={() => setValue('isAttending', true)}
-                                    className={`px-8 py-3 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all duration-300 border ${formValues.isAttending ? 'bg-slate-900 text-white border-slate-900 shadow-lg' : 'bg-white text-slate-400 border-slate-100 hover:border-slate-300'}`}
+                                    className={`px-8 py-3 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all duration-300 border ${formValues.isAttending ? 'bg-rose-600 text-white border-rose-600 shadow-md' : 'bg-white text-slate-400 border-slate-100 hover:border-slate-200'}`}
                                 >
                                     ¡Sí, asistiré!
                                 </button>
                                 <button
                                     type="button"
                                     onClick={() => setValue('isAttending', false)}
-                                    className={`px-8 py-3 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all duration-300 border ${formValues.isAttending === false ? 'bg-rose-500 text-white border-rose-500 shadow-lg' : 'bg-white text-slate-400 border-slate-100 hover:border-slate-300'}`}
+                                    className={`px-8 py-3 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all duration-300 border ${formValues.isAttending === false ? 'bg-rose-600 text-white border-rose-600 shadow-md' : 'bg-white text-slate-400 border-slate-100 hover:border-slate-200'}`}
                                 >
                                     No podré asistir
                                 </button>

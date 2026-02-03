@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { SectionTitle } from './SectionTitle';
 
 interface GuestbookSectionProps {
     messages: any[];
@@ -29,31 +30,13 @@ export function GuestbookSection({ messages, onSendMessage }: GuestbookSectionPr
     return (
         <section id="muro" className="py-12 bg-transparent px-4 relative overflow-hidden">
             <div className="section-container">
-                <div className="text-center mb-10 relative">
-                    {/* Halo decorativo de título */}
-                    <div className="absolute inset-0 -z-10 flex justify-center items-center pointer-events-none">
-                        <div className="w-[300px] h-[300px] bg-rose-100/40 blur-[80px] rounded-full" />
-                    </div>
-                    <motion.div
-                        className="inline-flex flex-col items-center gap-2 mb-6"
-                        initial={{ opacity: 0 }}
-                        whileInView={{ opacity: 1 }}
-                        transition={{ delay: 0.2 }}
-                        viewport={{ once: true }}
-                    >
-                        <span className="text-[10px] font-bold tracking-[0.4em] uppercase text-rose-500">
-                            Libro de Visitas
-                        </span>
-                        <div className="w-10 h-px bg-rose-500/40" />
-                    </motion.div>
+                <SectionTitle subtitle="Libro de Visitas">
+                    Dedicatorias
+                </SectionTitle>
 
-                    <h2 className="text-5xl sm:text-6xl font-elegant font-bold text-slate-800 mb-6 leading-tight">
-                        Dedicatorias
-                    </h2>
-                    <p className="text-lg text-slate-800/60 font-light tracking-wide max-w-lg mx-auto leading-relaxed">
-                        Palabras que guardaremos en el ✨ por siempre.
-                    </p>
-                </div>
+                <p className="text-lg text-slate-800/60 font-light tracking-wide max-w-lg mx-auto leading-relaxed text-center mb-16">
+                    Palabras que guardaremos en el corazón por siempre.
+                </p>
 
                 {/* Formulario Elegante */}
                 <motion.form

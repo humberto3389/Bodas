@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { SectionTitle } from './SectionTitle';
 
 interface LocationSectionProps {
     clientData: any;
@@ -69,27 +70,9 @@ export function LocationSection({ clientData }: LocationSectionProps) {
         >
             <div className="section-container">
                 {/* Header */}
-                <div className="text-center mb-10 relative">
-                    <div className="absolute inset-0 -z-10 flex justify-center items-center pointer-events-none">
-                        <div className="w-[300px] h-[300px] bg-rose-100/40 blur-[80px] rounded-full" />
-                    </div>
-                    <motion.div
-                        initial={{ opacity: 0, y: 10 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.6 }}
-                        className="inline-flex flex-col items-center gap-3 mb-8"
-                    >
-                        <span className="text-[10px] font-bold tracking-[0.45em] uppercase text-rose-500">
-                            Ubicación
-                        </span>
-                        <div className="w-12 h-px bg-gradient-to-r from-transparent via-rose-500/40 to-transparent" />
-                    </motion.div>
-
-                    <h2 className="font-elegant text-5xl sm:text-6xl text-slate-950 font-bold leading-tight">
-                        Dónde &amp; Cuándo
-                    </h2>
-                </div>
+                <SectionTitle subtitle="Ubicación">
+                    Dónde &amp; Cuándo
+                </SectionTitle>
 
                 {/* Cards */}
                 <div className="flex flex-wrap justify-center gap-10">
@@ -153,12 +136,12 @@ export function LocationSection({ clientData }: LocationSectionProps) {
                                 <div className="
                                     inline-flex items-center gap-2
                                     px-5 py-2
-                                    rounded-full
-                                    border border-slate-200
-                                    text-sm font-bold text-slate-600
+                                    rounded-lg
+                                    border border-rose-100
+                                    text-sm font-bold text-rose-600
                                     tracking-wider
                                     mb-10
-                                    bg-white
+                                    bg-rose-50/50
                                 ">
                                     {loc.time}
                                 </div>

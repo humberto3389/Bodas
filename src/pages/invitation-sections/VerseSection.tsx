@@ -11,27 +11,23 @@ export function VerseSection({ clientData }: VerseSectionProps) {
 
     return (
         <section className="relative py-12 overflow-hidden">
-            {/* Halos decorativos deluxe */}
-            <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-[#f59e0b]/05 rounded-full blur-[140px] pointer-events-none" />
-            <div className="absolute bottom-0 right-0 w-96 h-96 bg-[#f59e0b]/05 rounded-full blur-[120px] pointer-events-none" />
+            {/* Halos decorativos sutiles */}
+            <div className="absolute inset-0 bg-white" />
+            <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-rose-50/30 rounded-full blur-[100px] pointer-events-none" />
 
             <div className="section-container relative z-10 text-center">
                 <div className="max-w-4xl mx-auto space-y-12">
                     {/* Badge editorial */}
                     <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
+                        initial={{ opacity: 0 }}
+                        whileInView={{ opacity: 1 }}
                         viewport={{ once: true }}
-                        transition={{ duration: 0.8 }}
-                        className="flex flex-col items-center gap-4 relative"
+                        className="flex flex-col items-center gap-2 mb-12"
                     >
-                        <div className="absolute inset-0 -z-10 flex justify-center items-center pointer-events-none">
-                            <div className="w-[300px] h-[150px] bg-rose-100/30 blur-[60px] rounded-full" />
-                        </div>
-                        <span className="text-[10px] font-bold text-rose-500 uppercase tracking-[0.6em]">
+                        <span className="text-[10px] font-bold text-rose-600 uppercase tracking-[0.4em]">
                             {weddingType || 'Nuestra Boda'}
                         </span>
-                        <div className="w-16 h-px bg-gradient-to-r from-transparent via-rose-500/40 to-transparent" />
+                        <div className="w-10 h-px bg-rose-600/40" />
                     </motion.div>
 
                     {/* Versículo Bíblico */}
@@ -55,11 +51,11 @@ export function VerseSection({ clientData }: VerseSectionProps) {
 
                             {bibleVerseBook && (
                                 <div className="flex items-center justify-center gap-4">
-                                    <div className="w-8 h-[2px] bg-rose-500/30 rounded-full" />
-                                    <p className="text-[10px] tracking-[0.4em] text-slate-900/40 uppercase font-black">
+                                    <div className="w-8 h-[2px] bg-rose-600/20 rounded-full" />
+                                    <p className="text-[10px] tracking-[0.4em] text-slate-400 uppercase font-bold">
                                         {bibleVerseBook}
                                     </p>
-                                    <div className="w-8 h-[2px] bg-rose-500/30 rounded-full" />
+                                    <div className="w-8 h-[2px] bg-rose-600/20 rounded-full" />
                                 </div>
                             )}
                         </motion.div>
@@ -68,16 +64,12 @@ export function VerseSection({ clientData }: VerseSectionProps) {
                     {/* Divisor elegante central */}
                     {(bibleVerse && invitationText) && (
                         <motion.div
-                            initial={{ opacity: 0, scale: 0.8 }}
-                            whileInView={{ opacity: 1, scale: 1 }}
+                            initial={{ opacity: 0 }}
+                            whileInView={{ opacity: 1 }}
                             viewport={{ once: true }}
-                            className="flex justify-center items-center py-4"
+                            className="flex justify-center items-center py-6"
                         >
-                            <div className="flex gap-2">
-                                <div className="w-1.5 h-1.5 rounded-full bg-[#f59e0b]" />
-                                <div className="w-1.5 h-1.5 rounded-full bg-[#ffd9b3]" />
-                                <div className="w-1.5 h-1.5 rounded-full bg-[#fcd34d]" />
-                            </div>
+                            <div className="w-20 h-px bg-rose-100" />
                         </motion.div>
                     )}
 
@@ -90,11 +82,7 @@ export function VerseSection({ clientData }: VerseSectionProps) {
                             transition={{ duration: 1, delay: 0.2 }}
                             className="relative px-6"
                         >
-                            <h2 className="text-2xl sm:text-3xl font-elegant tracking-[0.3em] text-rose-500 font-bold uppercase mb-10 relative">
-                                {/* Halo decorativo de título */}
-                                <div className="absolute inset-0 -z-10 flex justify-center items-center pointer-events-none">
-                                    <div className="w-[400px] h-[200px] bg-rose-100/20 blur-[70px] rounded-full" />
-                                </div>
+                            <h2 className="text-2xl sm:text-3xl font-elegant tracking-[0.3em] text-rose-600 font-bold uppercase mb-10 text-center">
                                 Nuestra Historia
                             </h2>
 

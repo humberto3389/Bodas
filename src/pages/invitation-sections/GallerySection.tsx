@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { SectionTitle } from './SectionTitle';
 
 interface GallerySectionProps {
     clientData: any;
@@ -43,26 +44,9 @@ export function GallerySection({ clientData, images: propImages }: GallerySectio
         <section id="galeria" className="py-12 relative overflow-hidden bg-transparent">
             <div className="section-container">
 
-                <div className="text-center mb-10 relative">
-                    <div className="absolute inset-0 -z-10 flex justify-center items-center pointer-events-none">
-                        <div className="w-[300px] h-[300px] bg-rose-100/40 blur-[80px] rounded-full" />
-                    </div>
-                    <motion.div
-                        className="inline-flex flex-col items-center gap-2 mb-6"
-                        initial={{ opacity: 0 }}
-                        whileInView={{ opacity: 1 }}
-                        transition={{ delay: 0.2 }}
-                        viewport={{ once: true }}
-                    >
-                        <span className="text-[10px] font-bold tracking-[0.4em] uppercase text-rose-500">
-                            Galería
-                        </span>
-                        <div className="w-10 h-px bg-rose-500/40" />
-                    </motion.div>
-                    <h2 className="text-5xl sm:text-6xl font-elegant font-bold text-slate-950 mb-6 leading-tight">
-                        Momentos
-                    </h2>
-                </div>
+                <SectionTitle subtitle="Galería">
+                    Momentos
+                </SectionTitle>
 
                 <div className="relative h-[550px] sm:h-[650px] mt-12 perspective-2000">
                     <AnimatePresence initial={false} mode="popLayout">

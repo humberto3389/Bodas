@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { SectionTitle } from './SectionTitle';
 import type { Padrino } from '../../hooks/usePadrinos';
 
 interface PadrinosSectionProps {
@@ -109,7 +110,7 @@ export function PadrinosSection({ clientId, padrinos: propPadrinos }: PadrinosSe
                                 </div>
 
                                 {/* Role Badge */}
-                                <span className="inline-block px-4 py-1.5 rounded-full bg-gradient-to-r from-rose-400/10 to-amber-400/10 text-[11px] font-black uppercase tracking-[0.2em] text-rose-600 mb-5 border border-rose-200/30 shadow-inner">
+                                <span className="inline-block px-4 py-1.5 rounded-full bg-rose-50 text-[11px] font-black uppercase tracking-[0.2em] text-rose-600 mb-5 border border-rose-100 shadow-sm">
                                     {padrino.role}
                                 </span>
 
