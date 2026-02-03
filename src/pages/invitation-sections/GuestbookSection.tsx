@@ -32,7 +32,7 @@ export function GuestbookSection({ messages, onSendMessage }: GuestbookSectionPr
                 <div className="text-center mb-10 relative">
                     {/* Halo decorativo de título */}
                     <div className="absolute inset-0 -z-10 flex justify-center items-center pointer-events-none">
-                        <div className="w-[300px] h-[300px] bg-[#F5F1E6]/80 blur-[80px] rounded-full" />
+                        <div className="w-[300px] h-[300px] bg-rose-100/40 blur-[80px] rounded-full" />
                     </div>
                     <motion.div
                         className="inline-flex flex-col items-center gap-2 mb-6"
@@ -41,10 +41,10 @@ export function GuestbookSection({ messages, onSendMessage }: GuestbookSectionPr
                         transition={{ delay: 0.2 }}
                         viewport={{ once: true }}
                     >
-                        <span className="text-[10px] font-bold tracking-[0.4em] uppercase text-[#2C3E50]">
+                        <span className="text-[10px] font-bold tracking-[0.4em] uppercase text-rose-500">
                             Libro de Visitas
                         </span>
-                        <div className="w-10 h-px bg-[#2C3E50]/40" />
+                        <div className="w-10 h-px bg-rose-500/40" />
                     </motion.div>
 
                     <h2 className="text-5xl sm:text-6xl font-elegant font-bold text-slate-800 mb-6 leading-tight">

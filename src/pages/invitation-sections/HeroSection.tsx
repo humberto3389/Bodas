@@ -116,7 +116,7 @@ export function HeroSection({ clientData }: HeroSectionProps) {
                 </motion.div>
                 {/* Dynamic Overlays */}
                 <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/80" />
-                <div className="absolute inset-0 bg-[#2C3E50]/15 mix-blend-overlay" />
+                <div className="absolute inset-0 bg-rose-900/05 mix-blend-overlay" />
             </div>
 
             {/* Deluxe Animations */}
@@ -161,7 +161,7 @@ export function HeroSection({ clientData }: HeroSectionProps) {
                         transition={{ delay: 0.5, duration: 1 }}
                         className="inline-block mb-6 sm:mb-10"
                     >
-                        <span className="px-4 sm:px-6 py-2 rounded-full bg-white/5 backdrop-blur-xl border border-white/20 text-[9px] sm:text-xs tracking-[0.3em] sm:tracking-[0.5em] font-light uppercase text-amber-50/80 shadow-2xl break-words">
+                        <span className="px-4 sm:px-6 py-2 rounded-full bg-white/5 backdrop-blur-xl border border-white/20 text-[9px] sm:text-xs tracking-[0.3em] sm:tracking-[0.5em] font-light uppercase text-rose-100 shadow-2xl break-words">
                             Nuestra Historia Comienza
                         </span>
                     </motion.div>
@@ -207,7 +207,7 @@ export function HeroSection({ clientData }: HeroSectionProps) {
                     >
                         <div className="h-px w-16 sm:w-24 bg-gradient-to-r from-transparent via-gold to-transparent opacity-60" />
                         <div className="space-y-1 sm:space-y-2 px-2">
-                            <p className="text-[10px] sm:text-xs md:text-sm tracking-wider sm:tracking-widest font-light text-amber-50/70 uppercase italic">{clientData.weddingType || 'Boda'}</p>
+                            <p className="text-[10px] sm:text-xs md:text-sm tracking-wider sm:tracking-widest font-light text-rose-100 uppercase italic">{clientData.weddingType || 'Boda'}</p>
                             <p className="text-lg sm:text-xl md:text-2xl font-elegant tracking-[0.1em] sm:tracking-[0.2em] text-white/90 break-words">{dateStr}</p>
                         </div>
                         <div className="h-px w-16 sm:w-24 bg-gradient-to-r from-transparent via-gold to-transparent opacity-60" />
@@ -223,7 +223,7 @@ export function HeroSection({ clientData }: HeroSectionProps) {
                             whileHover={{ scale: 1.05, boxShadow: "0 0 25px rgba(251, 113, 133, 0.4)" }}
                             whileTap={{ scale: 0.95 }}
                             href="#rsvp"
-                            className="w-full sm:w-auto px-8 sm:px-10 py-3 sm:py-4 rounded-full bg-gradient-to-r from-[#2C3E50] to-[#E0B880] text-white font-bold text-[10px] sm:text-xs tracking-wide sm:tracking-widest uppercase shadow-xl transition-all border border-white/10"
+                            className="w-full sm:w-auto px-8 sm:px-10 py-3 sm:py-4 rounded-full bg-gradient-to-r from-rose-400 to-amber-500 text-white font-bold text-[10px] sm:text-xs tracking-wide sm:tracking-widest uppercase shadow-xl transition-all border border-rose-400/20"
                         >
                             Confirmar Asistencia
                         </motion.a>

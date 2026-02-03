@@ -23,15 +23,15 @@ export function PadrinosSection({ clientId, padrinos: propPadrinos }: PadrinosSe
     if (activePadrinos.length === 0) return null;
 
     return (
-        <section id="padrinos" className="py-12 relative overflow-hidden">
+        <section id="padrinos" className="py-24 relative overflow-hidden">
             {/* Fondo sutil diferenciador */}
-            <div className="absolute inset-0 bg-[#F5F1E6]/30" />
+            <div className="absolute inset-0 bg-stone-50/50" />
 
             <div className="section-container relative z-10">
                 {/* Section Header */}
-                <div className="text-center mb-10 relative">
+                <div className="text-center mb-20 relative">
                     <div className="absolute inset-0 -z-10 flex justify-center items-center pointer-events-none">
-                        <div className="w-[300px] h-[300px] bg-[#E7E1D7]/50 blur-[80px] rounded-full" />
+                        <div className="w-[300px] h-[300px] bg-rose-100/40 blur-[80px] rounded-full" />
                     </div>
                     <motion.div
                         className="inline-flex flex-col items-center gap-2 mb-6"
@@ -40,10 +40,10 @@ export function PadrinosSection({ clientId, padrinos: propPadrinos }: PadrinosSe
                         transition={{ delay: 0.2 }}
                         viewport={{ once: true }}
                     >
-                        <span className="text-[10px] font-bold tracking-[0.4em] uppercase text-[#2C3E50]">
+                        <span className="text-[10px] font-bold tracking-[0.4em] uppercase text-rose-600/70">
                             Corte de Honor
                         </span>
-                        <div className="w-12 h-px bg-gradient-to-r from-transparent via-[#2C3E50]/40 to-transparent" />
+                        <div className="w-12 h-px bg-gradient-to-r from-transparent via-rose-400 to-transparent" />
                     </motion.div>
 
                     <motion.h2
@@ -109,7 +109,7 @@ export function PadrinosSection({ clientId, padrinos: propPadrinos }: PadrinosSe
                                 </div>
 
                                 {/* Role Badge */}
-                                <span className="inline-block px-4 py-1.5 rounded-full bg-gradient-to-r from-[#2C3E50]/10 to-[#D4AF37]/10 text-[11px] font-black uppercase tracking-[0.2em] text-[#2C3E50] mb-5 border border-[#2C3E50]/10 shadow-inner">
+                                <span className="inline-block px-4 py-1.5 rounded-full bg-gradient-to-r from-rose-400/10 to-amber-400/10 text-[11px] font-black uppercase tracking-[0.2em] text-rose-600 mb-5 border border-rose-200/30 shadow-inner">
                                     {padrino.role}
                                 </span>
 

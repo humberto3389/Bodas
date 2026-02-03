@@ -80,10 +80,10 @@ export function LocationSection({ clientData }: LocationSectionProps) {
                         transition={{ duration: 0.6 }}
                         className="inline-flex flex-col items-center gap-3 mb-8"
                     >
-                        <span className="text-[10px] font-bold tracking-[0.45em] uppercase text-[#2C3E50]">
+                        <span className="text-[10px] font-bold tracking-[0.45em] uppercase text-rose-500">
                             Ubicación
                         </span>
-                        <div className="w-12 h-px bg-gradient-to-r from-transparent via-[#2C3E50]/40 to-transparent" />
+                        <div className="w-12 h-px bg-gradient-to-r from-transparent via-rose-500/40 to-transparent" />
                     </motion.div>
 
                     <h2 className="font-elegant text-5xl sm:text-6xl text-slate-950 font-bold leading-tight">
@@ -141,7 +141,7 @@ export function LocationSection({ clientData }: LocationSectionProps) {
                                     </div>
                                 </div>
 
-                                <span className="block text-[10px] font-black uppercase tracking-[0.35em] text-[#D4AF37] mb-3">
+                                <span className="block text-[10px] font-black uppercase tracking-[0.35em] text-rose-600 mb-3">
                                     {loc.type}
                                 </span>
 

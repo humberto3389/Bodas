@@ -135,7 +135,7 @@ export default function App({ clientData: propData }: AppProps) {
         )}
 
         {/* Design System Overlays */}
-        <div className="bg-noise opacity-[0.05] fixed inset-0 pointer-events-none" />
+        <div className="bg-noise opacity-[0.03] fixed inset-0 pointer-events-none" />
 
         <HeroSection clientData={client} />
 
