@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useInView } from 'framer-motion';
+import { supabase } from '../../lib/supabase';
 import { useAudioContext } from '../../contexts/AudioContext';
 
 export function VideoSection({ clientData, videos: propVideos }: { clientData: any; videos?: { name: string; url: string }[] }) {
@@ -42,6 +43,7 @@ export function VideoSection({ clientData, videos: propVideos }: { clientData: a
                 poster={poster}
                 playsInline
                 preload="metadata"
+                loading="lazy"
             />
         );
     };
@@ -93,19 +95,23 @@ export function VideoSection({ clientData, videos: propVideos }: { clientData: a
         <section ref={ref} id="videos" className="py-20 relative overflow-hidden bg-transparent">
             <div className="section-container">
                 <div className="text-center mb-16 relative">
+                    {/* Halo decorativo de título */}
+                    <div className="absolute inset-0 -z-10 flex justify-center items-center pointer-events-none">
+                        <div className="w-[300px] h-[300px] bg-rose-100/40 blur-[80px] rounded-full" />
+                    </div>
                     <motion.div
-                        className="inline-flex flex-col items-center gap-3 mb-6"
+                        className="inline-flex flex-col items-center gap-2 mb-6"
                         initial={{ opacity: 0 }}
                         whileInView={{ opacity: 1 }}
                         transition={{ delay: 0.2 }}
                         viewport={{ once: true }}
                     >
-                        <span className="text-[10px] font-bold tracking-[0.4em] uppercase text-hati-accent">
+                        <span className="text-[10px] font-bold tracking-[0.4em] uppercase text-rose-500">
                             Cinema
                         </span>
-                        <div className="w-10 h-px bg-gray-100" />
+                        <div className="w-10 h-px bg-rose-200" />
                     </motion.div>
-                    <h2 className="text-gray-900 text-3xl sm:text-4xl font-bold uppercase tracking-tight">
+                    <h2 className="text-5xl sm:text-6xl font-elegant font-bold text-slate-800 mb-6 leading-tight">
                         Nuestra Historia
                     </h2>
                 </div>
@@ -140,7 +146,7 @@ export function VideoSection({ clientData, videos: propVideos }: { clientData: a
                                         onClick={() => !isCenter && setCurrentIndex(idx)}
                                         className={`absolute w-full max-w-5xl aspect-video ${!isCenter ? 'cursor-pointer' : ''}`}
                                     >
-                                        <div className="w-full h-full bg-gray-900 rounded-2xl overflow-hidden shadow-sm relative border border-gray-100">
+                                        <div className="w-full h-full bg-black rounded-3xl overflow-hidden shadow-2xl relative border-2 border-white/10">
                                             {isCenter ? (
                                                 <VideoPlayer
                                                     url={video.url}
@@ -187,7 +193,7 @@ export function VideoSection({ clientData, videos: propVideos }: { clientData: a
                                     <button
                                         key={idx}
                                         onClick={() => setCurrentIndex(idx)}
-                                        className={`transition-all duration-500 h-1.5 rounded-full ${currentIndex === idx ? 'w-8 bg-hati-accent' : 'w-1.5 bg-gray-200'}`}
+                                        className={`transition-all duration-500 h-1.5 rounded-full ${currentIndex === idx ? 'w-8 bg-rose-400' : 'w-1.5 bg-slate-200'}`}
                                     />
                                 ))}
                             </div>
@@ -208,41 +214,41 @@ export function VideoSection({ clientData, videos: propVideos }: { clientData: a
 
 export function InvitationFooter({ clientData }: { clientData: any }) {
     return (
-        <footer className="py-20 bg-white relative overflow-hidden border-t border-gray-50">
+        <footer className="py-24 bg-slate-50 relative overflow-hidden border-t border-slate-100">
             <div className="max-w-7xl mx-auto px-6 relative z-10 flex flex-col items-center">
 
                 {/* Logo Minimalista */}
                 <motion.div
-                    className="flex flex-col items-center gap-4 mb-16"
-                    initial={{ opacity: 0 }}
-                    whileInView={{ opacity: 1 }}
+                    className="flex flex-col items-center gap-6 mb-16"
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                 >
-                    <div className="w-12 h-12 rounded-full border border-gray-100 flex items-center justify-center text-gray-200">
-                        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <div className="w-16 h-16 rounded-full border border-slate-200 flex items-center justify-center text-slate-300">
+                        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
                             <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
                         </svg>
                     </div>
-                    <span className="font-sans font-bold text-xl text-gray-900 tracking-tight uppercase">
-                        Suspiro<span className="text-hati-accent">Nupcial</span>
+                    <span className="font-elegant text-3xl text-slate-800 tracking-tight">
+                        Suspiro<span className="text-rose-500">Nupcial</span>
                     </span>
                 </motion.div>
 
-                <div className="text-center mb-16 max-w-2xl">
-                    <h2 className="text-gray-900 text-2xl sm:text-3xl font-bold uppercase tracking-tighter leading-none mb-6">
-                        {clientData.groomName} <span className="text-hati-accent text-xl align-middle mx-1">&</span> {clientData.brideName}
+                <div className="text-center mb-20 max-w-2xl">
+                    <h2 className="font-elegant text-5xl sm:text-7xl text-slate-800 mb-8 tracking-tighter leading-none">
+                        {clientData.groomName} <span className="text-rose-300 text-4xl align-middle">&</span> {clientData.brideName}
                     </h2>
-                    <p className="text-gray-400 text-base font-normal tracking-wide leading-relaxed italic">
-                        "Gracias por ser parte de nuestra historia."
+                    <p className="font-light text-slate-500 text-lg tracking-wide leading-relaxed">
+                        Gracias por ser parte de nuestra historia.
                     </p>
                 </div>
 
-                <div className="w-full border-t border-gray-50 pt-10 flex flex-col sm:flex-row justify-between items-center gap-6 text-[10px] font-bold tracking-[0.2em] uppercase text-gray-300">
+                <div className="w-full border-t border-slate-200 pt-12 flex flex-col sm:flex-row justify-between items-center gap-8 text-xs font-bold tracking-[0.2em] uppercase text-slate-400">
                     <span>© 2026 Reservado</span>
 
                     <div className="flex items-center gap-2">
                         <span>Desarrollado por</span>
-                        <a href="#" className="text-gray-900 hover:text-hati-accent transition-colors">Horizon Studio</a>
+                        <span className="text-slate-800">Horizon Studio</span>
                     </div>
                 </div>
             </div>

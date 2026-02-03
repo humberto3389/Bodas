@@ -48,17 +48,7 @@ export default {
           '100%': { transform: 'translateY(10px)', opacity: '0' },
         },
       },
-      fontFamily: {
-        display: ['"Playfair Display"', 'serif'],
-        body: ['Inter', 'system-ui', 'sans-serif'],
-        'sans': ['Inter', 'system-ui', 'sans-serif'],
-        'serif': ['Cormorant Garamond', 'Georgia', 'serif'],
-        'script': ['Dancing Script', 'cursive'],
-        'brush': ['"Dancing Script"', 'cursive'],
-      },
       colors: {
-        'hati-accent': '#FF4D6D',
-        'hati-accent-dark': '#e63958',
         primary: {
           50: '#f7f8fb',
           100: '#eef0f7',
@@ -75,6 +65,14 @@ export default {
         'gold-light': '#F4E4BC',
         'gold-dark': '#B8860B',
         blush: '#f6d7d4',
+      },
+      fontFamily: {
+        display: ['"Playfair Display"', 'serif'],
+        body: ['Inter', 'system-ui', 'sans-serif'],
+        'sans': ['Cormorant Garamond', 'Georgia', 'serif'],
+        'serif': ['Cormorant Garamond', 'Georgia', 'serif'],
+        'script': ['Dancing Script', 'cursive'],
+        'brush': ['"Dancing Script"', 'cursive'],
       },
       backdropBlur: {
         xs: '2px',

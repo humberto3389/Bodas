@@ -69,21 +69,24 @@ export function LocationSection({ clientData }: LocationSectionProps) {
         >
             <div className="section-container">
                 {/* Header */}
-                <div className="text-center mb-16 relative">
+                <div className="text-center mb-10 relative">
+                    <div className="absolute inset-0 -z-10 flex justify-center items-center pointer-events-none">
+                        <div className="w-[300px] h-[300px] bg-rose-100/40 blur-[80px] rounded-full" />
+                    </div>
                     <motion.div
                         initial={{ opacity: 0, y: 10 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.6 }}
-                        className="inline-flex flex-col items-center gap-3 mb-6"
+                        className="inline-flex flex-col items-center gap-3 mb-8"
                     >
-                        <span className="text-[10px] font-bold tracking-[0.4em] uppercase text-hati-accent">
+                        <span className="text-[10px] font-bold tracking-[0.45em] uppercase text-rose-500">
                             Ubicación
                         </span>
-                        <div className="w-10 h-px bg-gray-100" />
+                        <div className="w-12 h-px bg-gradient-to-r from-transparent via-rose-500/40 to-transparent" />
                     </motion.div>
 
-                    <h2 className="text-gray-900 text-3xl sm:text-4xl font-bold uppercase tracking-tight">
+                    <h2 className="font-elegant text-5xl sm:text-6xl text-slate-950 font-bold leading-tight">
                         Dónde &amp; Cuándo
                     </h2>
                 </div>
@@ -99,59 +102,75 @@ export function LocationSection({ clientData }: LocationSectionProps) {
                             transition={{ delay: idx * 0.15, duration: 0.7, ease: 'easeOut' }}
                             className="relative w-full max-w-lg"
                         >
-                            <div className="card-luxe px-8 py-12 flex flex-col items-center text-center h-full">
+                            <div className="
+                                relative h-full
+                                rounded-[2.5rem]
+                                bg-white/70 backdrop-blur-md
+                                border border-white/80
+                                shadow-[0_15px_45px_-15px_rgba(30,27,75,0.15)]
+                                px-10 py-12
+                                text-center
+                                transition-all duration-500
+                                hover:shadow-[0_25px_60px_-10px_rgba(30,27,75,0.25)]
+                            ">
                                 {/* Icon */}
-                                <div className="mb-6 flex justify-center">
+                                <div className="mb-8 flex justify-center">
                                     <div className="relative">
+                                        {/* Outer glow halo */}
+                                        <div className="absolute inset-0 rounded-full bg-gradient-to-r from-rose-400/30 to-amber-400/30 blur-xl scale-150 animate-pulse" />
+
+                                        {/* Middle glow ring */}
+                                        <div className="absolute inset-0 rounded-full bg-gradient-to-br from-rose-300/40 to-amber-300/40 blur-lg scale-125" />
+
                                         {/* Icon container */}
                                         <div className="
                                             relative
-                                            w-14 h-14
-                                            rounded-2xl
-                                            bg-hati-accent/5
+                                            w-18 h-18
+                                            rounded-full
+                                            bg-slate-800
                                             flex items-center justify-center
-                                            text-2xl
-                                            border border-hati-accent/10
-                                            transition-all duration-300
+                                            text-3xl
+                                            shadow-lg
+                                            transition-all duration-500
                                             group-hover:scale-110
-                                            group-hover:bg-hati-accent
-                                            group-hover:text-white
+                                            group-hover:bg-slate-900
+                                            group-hover:shadow-2xl
                                         ">
                                             {loc.icon}
                                         </div>
                                     </div>
                                 </div>
 
-                                <span className="block text-[10px] font-bold uppercase tracking-[0.3em] text-hati-accent mb-3">
+                                <span className="block text-[10px] font-black uppercase tracking-[0.35em] text-rose-600 mb-3">
                                     {loc.type}
                                 </span>
 
-                                <h3 className="text-gray-900 text-2xl font-bold mb-4 tracking-tight leading-snug">
+                                <h3 className="font-elegant text-4xl text-slate-900 font-bold mb-6 leading-snug">
                                     {loc.name || 'Lugar por definir'}
                                 </h3>
 
                                 {/* Time */}
                                 <div className="
                                     inline-flex items-center gap-2
-                                    px-4 py-1.5
+                                    px-5 py-2
                                     rounded-full
-                                    border border-gray-100
-                                    text-xs font-bold text-gray-400
-                                    tracking-widest
-                                    mb-8
-                                    bg-gray-50
+                                    border border-slate-200
+                                    text-sm font-bold text-slate-600
+                                    tracking-wider
+                                    mb-10
+                                    bg-white
                                 ">
                                     {loc.time}
                                 </div>
 
                                 {/* Address */}
-                                <div className="mb-8 space-y-2 max-w-[240px] mx-auto">
-                                    <p className="text-base font-normal text-gray-600 leading-relaxed">
+                                <div className="mb-10 space-y-2 max-w-xs mx-auto">
+                                    <p className="text-lg font-light text-slate-600 leading-relaxed">
                                         {loc.address}
                                     </p>
 
                                     {loc.reference && (
-                                        <p className="text-[10px] font-medium tracking-wide text-gray-400 uppercase">
+                                        <p className="text-xs font-medium tracking-wide text-slate-400">
                                             Ref: {loc.reference}
                                         </p>
                                     )}
@@ -191,7 +210,7 @@ export function LocationSection({ clientData }: LocationSectionProps) {
                         transition={{ delay: 0.9 }}
                         className="text-center mt-8"
                     >
-                        <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-gray-300">
+                        <p className="text-xs font-bold tracking-[0.25em] uppercase text-slate-400">
                             Ceremonia y Recepción en el mismo lugar
                         </p>
                     </motion.div>
