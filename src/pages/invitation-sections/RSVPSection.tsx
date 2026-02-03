@@ -37,27 +37,24 @@ export function RSVPSection({ onSubmit }: RSVPSectionProps) {
     return (
         <section id="rsvp" className="py-12 bg-transparent px-4 relative overflow-hidden">
             <div className="max-w-3xl mx-auto relative z-10">
-                <div className="text-center mb-10 relative">
-                    <div className="absolute inset-0 -z-10 flex justify-center items-center pointer-events-none">
-                        <div className="w-[300px] h-[300px] bg-rose-100/40 blur-[80px] rounded-full" />
-                    </div>
+                <div className="text-center mb-16 relative">
                     <motion.div
-                        className="inline-flex flex-col items-center gap-2 mb-6"
+                        className="inline-flex flex-col items-center gap-3 mb-6"
                         initial={{ opacity: 0 }}
                         whileInView={{ opacity: 1 }}
                         transition={{ delay: 0.2 }}
                         viewport={{ once: true }}
                     >
-                        <span className="text-[10px] font-bold tracking-[0.4em] uppercase text-rose-500">
+                        <span className="text-[10px] font-bold tracking-[0.4em] uppercase text-hati-accent">
                             Confirmar Asistencia
                         </span>
-                        <div className="w-10 h-px bg-rose-500/40" />
+                        <div className="w-10 h-px bg-gray-100" />
                     </motion.div>
 
-                    <h2 className="text-5xl sm:text-6xl font-elegant font-bold text-slate-900 mb-6 leading-tight">
+                    <h2 className="text-gray-900 text-3xl sm:text-4xl font-bold uppercase tracking-tight mb-4">
                         Confirma tu Asistencia
                     </h2>
-                    <p className="text-lg text-slate-800/60 font-light tracking-wide max-w-lg mx-auto leading-relaxed">
+                    <p className="text-gray-500 text-base font-normal max-w-lg mx-auto leading-relaxed">
                         Será un honor para nosotros contar con tu presencia en este día tan especial.
                     </p>
                 </div>
@@ -78,14 +75,14 @@ export function RSVPSection({ onSubmit }: RSVPSectionProps) {
                                 <button
                                     type="button"
                                     onClick={() => setValue('isAttending', true)}
-                                    className={`px-8 py-3 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all duration-300 border ${formValues.isAttending ? 'bg-slate-900 text-white border-slate-900 shadow-lg' : 'bg-white text-slate-400 border-slate-100 hover:border-slate-300'}`}
+                                    className={`px-8 py-3 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all duration-300 border ${formValues.isAttending ? 'bg-gray-900 text-white border-gray-900 shadow-md' : 'bg-gray-50 text-gray-400 border-gray-100 hover:border-gray-200'}`}
                                 >
                                     ¡Sí, asistiré!
                                 </button>
                                 <button
                                     type="button"
                                     onClick={() => setValue('isAttending', false)}
-                                    className={`px-8 py-3 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all duration-300 border ${formValues.isAttending === false ? 'bg-rose-500 text-white border-rose-500 shadow-lg' : 'bg-white text-slate-400 border-slate-100 hover:border-slate-300'}`}
+                                    className={`px-8 py-3 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all duration-300 border ${formValues.isAttending === false ? 'bg-hati-accent text-white border-hati-accent shadow-md' : 'bg-gray-50 text-gray-400 border-gray-100 hover:border-gray-200'}`}
                                 >
                                     No podré asistir
                                 </button>
@@ -101,7 +98,7 @@ export function RSVPSection({ onSubmit }: RSVPSectionProps) {
                                 className="input-luxe"
                                 placeholder="Escribe tu nombre aquí"
                             />
-                            {errors.name && <p className="text-rose-500 text-[10px] font-bold mt-1 uppercase tracking-widest">{errors.name.message as string}</p>}
+                            {errors.name && <p className="text-hati-accent text-[10px] font-bold mt-1 uppercase tracking-widest">{errors.name.message as string}</p>}
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
@@ -113,7 +110,7 @@ export function RSVPSection({ onSubmit }: RSVPSectionProps) {
                                     className="input-luxe"
                                     placeholder="tu@email.com"
                                 />
-                                {errors.email && <p className="text-rose-500 text-[10px] font-bold mt-1 uppercase tracking-widest">{errors.email.message as string}</p>}
+                                {errors.email && <p className="text-hati-accent text-[10px] font-bold mt-1 uppercase tracking-widest">{errors.email.message as string}</p>}
                             </div>
 
                             {/* Invitados (Solo si asiste) */}
@@ -126,7 +123,7 @@ export function RSVPSection({ onSubmit }: RSVPSectionProps) {
                                         className="input-luxe"
                                         defaultValue={0}
                                     />
-                                    {errors.guests && <p className="text-rose-500 text-[10px] font-bold mt-1 uppercase tracking-widest">{errors.guests.message as string}</p>}
+                                    {errors.guests && <p className="text-hati-accent text-[10px] font-bold mt-1 uppercase tracking-widest">{errors.guests.message as string}</p>}
                                 </div>
                             )}
                         </div>
@@ -156,7 +153,7 @@ export function RSVPSection({ onSubmit }: RSVPSectionProps) {
                                 className="space-y-2"
                             >
                                 <label className="block text-[10px] font-bold text-slate-900 uppercase tracking-[0.2em]">¿Quiénes no podrán asistir?</label>
-                                <p className="text-[9px] text-rose-500/70 uppercase tracking-wider mb-2">Lamentamos que no puedan venir. Por favor dinos los nombres de las personas que no podrán asistir.</p>
+                                <p className="text-[9px] text-hati-accent/70 uppercase tracking-wider mb-2">Lamentamos que no puedan venir. Por favor dinos los nombres de las personas que no podrán asistir.</p>
                                 <textarea
                                     {...register('notAttendingNames')}
                                     className="input-luxe min-h-[100px] py-4 resize-none"
