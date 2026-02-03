@@ -99,25 +99,19 @@ export function LocationSection({ clientData }: LocationSectionProps) {
                                 {/* Icon */}
                                 <div className="mb-8 flex justify-center">
                                     <div className="relative">
-                                        {/* Outer glow halo */}
-                                        <div className="absolute inset-0 rounded-full bg-gradient-to-r from-rose-400/30 to-amber-400/30 blur-xl scale-150 animate-pulse" />
-
-                                        {/* Middle glow ring */}
-                                        <div className="absolute inset-0 rounded-full bg-gradient-to-br from-rose-300/40 to-amber-300/40 blur-lg scale-125" />
+                                        {/* Glow suave */}
+                                        <div className="absolute inset-0 rounded-full bg-rose-600/10 blur-xl scale-150" />
 
                                         {/* Icon container */}
                                         <div className="
                                             relative
-                                            w-18 h-18
+                                            w-20 h-20
                                             rounded-full
-                                            bg-slate-800
+                                            bg-rose-600
                                             flex items-center justify-center
                                             text-3xl
                                             shadow-lg
-                                            transition-all duration-500
-                                            group-hover:scale-110
-                                            group-hover:bg-slate-900
-                                            group-hover:shadow-2xl
+                                            text-white
                                         ">
                                             {loc.icon}
                                         </div>

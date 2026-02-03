@@ -30,42 +30,19 @@ export function PadrinosSection({ clientId, padrinos: propPadrinos }: PadrinosSe
 
             <div className="section-container relative z-10">
                 {/* Section Header */}
-                <div className="text-center mb-20 relative">
-                    <div className="absolute inset-0 -z-10 flex justify-center items-center pointer-events-none">
-                        <div className="w-[300px] h-[300px] bg-rose-100/40 blur-[80px] rounded-full" />
-                    </div>
-                    <motion.div
-                        className="inline-flex flex-col items-center gap-2 mb-6"
-                        initial={{ opacity: 0 }}
-                        whileInView={{ opacity: 1 }}
-                        transition={{ delay: 0.2 }}
-                        viewport={{ once: true }}
-                    >
-                        <span className="text-[10px] font-bold tracking-[0.4em] uppercase text-rose-600/70">
-                            Corte de Honor
-                        </span>
-                        <div className="w-12 h-px bg-gradient-to-r from-transparent via-rose-400 to-transparent" />
-                    </motion.div>
+                <SectionTitle subtitle="Corte de Honor">
+                    Nuestros Padrinos
+                </SectionTitle>
 
-                    <motion.h2
-                        className="text-5xl sm:text-7xl font-elegant font-bold text-slate-900 mb-6 leading-tight"
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                    >
-                        Nuestros Padrinos
-                    </motion.h2>
-
-                    <motion.p
-                        className="text-xl text-slate-800/60 font-light max-w-2xl mx-auto italic"
-                        initial={{ opacity: 0 }}
-                        whileInView={{ opacity: 1 }}
-                        transition={{ delay: 0.3 }}
-                        viewport={{ once: true }}
-                    >
-                        "Las personas especiales que iluminan nuestro camino"
-                    </motion.p>
-                </div>
+                <motion.p
+                    className="text-xl text-slate-800/60 font-light max-w-2xl mx-auto italic text-center mb-20"
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    transition={{ delay: 0.3 }}
+                    viewport={{ once: true }}
+                >
+                    "Las personas especiales que iluminan nuestro camino"
+                </motion.p>
 
                 {/* Padrinos Grid - Cards más grandes */}
                 <div className={`grid gap-10 ${activePadrinos.length === 1
