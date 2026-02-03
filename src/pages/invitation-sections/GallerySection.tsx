@@ -57,7 +57,7 @@ export function GallerySection({ clientData, images: propImages }: GallerySectio
                         <span className="text-[10px] font-bold tracking-[0.4em] uppercase text-rose-500">
                             Galería
                         </span>
-                        <div className="w-10 h-px bg-rose-500/40" />
+                        <div className="w-10 h-px bg-[#D4AF37]/40" />
                     </motion.div>
                     <h2 className="text-5xl sm:text-6xl font-elegant font-bold text-slate-950 mb-6 leading-tight">
                         Momentos
@@ -123,7 +123,7 @@ export function GallerySection({ clientData, images: propImages }: GallerySectio
                             <button
                                 key={idx}
                                 onClick={() => setCurrentIndex(idx)}
-                                className={`transition-all duration-500 h-1 rounded-full ${currentIndex === idx ? 'w-8 bg-rose-500' : 'w-2 bg-rose-500/20'}`}
+                                className={`transition-all duration-500 h-1 rounded-full ${currentIndex === idx ? 'w-8 bg-[#2C3E50]' : 'w-2 bg-[#2C3E50]/20'}`}
                             />
                         ))}
                     </div>

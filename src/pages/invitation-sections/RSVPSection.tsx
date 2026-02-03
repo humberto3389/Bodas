@@ -51,7 +51,7 @@ export function RSVPSection({ onSubmit }: RSVPSectionProps) {
                         <span className="text-[10px] font-bold tracking-[0.4em] uppercase text-rose-500">
                             Confirmar Asistencia
                         </span>
-                        <div className="w-10 h-px bg-rose-500/40" />
+                        <div className="w-10 h-px bg-[#2C3E50]/40" />
                     </motion.div>
 
                     <h2 className="text-5xl sm:text-6xl font-elegant font-bold text-slate-900 mb-6 leading-tight">
@@ -85,7 +85,7 @@ export function RSVPSection({ onSubmit }: RSVPSectionProps) {
                                 <button
                                     type="button"
                                     onClick={() => setValue('isAttending', false)}
-                                    className={`px-8 py-3 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all duration-300 border ${formValues.isAttending === false ? 'bg-rose-500 text-white border-rose-500 shadow-lg' : 'bg-white text-slate-400 border-slate-100 hover:border-slate-300'}`}
+                                    className={`px-8 py-3 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all duration-300 border ${formValues.isAttending === false ? 'bg-[#2C3E50] text-white border-[#2C3E50] shadow-lg' : 'bg-white text-slate-400 border-slate-100 hover:border-slate-300'}`}
                                 >
                                     No podré asistir
                                 </button>

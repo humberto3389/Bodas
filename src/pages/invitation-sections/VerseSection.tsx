@@ -28,10 +28,10 @@ export function VerseSection({ clientData }: VerseSectionProps) {
                         <div className="absolute inset-0 -z-10 flex justify-center items-center pointer-events-none">
                             <div className="w-[300px] h-[150px] bg-rose-100/30 blur-[60px] rounded-full" />
                         </div>
-                        <span className="text-[10px] font-bold text-rose-500 uppercase tracking-[0.6em]">
+                        <span className="text-[10px] font-bold text-[#2C3E50] uppercase tracking-[0.6em]">
                             {weddingType || 'Nuestra Boda'}
                         </span>
-                        <div className="w-16 h-px bg-gradient-to-r from-transparent via-rose-500/40 to-transparent" />
+                        <div className="w-16 h-px bg-gradient-to-r from-transparent via-[#2C3E50]/40 to-transparent" />
                     </motion.div>
 
                     {/* Versículo Bíblico */}
@@ -44,7 +44,7 @@ export function VerseSection({ clientData }: VerseSectionProps) {
                             className="relative px-6"
                         >
                             {religiousSymbol && (
-                                <div className="text-4xl mb-8 text-rose-500 opacity-80">
+                                <div className="text-4xl mb-8 text-[#D4AF37] opacity-80">
                                     {religiousSymbol}
                                 </div>
                             )}
@@ -90,7 +90,7 @@ export function VerseSection({ clientData }: VerseSectionProps) {
                             transition={{ duration: 1, delay: 0.2 }}
                             className="relative px-6"
                         >
-                            <h2 className="text-2xl sm:text-3xl font-elegant tracking-[0.3em] text-rose-500 font-bold uppercase mb-10 relative">
+                            <h2 className="text-2xl sm:text-3xl font-elegant tracking-[0.3em] text-[#2C3E50] font-bold uppercase mb-10 relative">
                                 {/* Halo decorativo de título */}
                                 <div className="absolute inset-0 -z-10 flex justify-center items-center pointer-events-none">
                                     <div className="w-[400px] h-[200px] bg-rose-100/20 blur-[70px] rounded-full" />
