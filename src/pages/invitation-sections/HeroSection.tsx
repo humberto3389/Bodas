@@ -124,7 +124,7 @@ export function HeroSection({ clientData }: HeroSectionProps) {
                 <div className="absolute inset-0 z-[1] pointer-events-none">
                     {advancedAnimations.particleEffects && (
                         <div className="absolute inset-0">
-                            {Array.from({ length: 30 }).map((_, i) => (
+                            {Array.from({ length: typeof window !== 'undefined' && window.innerWidth < 640 ? 10 : 30 }).map((_, i) => (
                                 <motion.div
                                     key={`p-${i}`}
                                     className="absolute w-1 h-1 bg-white/40 rounded-full blur-[1px]"

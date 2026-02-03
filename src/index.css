@@ -13,11 +13,19 @@
 body {
   @apply text-slate-900 antialiased selection:bg-amber-500/20 selection:text-amber-600;
   background:
-    radial-gradient(circle at 0% 0%, #f1f5f9 0%, transparent 50%),
-    radial-gradient(circle at 100% 100%, #eef2ff 0%, transparent 50%),
-    #ffffff;
-  background-attachment: fixed;
+    radial-gradient(circle at 0% 0%, #fefce8 0%, transparent 50%),
+    radial-gradient(circle at 100% 100%, #fef3c7 0%, transparent 50%),
+    #FDFCF0;
+  background-attachment: scroll;
+  /* Por defecto scroll para móviles */
   min-height: 100vh;
+}
+
+/* Solo aplicar fixed en pantallas grandes para evitar lag en móviles */
+@media (min-width: 1024px) {
+  body {
+    background-attachment: fixed;
+  }
 }
 
 .dark body {
@@ -53,15 +61,20 @@ body {
 
 /* Tarjeta Glassmorphism Refinada (Bordes finos, sombras de cristal) */
 .card-luxe {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(30px);
-  -webkit-backdrop-filter: blur(30px);
+  background: rgba(255, 255, 255, 0.92);
   border: 1px solid rgba(255, 255, 255, 0.8);
   box-shadow:
     0 4px 6px -1px rgba(0, 0, 0, 0.05),
     0 20px 40px -20px rgba(30, 27, 75, 0.15);
-  /* Sutil sombra Indigo */
   border-radius: 2.5rem;
+}
+
+@media (min-width: 1024px) {
+  .card-luxe {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+  }
 }
 
 /* Títulos Premium con Gradiente Indigo Real */
