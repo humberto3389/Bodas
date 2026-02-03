@@ -55,11 +55,11 @@ export function VerseSection({ clientData }: VerseSectionProps) {
 
                             {bibleVerseBook && (
                                 <div className="flex items-center justify-center gap-4">
-                                    <div className="w-8 h-[2px] bg-rose-500/30 rounded-full" />
+                                    <div className="w-8 h-[2px] bg-[#D4AF37]/30 rounded-full" />
                                     <p className="text-[10px] tracking-[0.4em] text-slate-900/40 uppercase font-black">
                                         {bibleVerseBook}
                                     </p>
-                                    <div className="w-8 h-[2px] bg-rose-500/30 rounded-full" />
+                                    <div className="w-8 h-[2px] bg-[#D4AF37]/30 rounded-full" />
                                 </div>
                             )}
                         </motion.div>

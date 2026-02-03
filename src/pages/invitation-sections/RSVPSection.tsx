@@ -101,7 +101,7 @@ export function RSVPSection({ onSubmit }: RSVPSectionProps) {
                                 className="input-luxe"
                                 placeholder="Escribe tu nombre aquí"
                             />
-                            {errors.name && <p className="text-rose-500 text-[10px] font-bold mt-1 uppercase tracking-widest">{errors.name.message as string}</p>}
+                            {errors.name && <p className="text-[#2C3E50] text-[10px] font-bold mt-1 uppercase tracking-widest">{errors.name.message as string}</p>}
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
@@ -113,7 +113,7 @@ export function RSVPSection({ onSubmit }: RSVPSectionProps) {
                                     className="input-luxe"
                                     placeholder="tu@email.com"
                                 />
-                                {errors.email && <p className="text-rose-500 text-[10px] font-bold mt-1 uppercase tracking-widest">{errors.email.message as string}</p>}
+                                {errors.email && <p className="text-[#2C3E50] text-[10px] font-bold mt-1 uppercase tracking-widest">{errors.email.message as string}</p>}
                             </div>
 
                             {/* Invitados (Solo si asiste) */}
@@ -126,7 +126,7 @@ export function RSVPSection({ onSubmit }: RSVPSectionProps) {
                                         className="input-luxe"
                                         defaultValue={0}
                                     />
-                                    {errors.guests && <p className="text-rose-500 text-[10px] font-bold mt-1 uppercase tracking-widest">{errors.guests.message as string}</p>}
+                                    {errors.guests && <p className="text-[#2C3E50] text-[10px] font-bold mt-1 uppercase tracking-widest">{errors.guests.message as string}</p>}
                                 </div>
                             )}
                         </div>
@@ -156,7 +156,7 @@ export function RSVPSection({ onSubmit }: RSVPSectionProps) {
                                 className="space-y-2"
                             >
                                 <label className="block text-[10px] font-bold text-slate-900 uppercase tracking-[0.2em]">¿Quiénes no podrán asistir?</label>
-                                <p className="text-[9px] text-rose-500/70 uppercase tracking-wider mb-2">Lamentamos que no puedan venir. Por favor dinos los nombres de las personas que no podrán asistir.</p>
+                                <p className="text-[9px] text-[#2C3E50]/70 uppercase tracking-wider mb-2">Lamentamos que no puedan venir. Por favor dinos los nombres de las personas que no podrán asistir.</p>
                                 <textarea
                                     {...register('notAttendingNames')}
                                     className="input-luxe min-h-[100px] py-4 resize-none"
