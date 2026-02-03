@@ -39,7 +39,7 @@ export function RSVPSection({ onSubmit }: RSVPSectionProps) {
             <div className="max-w-3xl mx-auto relative z-10">
                 <div className="text-center mb-10 relative">
                     <div className="absolute inset-0 -z-10 flex justify-center items-center pointer-events-none">
-                        <div className="w-[300px] h-[300px] bg-rose-100/40 blur-[80px] rounded-full" />
+                        <div className="w-[300px] h-[300px] bg-[#F5F1E6]/40 blur-[80px] rounded-full" />
                     </div>
                     <motion.div
                         className="inline-flex flex-col items-center gap-2 mb-6"
@@ -48,7 +48,7 @@ export function RSVPSection({ onSubmit }: RSVPSectionProps) {
                         transition={{ delay: 0.2 }}
                         viewport={{ once: true }}
                     >
-                        <span className="text-[10px] font-bold tracking-[0.4em] uppercase text-rose-500">
+                        <span className="text-[10px] font-bold tracking-[0.4em] uppercase text-[#2C3E50]">
                             Confirmar Asistencia
                         </span>
                         <div className="w-10 h-px bg-[#2C3E50]/40" />

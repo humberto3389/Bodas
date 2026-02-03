@@ -41,7 +41,7 @@ export function GuestbookSection({ messages, onSendMessage }: GuestbookSectionPr
                         transition={{ delay: 0.2 }}
                         viewport={{ once: true }}
                     >
-                        <span className="text-[10px] font-bold tracking-[0.4em] uppercase text-rose-500">
+                        <span className="text-[10px] font-bold tracking-[0.4em] uppercase text-[#2C3E50]">
                             Libro de Visitas
                         </span>
                         <div className="w-10 h-px bg-[#2C3E50]/40" />
