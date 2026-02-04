@@ -186,6 +186,7 @@ export default function Admin() {
           churchName: clientData.church_name || currentSession.churchName,
           ceremonyLocationName: clientData.ceremony_location_name || currentSession.ceremonyLocationName,
           receptionLocationName: clientData.reception_location_name || currentSession.receptionLocationName,
+          receptionTime: formatTimeDisplay(clientData.reception_time || currentSession.receptionTime, false),
         }
 
         sessionStorage.setItem('clientAuth', JSON.stringify(updated))
@@ -354,7 +355,7 @@ export default function Admin() {
           reception_address: editForm.receptionAddress || null,
           reception_reference: editForm.receptionReference || null,
           reception_map_url: editForm.receptionMapUrl || null,
-          reception_time: editForm.receptionTime || null,
+          reception_time: validateAndFormatTime(editForm.receptionTime) || null,
           is_reception_same_as_ceremony: editForm.isReceptionSameAsCeremony,
           invitation_text: editForm.invitationText || null,
           background_audio_url: audioUrl,
