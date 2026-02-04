@@ -2,13 +2,14 @@ import { useEffect, useState, useRef } from 'react';
 import { useAudioContext } from '../../contexts/AudioContext';
 
 export function BackgroundMusic({ src, shouldPlay = true }: { src: string; shouldPlay?: boolean }) {
+    const [userPaused, setUserPaused] = useState(false);
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const [needsUnlock, setNeedsUnlock] = useState(false);
     const [isPlaying, setIsPlaying] = useState(false);
     const { activeSource } = useAudioContext();
 
-    // Only play if global shouldPlay is true AND no other section has audio focus
-    const effectivelyPlaying = shouldPlay && activeSource === null;
+    // Only play if global shouldPlay is true AND no other section has audio focus AND user hasn't paused
+    const effectivelyPlaying = shouldPlay && activeSource === null && !userPaused;
 
     useEffect(() => {
         if (!src) return;
@@ -17,7 +18,7 @@ export function BackgroundMusic({ src, shouldPlay = true }: { src: string; shoul
         audio.src = src;
         audio.loop = true;
         audio.volume = 0.4;
-        audio.preload = 'auto'; // Load entire audio file to prevent buffering
+        audio.preload = 'auto';
         audioRef.current = audio;
 
         const handlePlay = () => setIsPlaying(true);
@@ -26,12 +27,17 @@ export function BackgroundMusic({ src, shouldPlay = true }: { src: string; shoul
         audio.addEventListener('play', handlePlay);
         audio.addEventListener('pause', handlePause);
 
-        // Ya no intentamos reproducir automáticamente en el montaje
-        // setNeedsUnlock(true); // Mostrar botón de "Activar música" si no se puede auto-reproducir
-        // Eliminamos el bloque playPromise inicial para evitar carga innecesaria
+        // Intentar reproducción automática al iniciar
+        const playPromise = audio.play();
+        if (playPromise !== undefined) {
+            playPromise.catch(() => {
+                console.log("Autoplay bloqueado por el navegador");
+                setNeedsUnlock(true);
+            });
+        }
 
         const unlock = () => {
-            if (audioRef.current && audioRef.current.paused && effectivelyPlaying) {
+            if (audioRef.current && audioRef.current.paused && effectivelyPlaying && !userPaused) {
                 audioRef.current.play().catch(() => { });
                 setNeedsUnlock(false);
             }
@@ -40,11 +46,6 @@ export function BackgroundMusic({ src, shouldPlay = true }: { src: string; shoul
         const events = ['click', 'keydown', 'pointerdown', 'touchstart'];
         events.forEach(e => document.addEventListener(e, unlock));
 
-        // Si effectivelyPlaying es true pero no hay interacción, mostramos el botón de desbloqueo
-        if (effectivelyPlaying) {
-            setNeedsUnlock(true);
-        }
-
         return () => {
             audio.pause();
             audio.src = '';
@@ -52,12 +53,17 @@ export function BackgroundMusic({ src, shouldPlay = true }: { src: string; shoul
             audio.removeEventListener('pause', handlePause);
             events.forEach(e => document.removeEventListener(e, unlock));
         };
-    }, [src, effectivelyPlaying]);
+    }, [src]); // Dependencia solo src para init
 
+    // Efecto para manejar play/pause basado en foco y estado global
     useEffect(() => {
         if (!audioRef.current) return;
+
         if (effectivelyPlaying) {
-            audioRef.current.play().catch(() => setNeedsUnlock(true));
+            const playPromise = audioRef.current.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(() => setNeedsUnlock(true));
+            }
         } else {
             audioRef.current.pause();
         }
@@ -67,10 +73,10 @@ export function BackgroundMusic({ src, shouldPlay = true }: { src: string; shoul
         if (!audioRef.current) return;
         if (audioRef.current.paused) {
             audioRef.current.play().catch(() => { });
-            setIsPlaying(true);
+            setUserPaused(false); // Usuario quiere escuchar explícitamente
         } else {
             audioRef.current.pause();
-            setIsPlaying(false);
+            setUserPaused(true); // Usuario pausó explícitamente
         }
     };
 

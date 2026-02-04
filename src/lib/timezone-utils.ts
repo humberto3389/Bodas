@@ -5,21 +5,37 @@ export const DEFAULT_TIMEZONE = 'America/Lima';
 export const PERU_TIMEZONE = 'America/Lima';
 
 /**
+ * Parsea un string YYYY-MM-DD y devuelve [year, month, day] como números.
+ * Esto evita el uso de new Date("YYYY-MM-DD") que asume UTC y puede restar un día.
+ */
+function parseCivilDate(dateStr: string): [number, number, number] | null {
+    if (!dateStr) return null;
+    // Soporta YYYY-MM-DDT... o solo YYYY-MM-DD
+    const cleanDate = dateStr.includes('T') ? dateStr.split('T')[0] : dateStr;
+    const parts = cleanDate.split('-').map(Number);
+    if (parts.length !== 3) return null;
+    return [parts[0], parts[1], parts[2]]; // [Year, Month (1-12), Day]
+}
+
+/**
  * TAREA 2: Backend - Al guardar desde panel admin
  * Convierte fecha y hora local a un string ISO en UTC.
  * Input: fecha: "2026-06-20", hora: "15:00", timezone: "America/Lima"
- * Output: "2026-06-20T20:00:00.000Z"
+ * Output: "2026-06-20T20:00:00.000Z" (Suponiendo UTC-5)
  */
 export function localToUTC(fechaLocal: string, horaLocal: string, _timezone: string = DEFAULT_TIMEZONE): string {
-    if (!fechaLocal || !horaLocal) return '';
+    const parts = parseCivilDate(fechaLocal);
+    if (!parts || !horaLocal) return '';
 
-    const [year, month, day] = fechaLocal.split('-').map(Number);
+    const [year, month, day] = parts;
 
     // Usar nuestra función robusta de validación para asegurar formato HH:mm
     const clean24h = validateAndFormatTime(horaLocal);
     let [hours, minutes] = clean24h.split(':').map(Number);
 
     // Para Perú (UTC-5), el desfase es constante (+5 horas para llegar a UTC)
+    // Date.UTC(year, monthIndex, day, hours, minutes) crea un timestamp UTC puro.
+    // Nosotros queremos decir: "En Perú son las 15:00", así que en UTC son las 20:00.
     const offset = 5;
     const utcDate = new Date(Date.UTC(year, month - 1, day, hours + offset, minutes, 0, 0));
 
@@ -36,7 +52,6 @@ export function UTCToLocal(utcTime: string | Date, _timezone: string = DEFAULT_T
 
     // Cálculo manual robusto del offset para evitar inconsistencias de Intl con las 12 PM
     // Para Perú es UTC-5. 
-    // Si en el futuro se requieren más zonas, se puede usar Intl.DateTimeFormat para obtener el offset local.
     const limaDate = new Date(date.getTime() - (5 * 60 * 60 * 1000));
     const h = limaDate.getUTCHours();
     const m = limaDate.getUTCMinutes();
@@ -75,7 +90,6 @@ export function validateAndFormatTime(timeInput: string): string {
     } else {
         // Si no tiene AM/PM, asumimos que ya viene en 24h
         // Pero si alguien escribe "12:30", por defecto es Noon (12:30)
-        // No hay ambigüedad aquí en formato 24h.
     }
 
     // Normalizar a rangos válidos
@@ -93,7 +107,13 @@ export function formatTimeDisplay(timeStr: string | undefined | null, use12Hour:
     return formatTimeForDisplay(clean24h);
 }
 
+/**
+ * Construye un timestamp UTC para un evento en Perú, ignorando la zona horaria del navegador.
+ * Input: dateStr="2026-06-21", timeStr="12:30"
+ * Output: timestamp numérico que representa ese momento exacto en el tiempo universal.
+ */
 export function getEventTimestampUTC(dateStr: string, timeStr: string, timezone: string = DEFAULT_TIMEZONE): number {
+    // Reutilizar localToUTC para consistencia
     const iso = localToUTC(dateStr, timeStr, timezone);
     return iso ? new Date(iso).getTime() : 0;
 }

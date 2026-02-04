@@ -12,13 +12,21 @@ export function Countdown({ date, time }: CountdownProps) {
     const targetTimestamp = useMemo(() => {
         if (!date) return Date.now();
 
-        // Extraer string de fecha
+        // Extraer string de fecha yyyy-mm-dd
         let dateStr = '';
         if (date instanceof Date) {
-            dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+            // CRÍTICO: Usar getters locales normales, no UTC, porque el objeto Date local ya tiene la fecha correcta del navegador
+            // PERO si viene del backend como ISO UTC string, podría ser diferente.
+            // Para estar seguros, formateamos manualmente evitando conversiones implícitas
+            const d = new Date(date);
+            const year = d.getFullYear();
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            dateStr = `${year}-${month}-${day}`;
         } else if (typeof date === 'string') {
-            // Si viene con T, extraer solo la parte de fecha
-            dateStr = date.split('T')[0].split(' ')[0];
+            // Si viene con T (ISO), asegurarse de tomar solo la fecha
+            // "2026-06-21T00:00:00Z" -> "2026-06-21"
+            dateStr = date.split('T')[0];
         }
 
         // Usar la utilidad que combina fecha + hora y convierte a UTC
