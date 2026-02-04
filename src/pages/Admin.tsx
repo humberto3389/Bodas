@@ -317,7 +317,19 @@ export default function Admin() {
         ? editForm.advancedAnimations
         : { enabled: false, particleEffects: false, parallaxScrolling: false, floatingElements: false }
 
-      const weddingUTC = localToUTC(editForm.weddingDate, editForm.weddingTime)
+      // --- Debug & Paranoia Check for 12 PM ---
+      let timeInput = editForm.weddingTime;
+      // Ensure we are working with a clean string
+      if (!timeInput) timeInput = '12:00';
+
+      console.log('[saveClientProfile] Raw weddingTime from form:', timeInput);
+
+      const cleanTime = validateAndFormatTime(timeInput);
+      console.log('[saveClientProfile] Validated cleanTime:', cleanTime);
+
+      const weddingUTC = localToUTC(editForm.weddingDate, cleanTime);
+      console.log('[saveClientProfile] Calculated weddingUTC:', weddingUTC);
+
 
       // --- DB Update ---
       const { error: updateError } = await supabase
