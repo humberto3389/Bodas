@@ -9,6 +9,15 @@ interface CountdownProps {
 }
 
 export function Countdown({ date, time }: CountdownProps) {
+    console.log('🔍 DEBUG GLOBAL - Countdown recibió:', {
+        fecha: date,           // Ej: "2026-02-21"
+        hora: time,            // Ej: "12:30 PM"
+        tipoFecha: typeof date,
+        tipoHora: typeof time,
+        timestampActual: Date.now(),
+        fechaActual: new Date().toLocaleString('es-PE')
+    });
+
     const targetTimestamp = useMemo(() => {
         if (!date) return 0;
 
@@ -25,6 +34,31 @@ export function Countdown({ date, time }: CountdownProps) {
         // Esto garantiza cálculos precisos independientemente de la zona del navegador
         return getEventTimestampUTC(dateStr, time || '00:00');
     }, [date, time])
+
+    // Paso 6.1: Verificación final
+    useEffect(() => {
+        if (targetTimestamp > 0) {
+            const ahora = Date.now();
+            const diferenciaMs = targetTimestamp - ahora;
+            const diferenciaHoras = diferenciaMs / (1000 * 60 * 60);
+            const diferenciaDias = diferenciaMs / (1000 * 60 * 60 * 24);
+
+            console.log('✅ VERIFICACIÓN FINAL - Countdown:', {
+                horaBodaUTC: new Date(targetTimestamp).toISOString(),
+                horaBodaLima: new Date(targetTimestamp + (5 * 60 * 60 * 1000)).toLocaleString('es-PE'),
+                horaActual: new Date().toLocaleString('es-PE'),
+                diferenciaTotalHoras: Math.round(diferenciaHoras * 100) / 100,
+                diferenciaDiasCompletos: Math.floor(diferenciaDias),
+                horasRestantes: Math.floor((diferenciaDias % 1) * 24),
+                minutosRestantes: Math.floor(((diferenciaDias % 1) * 24 * 60) % 60)
+            });
+
+            // Validación: Debe ser ~402 horas (16 días + 18 horas)
+            if (diferenciaHoras < 400 || diferenciaHoras > 410) {
+                console.warn('⚠️ Alerta de diferencia horaria:', diferenciaHoras);
+            }
+        }
+    }, [targetTimestamp]);
 
     const calculateTimeLeft = () => {
         const now = Date.now();

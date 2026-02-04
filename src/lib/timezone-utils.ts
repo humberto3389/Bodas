@@ -50,38 +50,115 @@ export function UTCToLocal24h(utcTime: string | Date, _timezone: string = DEFAUL
     return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
 }
 
+/**
+ * CORRECIÓN CRÍTICA - CONVERSIÓN 12h ↔ 24h
+ * BUG ORIGINAL: "12:30 PM" se convertía a "00:30" (ERROR)
+ * SOLUCIÓN: "12:30 PM" = "12:30" (mediodía), "12:30 AM" = "00:30" (medianoche)
+ */
 export function validateAndFormatTime(timeInput: string): string {
-    if (!timeInput) return '12:00';
-
-    let clean = timeInput.trim().toUpperCase();
-
-    // FIX CRÍTICO: Si ya viene en formato 24h limpio "12:30", devolvemos directo
-    // para evitar que lógica AM/PM lo rompa por falsos positivos.
-    if (/^12:\d{2}$/.test(clean)) return clean;
-
-    const isPM = clean.includes('PM') || clean.includes('P.M.') || clean.includes('P. M.');
-    const isAM = clean.includes('AM') || clean.includes('A.M.') || clean.includes('A. M.');
-
-    const timeMatch = clean.match(/(\d{1,2}):(\d{2})/);
-    if (!timeMatch) return '12:00';
-
-    let h = parseInt(timeMatch[1], 10);
-    let m = parseInt(timeMatch[2], 10);
-
-    if (isPM) {
-        // 12 PM es 12:00. 1 PM es 13:00.
-        if (h < 12) h += 12;
-    } else if (isAM) {
-        // 12 AM es 00:00.
-        if (h === 12) h = 0;
+    if (!timeInput || timeInput.trim() === '') {
+        console.warn('⚠️ validateAndFormatTime: Input vacío, retorna 12:00');
+        return '12:00';
     }
-    // Si NO tiene AM/PM, asumimos 24h.
-    // 12:xx sigue siendo 12:xx (Mediodía). 00:xx es Medianoche.
 
-    h = Math.max(0, Math.min(23, h));
-    m = Math.max(0, Math.min(59, m));
+    const originalInput = timeInput;
+    const clean = timeInput.trim().toUpperCase();
 
-    return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+    console.log('🔧 DEBUG validateAndFormatTime - Inicio:', {
+        original: originalInput,
+        clean: clean,
+        length: clean.length
+    });
+
+    // ==================== DETECCIÓN ROBUSTA DE AM/PM ====================
+    // Considerar múltiples formatos: "PM", "P.M.", "P. M.", "PM.", etc.
+    const pmRegex = /P\.?\.?\s*M\.?/;
+    const amRegex = /A\.?\.?\s*M\.?/;
+
+    const hasPM = pmRegex.test(clean);
+    const hasAM = amRegex.test(clean);
+
+    console.log('🔧 DEBUG - Detección AM/PM:', {
+        hasPM,
+        hasAM,
+        stringContainsPM: clean.includes('PM'),
+        stringContainsAM: clean.includes('AM')
+    });
+
+    // ==================== EXTRAER HORA Y MINUTO ====================
+    // Buscar patrón "HH:MM" o "H:MM"
+    const timeMatch = clean.match(/(\d{1,2}):(\d{1,2})/);
+
+    if (!timeMatch) {
+        console.error('❌ validateAndFormatTime: Formato inválido, no encuentra HH:MM');
+        return '12:00';
+    }
+
+    let hour = parseInt(timeMatch[1], 10);
+    const minute = parseInt(timeMatch[2], 10);
+
+    console.log('🔧 DEBUG - Extraído del texto:', {
+        hourOriginal: hour,
+        minuteOriginal: minute,
+        match: timeMatch[0]
+    });
+
+    // ==================== CONVERSIÓN CORRECTA (FIX CRÍTICO) ====================
+    let conversionType = '24h (sin cambios)';
+
+    if (hasPM) {
+        // CASO PM (TARDE):
+        if (hour === 12) {
+            // 12:XX PM = 12:XX (MEDIODÍA) - ¡NO CAMBIAR!
+            conversionType = '12 PM → 12 (mediodía)';
+        } else if (hour < 12) {
+            // 1:XX PM a 11:XX PM = sumar 12
+            hour += 12;
+            conversionType = `${timeMatch[1]} PM → ${hour} (suma 12)`;
+        } else {
+            // Hora > 12 en formato PM es error, pero manejamos
+            conversionType = `${hour} PM (ya es 24h?)`;
+        }
+    } else if (hasAM) {
+        // CASO AM (MAÑANA):
+        if (hour === 12) {
+            // 12:XX AM = 00:XX (MEDIANOCHE)
+            hour = 0;
+            conversionType = '12 AM → 0 (medianoche)';
+        } else {
+            // 1:XX AM a 11:XX AM = igual
+            conversionType = `${hour} AM (igual)`;
+        }
+    } else {
+        // SIN AM/PM: Asumir formato 24h
+        // 12:30 = mediodía, 00:30 = medianoche
+        conversionType = '24h directo';
+    }
+
+    // ==================== VALIDAR RANGOS ====================
+    const finalHour = Math.max(0, Math.min(23, hour));
+    const finalMinute = Math.max(0, Math.min(59, minute));
+
+    const result = `${String(finalHour).padStart(2, '0')}:${String(finalMinute).padStart(2, '0')}`;
+
+    // ==================== LOG COMPLETO ====================
+    console.log('✅ DEBUG validateAndFormatTime - Resultado:', {
+        input: originalInput,
+        limpiado: clean,
+        tieneAM: hasAM,
+        tienePM: hasPM,
+        horaOriginal: timeMatch[1],
+        minutoOriginal: minute,
+        tipoConversion: conversionType,
+        horaFinal: finalHour,
+        minutoFinal: finalMinute,
+        resultado24h: result,
+        interpretacion: finalHour === 12 ? 'MEDIODÍA' :
+            finalHour === 0 ? 'MEDIANOCHE' :
+                finalHour > 12 ? `TARDE (${finalHour - 12} PM)` : `MAÑANA (${finalHour} AM)`
+    });
+
+    return result;
 }
 
 export function formatTimeDisplay(timeStr: string | undefined | null, use12Hour: boolean = true): string {
@@ -92,8 +169,55 @@ export function formatTimeDisplay(timeStr: string | undefined | null, use12Hour:
 }
 
 export function getEventTimestampUTC(dateStr: string, timeStr: string, timezone: string = DEFAULT_TIMEZONE): number {
-    const iso = localToUTC(dateStr, timeStr, timezone);
-    return iso ? new Date(iso).getTime() : 0;
+    console.group('⏰ DEBUG getEventTimestampUTC');
+    console.log('📥 Entrada:', { dateStr, timeStr, timezone });
+
+    // Validar entradas
+    if (!dateStr || !timeStr) {
+        console.error('❌ Fecha o hora vacía');
+        console.groupEnd();
+        return 0;
+    }
+
+    // 1. Convertir hora a 24h (USA LA FUNCIÓN CORREGIDA)
+    const time24h = validateAndFormatTime(timeStr);
+    console.log('🔄 Hora convertida:', { original: timeStr, formato24h: time24h });
+
+    // 2. Parsear fecha
+    const parts = parseCivilDate(dateStr);
+    if (!parts) {
+        console.error('❌ Fecha inválida:', dateStr);
+        console.groupEnd();
+        return 0;
+    }
+
+    const [year, month, day] = parts;
+    const [hours, minutes] = time24h.split(':').map(Number);
+
+    console.log('📅 Componentes:', { year, month: month - 1, day, hours, minutes });
+
+    // 3. Crear fecha en LIMA (UTC-5) y convertir a UTC
+    // IMPORTANTE: new Date con UTC crea en UTC, pero queremos Lima primero
+    const limaDate = new Date(Date.UTC(year, month - 1, day, hours, minutes, 0, 0));
+
+    // 4. RESTAR 5 horas (Lima UTC-5) para obtener UTC real
+    const limaOffset = 5 * 60 * 60 * 1000; // 5 horas en milisegundos
+    const utcTimestamp = limaDate.getTime() - limaOffset;
+
+    const fechaUTC = new Date(utcTimestamp);
+    const fechaLima = new Date(utcTimestamp + limaOffset);
+
+    console.log('📊 Resultados:', {
+        fechaLimaISO: limaDate.toISOString(),
+        fechaLimaLocal: fechaLima.toLocaleString('es-PE'),
+        utcTimestamp,
+        utcISO: fechaUTC.toISOString(),
+        utcLocal: fechaUTC.toLocaleString('es-PE'),
+        diferenciaHorasBD: (utcTimestamp - Date.now()) / (1000 * 60 * 60)
+    });
+
+    console.groupEnd();
+    return utcTimestamp;
 }
 
 export function convert12hTo24h(hour: number, minute: number, ampm: 'AM' | 'PM'): string {
