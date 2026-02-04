@@ -258,6 +258,16 @@ body {
   }
 }
 
+@keyframes shimmer-gold-diagonal {
+  0% {
+    background-position: -200% -200%;
+  }
+
+  100% {
+    background-position: 200% 200%;
+  }
+}
+
 @keyframes glow {
 
   0%,

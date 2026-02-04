@@ -225,7 +225,7 @@ export function HeroSection({ clientData }: HeroSectionProps) {
                                 {dayName}
                             </motion.span>
 
-                            {/* Day Number with Rose Shimmer */}
+                            {/* Day Number with Gold Diagonal Shimmer */}
                             <motion.div
                                 initial={{ opacity: 0, scale: 0.9 }}
                                 animate={{ opacity: 1, scale: 1 }}
@@ -235,12 +235,12 @@ export function HeroSection({ clientData }: HeroSectionProps) {
                                 <span
                                     className="font-elegant text-6xl sm:text-8xl md:text-9xl tracking-tighter text-white drop-shadow-2xl relative inline-block"
                                     style={{
-                                        background: 'linear-gradient(90deg, white 0%, white 30%, #fb7185 50%, white 70%, white 100%)',
-                                        backgroundSize: '200% 100%',
+                                        background: 'linear-gradient(135deg, white 0%, white 30%, #f59e0b 50%, white 70%, white 100%)',
+                                        backgroundSize: '200% 200%',
                                         backgroundClip: 'text',
                                         WebkitBackgroundClip: 'text',
                                         WebkitTextFillColor: 'transparent',
-                                        animation: 'shimmer-rose 4s ease-in-out infinite'
+                                        animation: 'shimmer-gold-diagonal 4s ease-in-out infinite'
                                     }}
                                 >
                                     {dayNum}
