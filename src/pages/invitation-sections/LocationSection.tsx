@@ -70,19 +70,10 @@ export function LocationSection({ clientData }: LocationSectionProps) {
         >
             <div className="section-container">
                 {/* Header */}
-                {/* Header - DEBUG: Changed title to verify deployment */}
-                <SectionTitle subtitle="Ubicación del Evento">
+                {/* Header */}
+                <SectionTitle subtitle="Ubicación">
                     Dónde &amp; Cuándo
                 </SectionTitle>
-                {/* DEBUG LOGS */}
-                <div className="hidden">
-                    {console.log('[DEBUG VERCEL] Client Data:', {
-                        wedding: clientData.weddingTime,
-                        reception: clientData.receptionTime,
-                        wRaw: clientData.wedding_time,
-                        rRaw: clientData.reception_time
-                    })}
-                </div>
 
                 {/* Cards */}
                 <div className="flex flex-wrap justify-center gap-10">
