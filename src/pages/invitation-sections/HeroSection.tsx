@@ -205,47 +205,55 @@ export function HeroSection({ clientData }: HeroSectionProps) {
                     </h1>
 
                     <motion.div
-                        initial={{ opacity: 0, scale: 0.9 }}
+                        initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: 2, duration: 1.2 }}
-                        className="inline-flex flex-col items-center mb-12 sm:mb-16"
+                        className="relative inline-flex flex-col items-center mb-10 sm:mb-14 px-12 py-8"
                     >
-                        {/* Elegant Date Container */}
-                        <div className="relative py-6 px-10 sm:px-14 border-y border-white/10 backdrop-blur-sm group">
-                            {/* Subtle Glow Background */}
-                            <div className="absolute inset-0 bg-white/[0.02] opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
+                        {/* Subtle Spotlight Background - No solid container */}
+                        <div className="absolute inset-0 bg-white/[0.03] blur-[60px] rounded-full pointer-events-none" />
+                        <div className="absolute inset-0 bg-rose-400/[0.02] blur-[40px] rounded-full pointer-events-none scale-125" />
 
-                            {/* Decorative Corner Lines */}
-                            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-12 h-px bg-gradient-to-r from-transparent via-gold to-transparent opacity-40" />
-                            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-12 h-px bg-gradient-to-r from-transparent via-gold to-transparent opacity-40" />
+                        <div className="relative z-10 flex flex-col items-center gap-1 sm:gap-2">
+                            <motion.span
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 0.7, y: 0 }}
+                                transition={{ delay: 2.2, duration: 1 }}
+                                className="text-[10px] sm:text-xs tracking-[0.5em] uppercase font-light text-rose-100 mb-1 italic"
+                            >
+                                {dayName}
+                            </motion.span>
 
-                            <div className="flex flex-col items-center gap-1 sm:gap-2">
-                                <motion.span
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 0.7, y: 0 }}
-                                    transition={{ delay: 2.2, duration: 1 }}
-                                    className="text-[10px] sm:text-xs tracking-[0.4em] uppercase font-light text-rose-100 mb-1"
-                                >
-                                    {dayName}
-                                </motion.span>
-
-                                <div className="flex items-center gap-4 sm:gap-8">
-                                    <div className="h-px w-6 sm:w-10 bg-gold/30 hidden sm:block" />
-                                    <span className="font-elegant text-5xl sm:text-7xl md:text-8xl tracking-tight text-white drop-shadow-2xl">
+                            <div className="flex items-center gap-6 sm:gap-10">
+                                <span className="font-elegant text-6xl sm:text-8xl md:text-9xl tracking-tighter text-white drop-shadow-2xl relative">
+                                    {/* Shimmer Effect Wrapper */}
+                                    <span className="relative inline-block">
                                         {dayNum}
+                                        {/* Elegant Crystal Shimmer Animation */}
+                                        <motion.span
+                                            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent skew-x-[-20deg]"
+                                            initial={{ x: '-150%' }}
+                                            animate={{ x: '150%' }}
+                                            transition={{
+                                                duration: 4,
+                                                repeat: Infinity,
+                                                repeatDelay: 3,
+                                                ease: "easeInOut"
+                                            }}
+                                            style={{ mixBlendMode: 'overlay' }}
+                                        />
                                     </span>
-                                    <div className="h-px w-6 sm:w-10 bg-gold/30 hidden sm:block" />
-                                </div>
-
-                                <motion.span
-                                    initial={{ opacity: 0, y: -10 }}
-                                    animate={{ opacity: 0.9, y: 0 }}
-                                    transition={{ delay: 2.4, duration: 1 }}
-                                    className="text-sm sm:text-base md:text-lg tracking-[0.2em] sm:tracking-[0.3em] font-light text-white/80 uppercase"
-                                >
-                                    {monthName} <span className="opacity-40 mx-2">|</span> {yearNum}
-                                </motion.span>
+                                </span>
                             </div>
+
+                            <motion.span
+                                initial={{ opacity: 0, y: -10 }}
+                                animate={{ opacity: 0.9, y: 0 }}
+                                transition={{ delay: 2.4, duration: 1 }}
+                                className="text-sm sm:text-lg md:text-xl tracking-[0.3em] font-light text-white/90 uppercase"
+                            >
+                                {monthName} <span className="opacity-30 mx-3">|</span> {yearNum}
+                            </motion.span>
                         </div>
 
                         {/* Wedding Type Badge */}
@@ -253,13 +261,13 @@ export function HeroSection({ clientData }: HeroSectionProps) {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ delay: 2.8, duration: 1 }}
-                            className="mt-6 flex items-center gap-3"
+                            className="mt-6 flex items-center gap-4 opacity-60"
                         >
-                            <div className="w-8 h-[0.5px] bg-white/20" />
-                            <span className="text-[9px] sm:text-xs tracking-[0.2em] font-medium text-rose-200 uppercase">
-                                {clientData.weddingType || 'Nuestra Boda'}
+                            <div className="w-10 h-[0.5px] bg-gradient-to-r from-transparent to-white/30" />
+                            <span className="text-[9px] sm:text-xs tracking-[0.4em] font-light text-rose-100 uppercase">
+                                {clientData.weddingType || 'Boda'}
                             </span>
-                            <div className="w-8 h-[0.5px] bg-white/20" />
+                            <div className="w-10 h-[0.5px] bg-gradient-to-l from-transparent to-white/30" />
                         </motion.div>
                     </motion.div>
 
