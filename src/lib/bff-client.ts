@@ -21,10 +21,7 @@ export function mapClientDataFromBFF(clientData: any): ClientToken {
     groomName: clientData.groom_name,
     brideName: clientData.bride_name,
     weddingLocation: clientData.wedding_location,
-    weddingTime: (() => {
-      console.log('[BFF-MAP] Raw wedding_time from API:', clientData.wedding_time);
-      return validateAndFormatTime(clientData.wedding_time);
-    })(),
+    weddingTime: validateAndFormatTime(clientData.wedding_time),
     receptionTime: validateAndFormatTime(clientData.reception_time),
     bibleVerse: clientData.bible_verse,
     bibleVerseBook: clientData.bible_verse_book,

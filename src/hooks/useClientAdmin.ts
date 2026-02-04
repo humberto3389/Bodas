@@ -318,12 +318,6 @@ export function useClientAdmin() {
 
             const weddingUTC = localToUTC(editForm.weddingDate, editForm.weddingTime);
 
-            console.log('[saveClientProfile] UTC Calc Debug:', {
-                localDate: editForm.weddingDate,
-                localTime: editForm.weddingTime,
-                computedUTC: weddingUTC
-            });
-
             console.log('[saveClientProfile] Guardando datos:', {
                 groomName: editForm.groomName,
                 brideName: editForm.brideName,
@@ -347,9 +341,6 @@ export function useClientAdmin() {
 
             // Actualizar estado local inmediatamente para feedback UI
             setClientSession(updated);
-
-            console.log('[saveClientProfile] PRE-SAVE weddingTime:', editForm.weddingTime);
-            console.log('[saveClientProfile] VALIDATED weddingTime:', validateAndFormatTime(editForm.weddingTime));
 
             // Guardar en Supabase PRIMERO para asegurar consistencia
             const { data: updatedData, error: updateError } = await supabase

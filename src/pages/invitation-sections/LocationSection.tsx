@@ -41,7 +41,6 @@ function formatTimeRobust(timeStr: string): string {
 export function LocationSection({ clientData }: LocationSectionProps) {
     // if (!['premium', 'deluxe'].includes(clientData?.planType)) return null; // Habilitado para todos los planes para corregir visualización de fecha/hora
 
-    console.log('[DEBUG-LOCATION] weddingTime:', clientData.weddingTime);
 
     const locations = [
         {
