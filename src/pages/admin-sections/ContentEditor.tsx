@@ -128,14 +128,7 @@ export function ContentEditor({
                                     className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
                                 />
                             </div>
-                            <div className="md:col-span-2">
-                                <TimePicker
-                                    label="Hora del evento"
-                                    value={editForm.weddingTime}
-                                    onChange={(val) => setEditForm({ ...editForm, weddingTime: val })}
-                                    helperText="Esta es la hora principal que se muestra en la invitación"
-                                />
-                            </div>
+                            {/* Removed redundant generic TimePicker */}
                         </div>
 
                         <div>
