@@ -4,7 +4,7 @@ import { supabase } from '../lib/supabase';
 import { authenticateClientWithToken, type ClientToken, requestUpgrade, checkAndRevertExpiredUpgrades } from '../lib/auth-system';
 import { getCurrentClientData } from '../lib/client-data';
 import { getEffectivePlan } from '../lib/plan-limits';
-import { localToUTC, validateAndFormatTime, UTCToLocal24h } from '../lib/timezone-utils';
+import { localToUTC, validateAndFormatTime, UTCToLocal24h, formatTimeForDisplay } from '../lib/timezone-utils';
 
 export function useClientAdmin() {
     const navigate = useNavigate();
