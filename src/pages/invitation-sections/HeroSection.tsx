@@ -208,13 +208,14 @@ export function HeroSection({ clientData }: HeroSectionProps) {
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: 2, duration: 1.2 }}
-                        className="relative inline-flex flex-col items-center mb-10 sm:mb-14 px-12 py-8"
+                        className="relative inline-flex flex-col items-center mb-10 sm:mb-14 px-8 sm:px-12 py-6 sm:py-8"
                     >
-                        {/* Subtle Spotlight Background - No solid container */}
-                        <div className="absolute inset-0 bg-white/[0.03] blur-[60px] rounded-full pointer-events-none" />
-                        <div className="absolute inset-0 bg-rose-400/[0.02] blur-[40px] rounded-full pointer-events-none scale-125" />
+                        {/* Warm Spotlight Background - Subtle amber/gold glow */}
+                        <div className="absolute inset-0 bg-gradient-radial from-amber-400/[0.08] via-amber-500/[0.04] to-transparent blur-[80px] rounded-full pointer-events-none scale-150" />
+                        <div className="absolute inset-0 bg-gradient-radial from-rose-400/[0.05] to-transparent blur-[60px] rounded-full pointer-events-none scale-125" />
 
-                        <div className="relative z-10 flex flex-col items-center gap-1 sm:gap-2">
+                        <div className="relative z-10 flex flex-col items-center gap-2 sm:gap-3">
+                            {/* Day Name */}
                             <motion.span
                                 initial={{ opacity: 0, y: 10 }}
                                 animate={{ opacity: 0.7, y: 0 }}
@@ -224,32 +225,33 @@ export function HeroSection({ clientData }: HeroSectionProps) {
                                 {dayName}
                             </motion.span>
 
-                            <div className="flex items-center gap-6 sm:gap-10">
-                                <span className="font-elegant text-6xl sm:text-8xl md:text-9xl tracking-tighter text-white drop-shadow-2xl relative">
-                                    {/* Shimmer Effect Wrapper */}
-                                    <span className="relative inline-block">
-                                        {dayNum}
-                                        {/* Elegant Crystal Shimmer Animation */}
-                                        <motion.span
-                                            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent skew-x-[-20deg]"
-                                            initial={{ x: '-150%' }}
-                                            animate={{ x: '150%' }}
-                                            transition={{
-                                                duration: 4,
-                                                repeat: Infinity,
-                                                repeatDelay: 3,
-                                                ease: "easeInOut"
-                                            }}
-                                            style={{ mixBlendMode: 'overlay' }}
-                                        />
-                                    </span>
+                            {/* Day Number with Rose Shimmer */}
+                            <motion.div
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                transition={{ delay: 2.4, duration: 1 }}
+                                className="relative"
+                            >
+                                <span
+                                    className="font-elegant text-6xl sm:text-8xl md:text-9xl tracking-tighter text-white drop-shadow-2xl relative inline-block"
+                                    style={{
+                                        background: 'linear-gradient(90deg, white 0%, white 30%, #fb7185 50%, white 70%, white 100%)',
+                                        backgroundSize: '200% 100%',
+                                        backgroundClip: 'text',
+                                        WebkitBackgroundClip: 'text',
+                                        WebkitTextFillColor: 'transparent',
+                                        animation: 'shimmer-rose 4s ease-in-out infinite'
+                                    }}
+                                >
+                                    {dayNum}
                                 </span>
-                            </div>
+                            </motion.div>
 
+                            {/* Month and Year */}
                             <motion.span
                                 initial={{ opacity: 0, y: -10 }}
                                 animate={{ opacity: 0.9, y: 0 }}
-                                transition={{ delay: 2.4, duration: 1 }}
+                                transition={{ delay: 2.6, duration: 1 }}
                                 className="text-sm sm:text-lg md:text-xl tracking-[0.3em] font-light text-white/90 uppercase"
                             >
                                 {monthName} <span className="opacity-30 mx-3">|</span> {yearNum}

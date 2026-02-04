@@ -248,6 +248,16 @@ body {
   }
 }
 
+@keyframes shimmer-rose {
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
+}
+
 @keyframes glow {
 
   0%,
