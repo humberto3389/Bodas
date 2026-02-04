@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { supabase } from '../lib/supabase'
 import { getCurrentClientData } from '../lib/client-data'
 import { validateClientToken, authenticateClientWithToken, type ClientToken } from '../lib/auth-system'
-import { formatTimeDisplay } from '../lib/timezone-utils'
+import { formatTimeDisplay, localToUTC, UTCToLocal24h, validateAndFormatTime } from '../lib/timezone-utils'
 import { compressImageForWeb } from '../utils/compressImage'
 
 import { ToastContainer } from '../components/Toast'
@@ -160,7 +160,9 @@ export default function Admin() {
           groomName: clientData.groom_name || currentSession.groomName,
           brideName: clientData.bride_name || currentSession.brideName,
           weddingDate: clientData.wedding_date ? (typeof clientData.wedding_date === 'string' ? clientData.wedding_date.split('T')[0] : clientData.wedding_date) : currentSession.weddingDate,
-          weddingTime: formatTimeDisplay(clientData.wedding_time || currentSession.weddingTime, false),
+          weddingTime: clientData.wedding_datetime_utc
+            ? UTCToLocal24h(clientData.wedding_datetime_utc)
+            : formatTimeDisplay(clientData.wedding_time || currentSession.weddingTime, false),
           weddingLocation: clientData.wedding_location || currentSession.weddingLocation,
           weddingType: clientData.wedding_type || currentSession.weddingType,
           religiousSymbol: clientData.religious_symbol || currentSession.religiousSymbol,
@@ -315,15 +317,18 @@ export default function Admin() {
         ? editForm.advancedAnimations
         : { enabled: false, particleEffects: false, parallaxScrolling: false, floatingElements: false }
 
+      const weddingUTC = localToUTC(editForm.weddingDate, editForm.weddingTime)
+
       // --- DB Update ---
       const { error: updateError } = await supabase
         .from('clients')
         .update({
           client_name: editForm.clientName,
-          wedding_date: editForm.weddingDate || null,
+          wedding_date: editForm.weddingDate ? `${editForm.weddingDate}T12:00:00` : null, // Fix time to noon to avoid zone shifts
+          wedding_datetime_utc: weddingUTC, // CRITICAL: Save absolute UTC time
           groom_name: editForm.groomName || null,
           bride_name: editForm.brideName || null,
-          wedding_time: editForm.weddingTime || null,
+          wedding_time: validateAndFormatTime(editForm.weddingTime) || null,
           wedding_location: editForm.weddingLocation || null,
           wedding_type: editForm.weddingType || null,
           religious_symbol: editForm.religiousSymbol || null,
