@@ -330,8 +330,6 @@ export default function Admin() {
       const weddingUTC = localToUTC(editForm.weddingDate, cleanTime);
       console.log('[saveClientProfile] Calculated weddingUTC:', weddingUTC);
 
-      // --- ALERT DEBUGGING ---
-      alert(`DEBUG GRABADO:\n\nHora Formulario: ${timeInput}\nHora Limpia: ${cleanTime}\nUTC Calculado: ${weddingUTC}\n\nSi ves "12:xx" en Hora Limpia, está bien. Si ves "00:xx", está mal.`);
 
 
 
