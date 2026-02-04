@@ -12,10 +12,7 @@
 
 body {
   @apply text-slate-900 antialiased selection:bg-rose-500/20 selection:text-rose-600;
-  background:
-    radial-gradient(circle at 0% 0%, #fff1f2 0%, transparent 50%),
-    radial-gradient(circle at 100% 100%, #fef2f2 0%, transparent 50%),
-    #FFF5F6;
+  background: #FFFFFF;
   background-attachment: scroll;
   /* Por defecto scroll para móviles */
   min-height: 100vh;

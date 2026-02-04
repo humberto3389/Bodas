@@ -116,26 +116,30 @@ export default function App({ clientData: propData }: AppProps) {
 
   return (
     <AudioProvider>
-      <div className={`relative min-h-screen selection:bg-amber-100 selection:text-amber-900 overflow-x-hidden ${hasPremiumVisuals ? 'premium-visuals-active' : ''} transition-colors duration-500`}>
-        {/* Deluxe Visual Animations - Lazy loaded */}
+      <div className={`relative min-h-screen bg-white selection:bg-amber-100 selection:text-amber-900 overflow-x-hidden ${hasPremiumVisuals ? 'premium-visuals-active' : ''} transition-colors duration-500`}>
+        {/* Deluxe Visual Animations - Properly layered behind content */}
         {planType === 'deluxe' && (
-          <Suspense fallback={null}>
-            <DeluxeEffects
-              config={client.advancedAnimations}
-              eventDate={client.weddingDate}
-            />
-          </Suspense>
+          <div className="fixed inset-0 z-[1] pointer-events-none">
+            <Suspense fallback={null}>
+              <DeluxeEffects
+                config={client.advancedAnimations}
+                eventDate={client.weddingDate}
+              />
+            </Suspense>
+          </div>
         )}
 
         {/* Partículas básicas para otros planes si se activan (fallback) - Lazy loaded */}
         {planType !== 'deluxe' && client.advancedAnimations?.enabled && (
-          <Suspense fallback={null}>
-            <FloatingParticles mobile={isMobile} />
-          </Suspense>
+          <div className="fixed inset-0 z-[1] pointer-events-none">
+            <Suspense fallback={null}>
+              <FloatingParticles mobile={isMobile} />
+            </Suspense>
+          </div>
         )}
 
         {/* Design System Overlays */}
-        <div className="bg-noise opacity-[0.03] fixed inset-0 pointer-events-none" />
+        <div className="bg-noise opacity-[0.03] fixed inset-0 pointer-events-none z-[2]" />
 
         <HeroSection clientData={client} />
 
