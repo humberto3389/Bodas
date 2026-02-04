@@ -318,6 +318,12 @@ export function useClientAdmin() {
 
             const weddingUTC = localToUTC(editForm.weddingDate, editForm.weddingTime);
 
+            console.log('[saveClientProfile] UTC Calc Debug:', {
+                localDate: editForm.weddingDate,
+                localTime: editForm.weddingTime,
+                computedUTC: weddingUTC
+            });
+
             console.log('[saveClientProfile] Guardando datos:', {
                 groomName: editForm.groomName,
                 brideName: editForm.brideName,
