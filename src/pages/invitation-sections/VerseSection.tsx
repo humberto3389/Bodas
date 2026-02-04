@@ -13,6 +13,20 @@ export function VerseSection({ clientData }: VerseSectionProps) {
         <section className="relative py-12 overflow-hidden">
             <div className="section-container relative z-10">
                 <div className="max-w-3xl mx-auto space-y-16">
+                    {/* Title */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.5 }}
+                        className="text-center"
+                    >
+                        <h2 className="text-2xl sm:text-3xl font-light text-slate-800 tracking-wide">
+                            Con Todo Nuestro Amor
+                        </h2>
+                        <div className="w-12 h-px bg-rose-600/30 mx-auto mt-4" />
+                    </motion.div>
+
                     {/* Bible Verse */}
                     {bibleVerse && (
                         <motion.div

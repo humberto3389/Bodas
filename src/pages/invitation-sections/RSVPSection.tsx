@@ -154,7 +154,7 @@ export function RSVPSection({ onSubmit }: RSVPSectionProps) {
                                 whileTap={{ scale: 0.98 }}
                                 type="submit"
                                 disabled={isSubmitting}
-                                className={`btn-luxe w-full sm:w-auto min-w-[200px] ${status === 'success' ? '!bg-emerald-600 !text-white' : status === 'error' ? '!bg-amber-600 !text-white' : ''}`}
+                                className={`btn-luxe w-full sm:w-auto min-w-[200px] ${status === 'success' ? '!bg-rose-600 !text-white' : status === 'error' ? '!bg-rose-500 !text-white' : ''}`}
                             >
                                 {isSubmitting ? 'Enviando...' :
                                     status === 'success' ? 'Confirmado' :
@@ -170,7 +170,7 @@ export function RSVPSection({ onSubmit }: RSVPSectionProps) {
                                 initial={{ opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0 }}
-                                className={`absolute inset-x-0 bottom-0 py-3 text-center text-[10px] font-bold uppercase tracking-widest ${status === 'success' ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-amber-600'}`}
+                                className={`absolute inset-x-0 bottom-0 py-3 text-center text-[10px] font-bold uppercase tracking-widest ${status === 'success' ? 'bg-rose-50 text-rose-600' : 'bg-rose-100 text-rose-700'}`}
                             >
                                 {status === 'success' ? '¡Gracias! Tu asistencia ha sido registrada.' : errorMessage}
                             </motion.div>

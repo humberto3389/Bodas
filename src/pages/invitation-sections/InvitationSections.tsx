@@ -165,7 +165,7 @@ export function VideoSection({ clientData, videos: propVideos }: { clientData: a
                         <div className="absolute -bottom-16 left-1/2 -translate-x-1/2 flex items-center gap-8">
                             <button
                                 onClick={() => setCurrentIndex((prev) => (prev - 1 + videos.length) % videos.length)}
-                                className="p-3 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-800 transition-colors"
+                                className="p-3 rounded-full hover:bg-rose-50 text-slate-400 hover:text-rose-600 transition-colors"
                             >
                                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15 19l-7-7 7-7" /></svg>
                             </button>
@@ -175,7 +175,7 @@ export function VideoSection({ clientData, videos: propVideos }: { clientData: a
                                     <button
                                         key={idx}
                                         onClick={() => setCurrentIndex(idx)}
-                                        className={`transition-all duration-500 h-1.5 rounded-full ${currentIndex === idx ? 'w-8 bg-rose-400' : 'w-1.5 bg-slate-200'}`}
+                                        className={`transition-all duration-500 h-1.5 rounded-full ${currentIndex === idx ? 'w-8 bg-rose-600' : 'w-1.5 bg-rose-100'}`}
                                     />
                                 ))}
                             </div>
@@ -196,43 +196,55 @@ export function VideoSection({ clientData, videos: propVideos }: { clientData: a
 
 export function InvitationFooter({ clientData }: { clientData: any }) {
     return (
-        <footer className="py-12 bg-transparent relative overflow-hidden">
-            <div className="max-w-7xl mx-auto px-6 relative z-10 flex flex-col items-center">
+        <footer className="py-16 bg-transparent relative overflow-hidden">
+            <div className="max-w-7xl mx-auto px-6 relative z-10">
 
-                {/* Logo Minimalista */}
+                {/* Main Content */}
+                <div className="text-center mb-16 max-w-2xl mx-auto">
+                    <motion.h2
+                        initial={{ opacity: 0, y: 15 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        className="font-elegant text-4xl sm:text-6xl text-slate-900 mb-6 tracking-tight leading-none"
+                    >
+                        {clientData.groomName} <span className="text-rose-600 text-3xl sm:text-5xl align-middle">&</span> {clientData.brideName}
+                    </motion.h2>
+                    <motion.p
+                        initial={{ opacity: 0 }}
+                        whileInView={{ opacity: 1 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.2 }}
+                        className="text-slate-500 text-sm sm:text-base tracking-wide"
+                    >
+                        Gracias por ser parte de nuestra historia
+                    </motion.p>
+                </div>
+
+                {/* Divider */}
+                <div className="w-full h-px bg-gradient-to-r from-transparent via-rose-200 to-transparent mb-12" />
+
+                {/* Footer Bottom */}
                 <motion.div
-                    className="flex flex-col items-center gap-6 mb-16"
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
                     viewport={{ once: true }}
+                    transition={{ delay: 0.3 }}
+                    className="flex flex-col sm:flex-row justify-between items-center gap-6 text-xs"
                 >
-                    <div className="w-16 h-16 rounded-full border border-rose-100 flex items-center justify-center text-rose-500">
-                        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
-                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-                        </svg>
-                    </div>
-                    <span className="font-elegant text-3xl text-slate-900 tracking-tight">
-                        Suspiro<span className="text-rose-600">Nupcial</span>
+                    <span className="text-slate-400 tracking-wide">
+                        © 2026 · Todos los derechos reservados
                     </span>
-                </motion.div>
 
-                <div className="text-center mb-20 max-w-2xl">
-                    <h2 className="font-elegant text-5xl sm:text-7xl text-slate-900 mb-8 tracking-tighter leading-none">
-                        {clientData.groomName} <span className="text-rose-600 text-4xl align-middle">&</span> {clientData.brideName}
-                    </h2>
-                    <p className="font-light text-slate-500 text-lg tracking-wide leading-relaxed">
-                        Gracias por ser parte de nuestra historia.
-                    </p>
-                </div>
-
-                <div className="w-full border-t border-slate-200 pt-12 flex flex-col sm:flex-row justify-between items-center gap-8 text-xs font-bold tracking-[0.2em] uppercase text-slate-400">
-                    <span>© 2026 Reservado</span>
-
-                    <div className="flex items-center gap-2">
-                        <span>Desarrollado por</span>
-                        <span className="text-slate-800">Horizon Studio</span>
+                    <div className="flex items-center gap-3">
+                        <span className="text-slate-400">Creado con</span>
+                        <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-rose-50 to-amber-50 border border-rose-100">
+                            <svg className="w-4 h-4 text-rose-600" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                            </svg>
+                            <span className="font-semibold text-slate-800 tracking-wide">Horizon Studio</span>
+                        </div>
                     </div>
-                </div>
+                </motion.div>
             </div>
         </footer>
     );
