@@ -40,7 +40,16 @@ export const TimePicker: React.FC<TimePickerProps> = ({ value, onChange, label, 
     }, []);
 
     const handleUpdate = (newH: number, newM: number, newP: 'AM' | 'PM') => {
-        const time24 = convert12hTo24h(newH, newM, newP);
+        // Force inline logic to guarantee 12 PM behavior
+        let h24 = newH;
+        if (newH === 12) {
+            h24 = (newP === 'PM') ? 12 : 0;
+        } else {
+            if (newP === 'PM') h24 += 12;
+        }
+        const time24 = `${String(h24).padStart(2, '0')}:${String(newM).padStart(2, '0')}`;
+
+        console.log(`[TimePicker] Update: ${newH}:${newM} ${newP} -> ${time24}`);
         onChange(time24);
     };
 
@@ -185,6 +194,7 @@ export const TimePicker: React.FC<TimePickerProps> = ({ value, onChange, label, 
             </div>
 
             {helperText && <p className="text-[10px] text-slate-400 italic pl-2">{helperText}</p>}
+            <p className="text-[8px] text-slate-300 pl-2 font-mono">Valor BD: {value}</p>
         </div>
     );
 };
