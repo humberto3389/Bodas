@@ -4,7 +4,7 @@ import { supabase } from '../lib/supabase';
 import { authenticateClientWithToken, type ClientToken, requestUpgrade, checkAndRevertExpiredUpgrades } from '../lib/auth-system';
 import { getCurrentClientData } from '../lib/client-data';
 import { getEffectivePlan } from '../lib/plan-limits';
-import { localToUTC, validateAndFormatTime, UTCToLocal } from '../lib/timezone-utils';
+import { localToUTC, validateAndFormatTime, UTCToLocal24h } from '../lib/timezone-utils';
 
 export function useClientAdmin() {
     const navigate = useNavigate();
@@ -184,7 +184,7 @@ export function useClientAdmin() {
                     // FIX: Usar wedding_datetime_utc como VERDAD ABSOLUTA si existe.
                     // Esto corrige el problema de "00:30" vs "12:30" ignorando el texto corrupto wedding_time.
                     weddingTime: clientData.wedding_datetime_utc
-                        ? UTCToLocal(clientData.wedding_datetime_utc)
+                        ? UTCToLocal24h(clientData.wedding_datetime_utc)
                         : (clientData.wedding_time ?? clientSession.weddingTime),
                     weddingLocation: clientData.wedding_location ?? clientSession.weddingLocation,
                     weddingType: clientData.wedding_type ?? clientSession.weddingType,

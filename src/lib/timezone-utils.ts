@@ -38,6 +38,16 @@ export function UTCToLocal(utcTime: string | Date, _timezone: string = DEFAULT_T
     if (displayH === 0) displayH = 12;
 
     return `${displayH}:${String(m).padStart(2, '0')} ${ampm}`;
+    return `${displayH}:${String(m).padStart(2, '0')} ${ampm}`;
+}
+
+export function UTCToLocal24h(utcTime: string | Date, _timezone: string = DEFAULT_TIMEZONE): string {
+    if (!utcTime) return '12:00';
+    const date = typeof utcTime === 'string' ? new Date(utcTime) : utcTime;
+    const limaDate = new Date(date.getTime() - (5 * 60 * 60 * 1000));
+    const h = limaDate.getUTCHours();
+    const m = limaDate.getUTCMinutes();
+    return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
 }
 
 export function validateAndFormatTime(timeInput: string): string {

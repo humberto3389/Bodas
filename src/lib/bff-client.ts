@@ -1,5 +1,5 @@
 import type { ClientToken } from './auth-system';
-import { validateAndFormatTime, UTCToLocal } from './timezone-utils';
+import { validateAndFormatTime, UTCToLocal24h } from './timezone-utils';
 
 /**
  * Mapea los datos del cliente desde el formato del BFF al formato ClientToken
@@ -22,8 +22,9 @@ export function mapClientDataFromBFF(clientData: any): ClientToken {
     brideName: clientData.bride_name,
     weddingLocation: clientData.wedding_location,
     // FIX: Usar wedding_datetime_utc como verdad absoluta si existe, igual que en el Admin.
+    // FIX: Usar wedding_datetime_utc como verdad absoluta si existe, igual que en el Admin.
     weddingTime: clientData.wedding_datetime_utc
-      ? UTCToLocal(clientData.wedding_datetime_utc)
+      ? UTCToLocal24h(clientData.wedding_datetime_utc)
       : validateAndFormatTime(clientData.wedding_time),
     receptionTime: validateAndFormatTime(clientData.reception_time),
     bibleVerse: clientData.bible_verse,
