@@ -66,7 +66,7 @@ export function LocationSection({ clientData }: LocationSectionProps) {
     return (
         <section
             id="ubicacion"
-            className="relative py-12 bg-transparent overflow-hidden"
+            className="relative py-8 bg-transparent overflow-hidden"
         >
             <div className="section-container">
                 {/* Header */}

@@ -92,7 +92,7 @@ export function VideoSection({ clientData, videos: propVideos }: { clientData: a
     if (videos.length === 0 || clientData.planType !== 'deluxe') return null;
 
     return (
-        <section ref={ref} id="videos" className="py-20 relative overflow-hidden bg-transparent">
+        <section ref={ref} id="videos" className="py-10 relative overflow-hidden bg-transparent">
             <div className="section-container">
                 <SectionTitle subtitle="Cinema">
                     Nuestra Historia
@@ -196,7 +196,7 @@ export function VideoSection({ clientData, videos: propVideos }: { clientData: a
 
 export function InvitationFooter({ clientData }: { clientData: any }) {
     return (
-        <footer className="py-24 bg-transparent relative overflow-hidden">
+        <footer className="py-12 bg-transparent relative overflow-hidden">
             <div className="max-w-7xl mx-auto px-6 relative z-10 flex flex-col items-center">
 
                 {/* Logo Minimalista */}

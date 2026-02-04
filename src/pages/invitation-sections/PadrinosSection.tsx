@@ -24,7 +24,7 @@ export function PadrinosSection({ clientId, padrinos: propPadrinos }: PadrinosSe
     if (activePadrinos.length === 0) return null;
 
     return (
-        <section id="padrinos" className="py-24 relative overflow-hidden">
+        <section id="padrinos" className="py-12 relative overflow-hidden">
             {/* Fondo sutil diferenciador */}
             <div className="absolute inset-0 bg-stone-50/50" />
 

@@ -10,7 +10,7 @@ export function VerseSection({ clientData }: VerseSectionProps) {
     if (!bibleVerse && !invitationText) return null;
 
     return (
-        <section className="relative py-12 overflow-hidden">
+        <section className="relative py-8 overflow-hidden">
             {/* Halos decorativos sutiles */}
             <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-rose-50/30 rounded-full blur-[100px] pointer-events-none" />
 

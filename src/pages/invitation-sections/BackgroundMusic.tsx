@@ -17,7 +17,7 @@ export function BackgroundMusic({ src, shouldPlay = true }: { src: string; shoul
         audio.src = src;
         audio.loop = true;
         audio.volume = 0.4;
-        audio.preload = 'metadata'; // Optimización: no cargar el audio completo inicialmente
+        audio.preload = 'auto'; // Load entire audio file to prevent buffering
         audioRef.current = audio;
 
         const handlePlay = () => setIsPlaying(true);
