@@ -75,7 +75,7 @@ export function GuestbookSection({ messages, onSendMessage }: GuestbookSectionPr
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
                             disabled={isSending || !name.trim() || !message.trim()}
-                            className="btn-luxe w-full sm:w-auto min-w-[200px] disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="px-8 py-3 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all duration-300 border bg-rose-600 text-white border-rose-600 shadow-md hover:bg-rose-700 hover:border-rose-700 w-full sm:w-auto min-w-[200px] disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             {isSending ? 'Guardando...' : 'Dejar Mensaje'}
                         </motion.button>

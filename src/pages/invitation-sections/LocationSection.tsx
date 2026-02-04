@@ -88,13 +88,13 @@ export function LocationSection({ clientData }: LocationSectionProps) {
                             <div className="
                                 relative h-full
                                 rounded-[2.5rem]
-                                bg-white/70 backdrop-blur-md
+                                bg-white backdrop-blur-md
                                 border border-white/80
-                                shadow-[0_15px_45px_-15px_rgba(30,27,75,0.15)]
-                                px-10 py-12
-                                text-center
-                                transition-all duration-500
-                                hover:shadow-[0_25px_60px_-10px_rgba(30,27,75,0.25)]
+                            shadow-[0_15px_45px_-15px_rgba(30,27,75,0.15)]
+                            px-10 py-12
+                            text-center
+                            transition-all duration-500
+                            hover:shadow-[0_25px_60px_-10px_rgba(30,27,75,0.25)]
                             ">
                                 {/* Icon */}
                                 <div className="mb-8 flex justify-center">
@@ -169,7 +169,7 @@ export function LocationSection({ clientData }: LocationSectionProps) {
                                             );
                                         }
                                     }}
-                                    className="btn-luxe w-full"
+                                    className="px-8 py-3 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all duration-300 border bg-rose-600 text-white border-rose-600 shadow-md hover:bg-rose-700 hover:border-rose-700 w-full"
                                 >
                                     Ver Mapa
                                 </motion.button>

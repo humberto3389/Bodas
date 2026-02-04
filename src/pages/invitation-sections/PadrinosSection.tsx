@@ -58,7 +58,7 @@ export function PadrinosSection({ clientId, padrinos: propPadrinos }: PadrinosSe
                             transition={{ delay: index * 0.15, duration: 0.7 }}
                             className="group"
                         >
-                            <div className="relative bg-white/70 backdrop-blur-md p-10 flex flex-col items-center text-center h-full shadow-[0_15px_45px_-15px_rgba(30,27,75,0.15)] hover:shadow-[0_25px_60px_-10px_rgba(30,27,75,0.25)] transition-all duration-500 rounded-[2.5rem] border border-white/80">
+                            <div className="relative bg-white backdrop-blur-md p-10 flex flex-col items-center text-center h-full shadow-[0_15px_45px_-15px_rgba(30,27,75,0.15)] hover:shadow-[0_25px_60px_-10px_rgba(30,27,75,0.25)] transition-all duration-500 rounded-[2.5rem] border border-white/80">
 
                                 {/* Photo Frame */}
                                 <div className="relative mb-8">

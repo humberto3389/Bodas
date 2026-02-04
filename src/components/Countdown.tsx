@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { SectionTitle } from '../pages/invitation-sections/SectionTitle';
 import { getEventTimestampUTC } from '../lib/timezone-utils';
 
 interface CountdownProps {
@@ -63,20 +64,9 @@ export function Countdown({ date, time }: CountdownProps) {
                 <div className="w-[420px] h-[420px] bg-rose-100/30 blur-[120px] rounded-full" />
             </div>
 
-            <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                className="text-center mb-20"
-            >
-                <h2 className="text-4xl sm:text-6xl font-elegant font-semibold text-slate-800 tracking-tight">
-                    La Espera
-                </h2>
-
-                <p className="mt-4 text-xs tracking-[0.45em] uppercase text-slate-800/50 font-black">
-                    Cada segundo nos acerca más
-                </p>
-            </motion.div>
+            <SectionTitle subtitle="La Espera">
+                Falta Poco
+            </SectionTitle>
 
             <div className="flex flex-wrap justify-center gap-6 sm:gap-10">
                 {items.map((it, index) => (
@@ -91,7 +81,7 @@ export function Countdown({ date, time }: CountdownProps) {
                         <div className="
                 relative w-28 sm:w-36 h-28 sm:h-36
                 rounded-[2.5rem]
-                bg-white/70 backdrop-blur-xl
+                bg-white backdrop-blur-xl
                 border border-white/80
                 shadow-[0_15px_45px_-15px_rgba(30,27,75,0.15)]
                 flex flex-col items-center justify-center
