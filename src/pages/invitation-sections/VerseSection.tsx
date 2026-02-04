@@ -10,39 +10,33 @@ export function VerseSection({ clientData }: VerseSectionProps) {
     if (!bibleVerse && !invitationText) return null;
 
     return (
-        <section className="relative py-16 overflow-hidden">
+        <section className="relative py-12 overflow-hidden">
             <div className="section-container relative z-10">
-                <div className="max-w-4xl mx-auto">
+                <div className="max-w-3xl mx-auto space-y-16">
                     {/* Bible Verse */}
                     {bibleVerse && (
                         <motion.div
-                            initial={{ opacity: 0, y: 20 }}
+                            initial={{ opacity: 0, y: 15 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
-                            transition={{ duration: 0.8 }}
-                            className="mb-20"
+                            transition={{ duration: 0.6 }}
+                            className="text-center space-y-6"
                         >
                             {religiousSymbol && (
-                                <div className="text-3xl mb-6 text-rose-500/60 text-center">
+                                <div className="text-2xl text-amber-500/70">
                                     {religiousSymbol}
                                 </div>
                             )}
 
-                            <blockquote className="relative">
-                                {/* Opening quote */}
-                                <span className="absolute -left-4 -top-2 text-6xl text-rose-500/20 font-serif leading-none">"</span>
-
-                                <p className="font-elegant text-2xl sm:text-3xl md:text-4xl text-slate-800 leading-relaxed text-center italic px-8">
+                            <div className="relative inline-block">
+                                <p className="text-lg sm:text-xl leading-relaxed text-slate-600 font-light max-w-2xl mx-auto px-4">
                                     {bibleVerse}
                                 </p>
-
-                                {/* Closing quote */}
-                                <span className="absolute -right-4 -bottom-6 text-6xl text-rose-500/20 font-serif leading-none">"</span>
-                            </blockquote>
+                            </div>
 
                             {bibleVerseBook && (
-                                <p className="text-xs tracking-[0.3em] text-slate-400 uppercase font-semibold text-center mt-8">
-                                    — {bibleVerseBook}
+                                <p className="text-[10px] tracking-[0.25em] text-amber-600/80 uppercase font-semibold">
+                                    {bibleVerseBook}
                                 </p>
                             )}
                         </motion.div>
@@ -51,13 +45,13 @@ export function VerseSection({ clientData }: VerseSectionProps) {
                     {/* Invitation Text */}
                     {invitationText && (
                         <motion.div
-                            initial={{ opacity: 0, y: 20 }}
+                            initial={{ opacity: 0, y: 15 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
-                            transition={{ duration: 0.8, delay: bibleVerse ? 0.2 : 0 }}
+                            transition={{ duration: 0.6, delay: bibleVerse ? 0.15 : 0 }}
                             className="text-center"
                         >
-                            <p className="font-elegant text-xl sm:text-2xl md:text-3xl text-slate-700 leading-relaxed max-w-3xl mx-auto whitespace-pre-wrap">
+                            <p className="text-base sm:text-lg leading-loose text-slate-700 font-normal max-w-2xl mx-auto whitespace-pre-wrap px-4">
                                 {invitationText}
                             </p>
                         </motion.div>

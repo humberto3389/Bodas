@@ -8,53 +8,40 @@ interface LoadingSpinnerProps {
 
 export function LoadingSpinner({ size = 'md', text, className = '' }: LoadingSpinnerProps) {
   const sizeClasses = {
-    sm: 'w-12 h-12',
-    md: 'w-20 h-20',
-    lg: 'w-28 h-28'
+    sm: 'w-16 h-16',
+    md: 'w-24 h-24',
+    lg: 'w-32 h-32'
   }
 
   return (
-    <div className={`flex flex-col items-center justify-center gap-8 ${className}`}>
+    <div className={`flex flex-col items-center justify-center gap-6 ${className}`}>
       <div className={`relative ${sizeClasses[size]}`}>
-        {/* Outer glow ring */}
+        {/* Warm outer halo */}
         <motion.div
-          className="absolute inset-0 rounded-full bg-gradient-to-tr from-rose-400/20 to-amber-400/20 blur-xl"
-          animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0.2, 0.5] }}
-          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-        />
-
-        {/* Rotating outer ring */}
-        <motion.div
-          className="absolute inset-0 rounded-full border-2 border-transparent bg-gradient-to-tr from-rose-500 via-rose-400 to-amber-500 bg-clip-border"
-          style={{
-            maskImage: 'linear-gradient(to bottom, transparent 0%, black 25%, black 75%, transparent 100%)',
-            WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 25%, black 75%, transparent 100%)'
-          }}
-          animate={{ rotate: 360 }}
-          transition={{ duration: 1.5, repeat: Infinity, ease: 'linear' }}
-        />
-
-        {/* Counter-rotating inner ring */}
-        <motion.div
-          className="absolute inset-3 rounded-full border-2 border-transparent bg-gradient-to-bl from-amber-400 via-rose-400 to-rose-500 bg-clip-border"
-          style={{
-            maskImage: 'linear-gradient(to top, transparent 0%, black 25%, black 75%, transparent 100%)',
-            WebkitMaskImage: 'linear-gradient(to top, transparent 0%, black 25%, black 75%, transparent 100%)'
-          }}
-          animate={{ rotate: -360 }}
-          transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
-        />
-
-        {/* Center pulsing dot */}
-        <motion.div
-          className="absolute inset-[38%] rounded-full bg-gradient-to-br from-rose-500 to-amber-500 shadow-lg"
+          className="absolute inset-0 rounded-full bg-gradient-to-tr from-amber-300/30 via-rose-300/20 to-amber-200/30 blur-2xl"
           animate={{
-            scale: [1, 1.3, 1],
-            boxShadow: [
-              '0 0 20px rgba(244, 63, 94, 0.5)',
-              '0 0 40px rgba(245, 158, 11, 0.8)',
-              '0 0 20px rgba(244, 63, 94, 0.5)'
-            ]
+            scale: [1, 1.4, 1],
+            opacity: [0.4, 0.6, 0.4]
+          }}
+          transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+        />
+
+        {/* Inner rose halo */}
+        <motion.div
+          className="absolute inset-2 rounded-full bg-gradient-to-br from-rose-400/20 to-amber-400/20 blur-xl"
+          animate={{
+            scale: [1, 1.2, 1],
+            opacity: [0.5, 0.3, 0.5]
+          }}
+          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+        />
+
+        {/* Minimalist center dot */}
+        <motion.div
+          className="absolute inset-[42%] rounded-full bg-gradient-to-br from-rose-400 to-amber-400"
+          animate={{
+            scale: [1, 1.1, 1],
+            opacity: [0.8, 1, 0.8]
           }}
           transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
         />
@@ -64,7 +51,7 @@ export function LoadingSpinner({ size = 'md', text, className = '' }: LoadingSpi
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="text-sm font-elegant tracking-[0.3em] text-slate-600 font-medium"
+          className="text-xs tracking-[0.4em] text-slate-500 uppercase font-medium"
         >
           {text}
         </motion.p>

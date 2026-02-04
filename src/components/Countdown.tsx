@@ -58,7 +58,7 @@ export function Countdown({ date, time }: CountdownProps) {
     ]
 
     return (
-        <div className="relative max-w-5xl mx-auto px-6 py-24">
+        <div className="relative max-w-5xl mx-auto px-6 py-12">
             <div className="absolute inset-0 -z-10 flex justify-center">
                 <div className="w-[420px] h-[420px] bg-rose-100/30 blur-[120px] rounded-full" />
             </div>
