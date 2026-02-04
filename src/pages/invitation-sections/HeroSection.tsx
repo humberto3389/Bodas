@@ -35,7 +35,12 @@ export function HeroSection({ clientData }: HeroSectionProps) {
 
     const showVideo = planType === 'deluxe' && heroVideo && heroDisplayMode === 'video';
     const dateObj = clientData?.weddingDate ? getLocalDate(clientData.weddingDate) : new Date(2026, 0, 24);
-    const dateStr = dateObj.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+
+    // Formatting parts for a more modular and elegant design
+    const dayName = dateObj.toLocaleDateString('es-ES', { weekday: 'long' });
+    const dayNum = dateObj.toLocaleDateString('es-ES', { day: 'numeric' });
+    const monthName = dateObj.toLocaleDateString('es-ES', { month: 'long' });
+    const yearNum = dateObj.getFullYear();
 
     // Audio Coordination
     const ref = useRef(null);
@@ -200,17 +205,62 @@ export function HeroSection({ clientData }: HeroSectionProps) {
                     </h1>
 
                     <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 2, duration: 1 }}
-                        className="flex flex-col items-center gap-4 sm:gap-6 mb-10 sm:mb-14"
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 2, duration: 1.2 }}
+                        className="inline-flex flex-col items-center mb-12 sm:mb-16"
                     >
-                        <div className="h-px w-16 sm:w-24 bg-gradient-to-r from-transparent via-gold to-transparent opacity-60" />
-                        <div className="space-y-1 sm:space-y-2 px-2">
-                            <p className="text-[10px] sm:text-xs md:text-sm tracking-wider sm:tracking-widest font-light text-rose-100 uppercase italic">{clientData.weddingType || 'Boda'}</p>
-                            <p className="text-lg sm:text-xl md:text-2xl font-elegant tracking-[0.1em] sm:tracking-[0.2em] text-white/90 break-words">{dateStr}</p>
+                        {/* Elegant Date Container */}
+                        <div className="relative py-6 px-10 sm:px-14 border-y border-white/10 backdrop-blur-sm group">
+                            {/* Subtle Glow Background */}
+                            <div className="absolute inset-0 bg-white/[0.02] opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
+
+                            {/* Decorative Corner Lines */}
+                            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-12 h-px bg-gradient-to-r from-transparent via-gold to-transparent opacity-40" />
+                            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-12 h-px bg-gradient-to-r from-transparent via-gold to-transparent opacity-40" />
+
+                            <div className="flex flex-col items-center gap-1 sm:gap-2">
+                                <motion.span
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 0.7, y: 0 }}
+                                    transition={{ delay: 2.2, duration: 1 }}
+                                    className="text-[10px] sm:text-xs tracking-[0.4em] uppercase font-light text-rose-100 mb-1"
+                                >
+                                    {dayName}
+                                </motion.span>
+
+                                <div className="flex items-center gap-4 sm:gap-8">
+                                    <div className="h-px w-6 sm:w-10 bg-gold/30 hidden sm:block" />
+                                    <span className="font-elegant text-5xl sm:text-7xl md:text-8xl tracking-tight text-white drop-shadow-2xl">
+                                        {dayNum}
+                                    </span>
+                                    <div className="h-px w-6 sm:w-10 bg-gold/30 hidden sm:block" />
+                                </div>
+
+                                <motion.span
+                                    initial={{ opacity: 0, y: -10 }}
+                                    animate={{ opacity: 0.9, y: 0 }}
+                                    transition={{ delay: 2.4, duration: 1 }}
+                                    className="text-sm sm:text-base md:text-lg tracking-[0.2em] sm:tracking-[0.3em] font-light text-white/80 uppercase"
+                                >
+                                    {monthName} <span className="opacity-40 mx-2">|</span> {yearNum}
+                                </motion.span>
+                            </div>
                         </div>
-                        <div className="h-px w-16 sm:w-24 bg-gradient-to-r from-transparent via-gold to-transparent opacity-60" />
+
+                        {/* Wedding Type Badge */}
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 2.8, duration: 1 }}
+                            className="mt-6 flex items-center gap-3"
+                        >
+                            <div className="w-8 h-[0.5px] bg-white/20" />
+                            <span className="text-[9px] sm:text-xs tracking-[0.2em] font-medium text-rose-200 uppercase">
+                                {clientData.weddingType || 'Nuestra Boda'}
+                            </span>
+                            <div className="w-8 h-[0.5px] bg-white/20" />
+                        </motion.div>
                     </motion.div>
 
                     <motion.div
