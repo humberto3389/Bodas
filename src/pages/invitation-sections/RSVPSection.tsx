@@ -154,7 +154,7 @@ export function RSVPSection({ onSubmit }: RSVPSectionProps) {
                                 whileTap={{ scale: 0.98 }}
                                 type="submit"
                                 disabled={isSubmitting}
-                                className={`btn-luxe w-full sm:w-auto min-w-[200px] ${status === 'success' ? '!bg-rose-600 !text-white' : status === 'error' ? '!bg-rose-500 !text-white' : ''}`}
+                                className={`w-full sm:w-auto min-w-[200px] px-8 py-3 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all duration-300 border shadow-md text-white ${status === 'success' ? 'bg-rose-600 border-rose-600' : status === 'error' ? 'bg-rose-500 border-rose-500' : 'bg-rose-600 border-rose-600 hover:bg-rose-700 hover:border-rose-700'}`}
                             >
                                 {isSubmitting ? 'Enviando...' :
                                     status === 'success' ? 'Confirmado' :

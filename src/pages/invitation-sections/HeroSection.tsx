@@ -283,7 +283,7 @@ export function HeroSection({ clientData }: HeroSectionProps) {
                             whileHover={{ scale: 1.05, boxShadow: "0 0 25px rgba(251, 113, 133, 0.4)" }}
                             whileTap={{ scale: 0.95 }}
                             href="#rsvp"
-                            className="w-full sm:w-auto px-8 sm:px-10 py-3 sm:py-4 rounded-full bg-gradient-to-r from-rose-400 to-amber-500 text-white font-bold text-[10px] sm:text-xs tracking-wide sm:tracking-widest uppercase shadow-xl transition-all border border-rose-400/20"
+                            className="w-full sm:w-auto px-8 sm:px-10 py-3 sm:py-4 rounded-full bg-rose-600 border border-rose-500 text-white font-bold text-[10px] sm:text-xs tracking-wide sm:tracking-widest uppercase shadow-xl transition-all hover:bg-rose-700"
                         >
                             Confirmar Asistencia
                         </motion.a>
