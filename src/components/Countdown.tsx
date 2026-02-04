@@ -69,8 +69,6 @@ export function Countdown({ date, time }: CountdownProps) {
                 viewport={{ once: true }}
                 className="text-center mb-20"
             >
-                <div className="w-px h-20 bg-gradient-to-b from-transparent via-rose-300 to-transparent mx-auto mb-8" />
-
                 <h2 className="text-4xl sm:text-6xl font-elegant font-semibold text-slate-800 tracking-tight">
                     La Espera
                 </h2>

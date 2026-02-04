@@ -25,8 +25,6 @@ export function PadrinosSection({ clientId, padrinos: propPadrinos }: PadrinosSe
 
     return (
         <section id="padrinos" className="py-12 relative overflow-hidden">
-            {/* Fondo sutil diferenciador */}
-            <div className="absolute inset-0 bg-stone-50/50" />
 
             <div className="section-container relative z-10">
                 {/* Section Header */}
