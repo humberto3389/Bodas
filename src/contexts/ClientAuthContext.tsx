@@ -1,7 +1,6 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import type { ReactNode } from 'react';
 import { type ClientToken, validateClientToken, getClientBySubdomain } from '../lib/auth-system';
-import { validateAndFormatTime } from '../lib/timezone-utils';
 import { supabase } from '../lib/supabase';
 
 interface ClientAuthContextType {
@@ -78,7 +77,7 @@ export function ClientAuthProvider({ children }: ClientAuthProviderProps) {
                   })()
                   : merged.weddingDate,
 
-                weddingTime: supabaseData.wedding_time ? validateAndFormatTime(supabaseData.wedding_time) : merged.weddingTime,
+                weddingTime: supabaseData.wedding_time || merged.weddingTime,
                 weddingLocation: supabaseData.wedding_location || merged.weddingLocation,
                 bibleVerse: supabaseData.bible_verse || merged.bibleVerse,
                 bibleVerseBook: supabaseData.bible_verse_book || merged.bibleVerseBook,
@@ -110,7 +109,6 @@ export function ClientAuthProvider({ children }: ClientAuthProviderProps) {
                 receptionMapUrl: supabaseData.reception_map_url || merged.receptionMapUrl,
                 receptionReference: supabaseData.reception_reference || merged.receptionReference,
                 isReceptionSameAsCeremony: supabaseData.is_reception_same_as_ceremony ?? merged.isReceptionSameAsCeremony,
-                receptionTime: supabaseData.reception_time ? validateAndFormatTime(supabaseData.reception_time) : merged.receptionTime,
 
                 churchName: supabaseData.church_name || merged.churchName,
                 mapCoordinates: supabaseData.map_coordinates || merged.mapCoordinates,

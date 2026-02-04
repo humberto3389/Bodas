@@ -185,7 +185,7 @@ export function useClientAdmin() {
                     // Esto corrige el problema de "00:30" vs "12:30" ignorando el texto corrupto wedding_time.
                     weddingTime: clientData.wedding_datetime_utc
                         ? UTCToLocal24h(clientData.wedding_datetime_utc)
-                        : (clientData.wedding_time ? validateAndFormatTime(clientData.wedding_time) : clientSession.weddingTime),
+                        : (clientData.wedding_time ?? clientSession.weddingTime),
                     weddingLocation: clientData.wedding_location ?? clientSession.weddingLocation,
                     weddingType: clientData.wedding_type ?? clientSession.weddingType,
                     religiousSymbol: clientData.religious_symbol ?? clientSession.religiousSymbol,
@@ -210,7 +210,7 @@ export function useClientAdmin() {
                     churchName: clientData.church_name || clientSession.churchName,
                     ceremonyLocationName: clientData.ceremony_location_name || clientSession.ceremonyLocationName,
                     receptionLocationName: clientData.reception_location_name || clientSession.receptionLocationName,
-                    receptionTime: clientData.reception_time ? validateAndFormatTime(clientData.reception_time) : clientSession.receptionTime,
+                    receptionTime: clientData.reception_time || clientSession.receptionTime,
 
                 };
 
@@ -245,8 +245,8 @@ export function useClientAdmin() {
                         groomName: clientData.groom_name || '',
                         brideName: clientData.bride_name || '',
                         weddingDate: clientData.wedding_date ? String(clientData.wedding_date).split('T')[0] : '',
-                        weddingTime: clientData.wedding_time ? validateAndFormatTime(clientData.wedding_time) : '',
-                        receptionTime: clientData.reception_time ? validateAndFormatTime(clientData.reception_time) : '',
+                        weddingTime: clientData.wedding_time || '',
+                        receptionTime: clientData.reception_time || '',
                         weddingLocation: clientData.wedding_location || '',
                         weddingType: clientData.wedding_type || '',
                         religiousSymbol: clientData.religious_symbol || '',
