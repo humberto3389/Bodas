@@ -248,7 +248,7 @@ export default function Admin() {
   // Load Files Helper
   const listClientFiles = async (bucket: 'gallery' | 'audio' | 'videos'): Promise<MediaFile[]> => {
     if (!clientId) return []
-    let folder = bucket === 'gallery' ? 'hero' : bucket === 'audio' ? 'audio' : 'video'
+    const folder = bucket === 'gallery' ? 'hero' : bucket === 'audio' ? 'audio' : 'video'
     const { data } = await supabase.storage.from(bucket).list(`${clientId}/${folder}`, { limit: 200, sortBy: { column: 'created_at', order: 'desc' } })
 
     const files: MediaFile[] = (data || []).filter(f => !f.name.startsWith('.') && f.id).map(f => ({
@@ -403,7 +403,7 @@ export default function Admin() {
         fileToUpload = await compressImageForWeb(file);
       }
 
-      let folder = bucket === 'gallery' ? 'hero' : bucket === 'audio' ? 'audio' : 'video'
+      const folder = bucket === 'gallery' ? 'hero' : bucket === 'audio' ? 'audio' : 'video'
       const path = `${clientId}/${folder}/${fileToUpload.name}`
       const blob = new Blob([fileToUpload], { type: fileToUpload.type })
 
@@ -447,7 +447,7 @@ export default function Admin() {
 
     // So `fileName` is just the name (e.g. "photo.jpg").
 
-    let folder = bucket === 'gallery' ? 'hero' : bucket === 'audio' ? 'audio' : 'video'
+    const folder = bucket === 'gallery' ? 'hero' : bucket === 'audio' ? 'audio' : 'video'
     // But wait, listClientFiles prepends clientId/folder/ to the path in the state object.
     // If the UI passes back `file.name` from the state object, it will be the filename.
 

@@ -15,7 +15,7 @@ function getLocalDate(dateInput: string | Date | undefined): Date {
         // Esto evita el desfase de zona horaria que ocurre con .toISOString()
         return new Date(dateInput.getFullYear(), dateInput.getMonth(), dateInput.getDate());
     }
-    let rawDate = typeof dateInput === 'string' ? (dateInput.includes('T') ? dateInput.split('T')[0] : dateInput) : '';
+    const rawDate = typeof dateInput === 'string' ? (dateInput.includes('T') ? dateInput.split('T')[0] : dateInput) : '';
     if (!rawDate) return new Date();
     const [y, m, d] = rawDate.split('-').map(Number);
     return new Date(y, m - 1, d);

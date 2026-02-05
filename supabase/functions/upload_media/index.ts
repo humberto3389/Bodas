@@ -103,7 +103,7 @@ Deno.serve(async (req: Request) => {
 
         if (limit !== Infinity) {
           // Contar archivos actuales
-          let folder = bucket === 'gallery' ? 'hero' : 'video'
+          const folder = bucket === 'gallery' ? 'hero' : 'video'
           const listPath = `${clientId}/${folder}`
           
           const { data: files, error: listError } = await supabase.storage

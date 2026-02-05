@@ -22,8 +22,8 @@ interface CachedData {
   _cachedAt: string;
 }
 
-let cachedData: Record<string, CachedData> = {};
-let cacheExpiry: Record<string, number> = {};
+const cachedData: Record<string, CachedData> = {};
+const cacheExpiry: Record<string, number> = {};
 const CACHE_TTL_MS = 15 * 1000; // 15 SEGUNDOS de vida de caché (antes 5 min)
 
 // --- FUNCIÓN PARA OBTENER CLIENTE DE SUPABASE ---

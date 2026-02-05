@@ -11,7 +11,7 @@ function formatTimeRobust(timeStr: string): string {
     if (!timeStr) return '';
 
     // 1. Limpieza básica
-    let clean = timeStr.trim();
+    const clean = timeStr.trim();
 
     // 2. Detectar si viene con AM/PM explícito (dirty data)
     const hasPM = /PM/i.test(clean);
