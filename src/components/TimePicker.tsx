@@ -187,7 +187,7 @@ export const TimePicker: React.FC<TimePickerProps> = ({ value, onChange, label, 
                 {/* Preview Badge */}
                 <div className="sm:ml-auto flex items-center gap-2 bg-rose-50/50 px-3 py-1.5 rounded-lg border border-rose-100 mt-2 sm:mt-0 w-full sm:w-auto justify-center sm:justify-start">
                     <div className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse"></div>
-                    <span className="text-[10px] font-bold text-rose-700 uppercase tracking-wider">
+                    <span className="text-[10px] font-bold text-rose-700 tracking-wider">
                         Verás: {preview}
                     </span>
                 </div>

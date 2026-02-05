@@ -163,7 +163,9 @@ export function useClientAdmin() {
                         clientName: mappedClient.clientName || '',
                         groomName: mappedClient.groomName || '',
                         brideName: mappedClient.brideName || '',
-                        weddingDate: mappedClient.weddingDate ? mappedClient.weddingDate.toISOString().split('T')[0] : '',
+                        weddingDate: mappedClient.weddingDate && !isNaN(new Date(mappedClient.weddingDate).getTime())
+                            ? new Date(mappedClient.weddingDate).toISOString().split('T')[0]
+                            : '',
                         weddingTime: mappedClient.weddingTime || '',
                         receptionTime: mappedClient.receptionTime || '',
                         weddingLocation: mappedClient.weddingLocation || '',
