@@ -221,6 +221,7 @@ export function useClientAdmin() {
 
             const weddingTimeFormatted = validateAndFormatTime(editForm.weddingTime);
             const receptionTimeFormatted = validateAndFormatTime(editForm.receptionTime);
+            const weddingUTC = localToUTC(editForm.weddingDate, editForm.weddingTime);
 
             console.log('[saveClientProfile] Guardando...', {
                 weddingTime_input: editForm.weddingTime,
