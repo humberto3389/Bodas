@@ -60,7 +60,7 @@ export function Countdown({ date, time }: CountdownProps) {
         }
     }, [targetTimestamp]);
 
-    const calculateTimeLeft = () => {
+    const calculateTimeLeft = useMemo(() => () => {
         const now = Date.now();
         const diff = Math.max(0, targetTimestamp - now);
         return {
@@ -70,7 +70,7 @@ export function Countdown({ date, time }: CountdownProps) {
             seconds: Math.floor((diff / 1000) % 60),
             finished: diff <= 0
         };
-    };
+    }, [targetTimestamp]);
 
     const [timeLeft, setTimeLeft] = useState(calculateTimeLeft);
     const [mounted, setMounted] = useState(false);
@@ -81,7 +81,7 @@ export function Countdown({ date, time }: CountdownProps) {
             setTimeLeft(calculateTimeLeft());
         }, 1000);
         return () => clearInterval(id);
-    }, [targetTimestamp]);
+    }, [calculateTimeLeft]);
 
     if (!mounted) return null;
 

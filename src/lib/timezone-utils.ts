@@ -12,13 +12,13 @@ function parseCivilDate(dateStr: string): [number, number, number] | null {
     return [parts[0], parts[1], parts[2]];
 }
 
-export function localToUTC(fechaLocal: string, horaLocal: string, _timezone: string = DEFAULT_TIMEZONE): string {
+export function localToUTC(fechaLocal: string, horaLocal: string): string {
     const parts = parseCivilDate(fechaLocal);
     if (!parts || !horaLocal) return '';
 
     const [year, month, day] = parts;
     const clean24h = validateAndFormatTime(horaLocal);
-    let [hours, minutes] = clean24h.split(':').map(Number);
+    const [hours, minutes] = clean24h.split(':').map(Number);
 
     const offset = 5;
     const utcDate = new Date(Date.UTC(year, month - 1, day, hours + offset, minutes, 0, 0));
@@ -26,7 +26,7 @@ export function localToUTC(fechaLocal: string, horaLocal: string, _timezone: str
     return utcDate.toISOString();
 }
 
-export function UTCToLocal(utcTime: string | Date, _timezone: string = DEFAULT_TIMEZONE): string {
+export function UTCToLocal(utcTime: string | Date): string {
     if (!utcTime) return '';
     const date = typeof utcTime === 'string' ? new Date(utcTime) : utcTime;
     const limaDate = new Date(date.getTime() - (5 * 60 * 60 * 1000));
@@ -38,10 +38,9 @@ export function UTCToLocal(utcTime: string | Date, _timezone: string = DEFAULT_T
     if (displayH === 0) displayH = 12;
 
     return `${displayH}:${String(m).padStart(2, '0')} ${ampm}`;
-    return `${displayH}:${String(m).padStart(2, '0')} ${ampm}`;
 }
 
-export function UTCToLocal24h(utcTime: string | Date, _timezone: string = DEFAULT_TIMEZONE): string {
+export function UTCToLocal24h(utcTime: string | Date): string {
     if (!utcTime) return '12:00';
     const date = typeof utcTime === 'string' ? new Date(utcTime) : utcTime;
     const limaDate = new Date(date.getTime() - (5 * 60 * 60 * 1000));
@@ -242,8 +241,8 @@ export function convert24hTo12h(time24h: string): { hour: number; minute: number
 
     if (!match) return { hour: 12, minute: 0, ampm: 'PM' };
 
-    let h = parseInt(match[1], 10);
-    let m = parseInt(match[2], 10);
+    const h = parseInt(match[1], 10);
+    const m = parseInt(match[2], 10);
 
     const ampm = (h >= 12 && h < 24) ? 'PM' : 'AM';
     let hour12 = h % 12;
