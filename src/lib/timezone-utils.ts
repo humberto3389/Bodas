@@ -12,9 +12,9 @@ function parseCivilDate(dateStr: string): [number, number, number] | null {
     return [parts[0], parts[1], parts[2]];
 }
 
-export function localToUTC(fechaLocal: string, horaLocal: string): string {
+export function localToUTC(fechaLocal: string, horaLocal: string): string | null {
     const parts = parseCivilDate(fechaLocal);
-    if (!parts || !horaLocal) return '';
+    if (!parts || !horaLocal) return null;
 
     const [year, month, day] = parts;
     const clean24h = validateAndFormatTime(horaLocal);

@@ -271,9 +271,8 @@ export function useClientAdmin() {
                 .from('clients')
                 .update({
                     client_name: editForm.clientName,
-                    // FIX ZONA HORARIA: Guardar mediodía UTC para evitar desplazamientos
-                    wedding_date: editForm.weddingDate ? `${editForm.weddingDate}T12:00:00` : null,
-                    wedding_datetime_utc: weddingUTC, // CRITICAL: Save absolute UTC time
+                    wedding_date: editForm.weddingDate || null,
+                    wedding_datetime_utc: weddingUTC || null, // CRITICAL: Save absolute UTC time or null
                     groom_name: editForm.groomName,
                     bride_name: editForm.brideName,
                     wedding_time: validateAndFormatTime(editForm.weddingTime) || null,
