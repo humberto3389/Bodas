@@ -7,7 +7,7 @@ export const PERU_TIMEZONE = 'America/Lima';
  * Convierte cualquier entrada de hora a formato estricto 24h (HH:mm).
  * Maneja AM/PM y formatos de 24h directos.
  */
-export function validateAndFormatTime(timeInput: string | undefined | null): string {
+export const validateAndFormatTime = (timeInput: string | undefined | null): string => {
     if (!timeInput) return '12:00';
 
     const clean = timeInput.trim().toUpperCase();
@@ -32,12 +32,12 @@ export function validateAndFormatTime(timeInput: string | undefined | null): str
     const finalMinute = Math.max(0, Math.min(59, minute));
 
     return `${String(finalHour).padStart(2, '0')}:${String(finalMinute).padStart(2, '0')}`;
-}
+};
 
 /**
  * Formatea una hora 24h (HH:mm) a un formato legible para el invitado (h:mm AM/PM).
  */
-export function formatTimeForDisplay(time24h: string | undefined | null): string {
+export const formatTimeForDisplay = (time24h: string | undefined | null): string => {
     if (!time24h) return '';
     const clean = validateAndFormatTime(time24h);
     const [h, m] = clean.split(':').map(Number);
@@ -47,12 +47,12 @@ export function formatTimeForDisplay(time24h: string | undefined | null): string
     if (h12 === 0) h12 = 12;
 
     return `${h12}:${String(m).padStart(2, '0')} ${ampm}`;
-}
+};
 
 /**
  * Convierte componentes 12h a string 24h (HH:mm).
  */
-export function convert12hTo24h(hour: number, minute: number, ampm: 'AM' | 'PM'): string {
+export const convert12hTo24h = (hour: number, minute: number, ampm: 'AM' | 'PM'): string => {
     let h = hour;
     if (h === 12) {
         h = (ampm === 'PM') ? 12 : 0;
@@ -60,12 +60,12 @@ export function convert12hTo24h(hour: number, minute: number, ampm: 'AM' | 'PM')
         if (ampm === 'PM') h += 12;
     }
     return `${String(h).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
-}
+};
 
 /**
  * Convierte string 24h a componentes 12h.
  */
-export function convert24hTo12h(time24h: string | undefined | null): { hour: number; minute: number; ampm: 'AM' | 'PM' } {
+export const convert24hTo12h = (time24h: string | undefined | null): { hour: number; minute: number; ampm: 'AM' | 'PM' } => {
     if (!time24h) return { hour: 12, minute: 0, ampm: 'PM' };
     const clean = time24h.replace(/(AM|PM|A\.M\.|P\.M\.)/gi, '').trim();
     const match = clean.match(/(\d{1,2}):(\d{1,2})/);
@@ -80,13 +80,13 @@ export function convert24hTo12h(time24h: string | undefined | null): { hour: num
     if (hour12 === 0) hour12 = 12;
 
     return { hour: hour12, minute: m || 0, ampm };
-}
+};
 
 /**
  * Combina una fecha civil (YYYY-MM-DD) y una hora civil (HH:mm) en un ISO String UTC.
  * Asume que la entrada es en hora de Lima (UTC-5).
  */
-export function localToUTC(fechaLocal: string, horaLocal: string): string | null {
+export const localToUTC = (fechaLocal: string, horaLocal: string): string | null => {
     if (!fechaLocal || !horaLocal) return null;
 
     const dateParts = fechaLocal.split('-').map(Number);
@@ -99,12 +99,12 @@ export function localToUTC(fechaLocal: string, horaLocal: string): string | null
     const date = new Date(Date.UTC(dateParts[0], dateParts[1] - 1, dateParts[2], h + 5, m, 0, 0));
 
     return date.toISOString();
-}
+};
 
 /**
  * Extrae la hora en formato 24h a partir de un ISO String UTC, ajustado a Lima.
  */
-export function UTCToLocal24h(utcTime: string | undefined | null): string {
+export const UTCToLocal24h = (utcTime: string | undefined | null): string => {
     if (!utcTime) return '12:00';
     try {
         const date = new Date(utcTime);
@@ -119,15 +119,15 @@ export function UTCToLocal24h(utcTime: string | undefined | null): string {
     } catch (e) {
         return '12:00';
     }
-}
+};
 
 /**
  * Utilidad para el Countdown: Calcula el timestamp UTC real para una fecha y hora de Lima.
  */
-export function getEventTimestampUTC(dateStr: string, timeStr: string): number {
+export const getEventTimestampUTC = (dateStr: string, timeStr: string): number => {
     const iso = localToUTC(dateStr, timeStr);
     return iso ? new Date(iso).getTime() : 0;
-}
+};
 
 // Alias de retrocompatibilidad
 export const formatTimeDisplay = (t: string | undefined | null) => formatTimeForDisplay(t);
