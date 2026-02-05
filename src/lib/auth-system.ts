@@ -1,6 +1,6 @@
 // Sistema de autenticación para alquiler de sitios de bodas
 import { supabase } from './supabase';
-import { validateAndFormatTime, UTCToLocal24h } from './timezone-utils';
+// El sistema ahora usa utilidades simplificadas
 
 // Debounce para evitar sincronizaciones repetidas
 const syncDebounceMap = new Map<string, number>();
@@ -316,11 +316,9 @@ export function mapSupabaseClientToToken(row: any): ClientToken {
     groomName: row.groom_name,
     brideName: row.bride_name,
     weddingLocation: row.wedding_location,
-    // FIX: Usar wedding_datetime_utc como verdad absoluta si existe.
-    weddingTime: row.wedding_datetime_utc
-      ? UTCToLocal24h(row.wedding_datetime_utc)
-      : (row.wedding_time ? validateAndFormatTime(row.wedding_time) : '18:00'),
-    receptionTime: row.reception_time ? validateAndFormatTime(row.reception_time) : '21:00',
+    // El sistema ahora usa tiempo civil guardado en wedding_time para visualización
+    weddingTime: row.wedding_time || '18:00',
+    receptionTime: row.reception_time || '21:00',
     bibleVerse: row.bible_verse,
     bibleVerseBook: row.bible_verse_book,
     invitationText: row.invitation_text,

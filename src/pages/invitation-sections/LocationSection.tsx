@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { SectionTitle } from './SectionTitle';
-import { formatTimeDisplay } from '../../lib/timezone-utils';
+import { formatTimeForDisplay } from '../../lib/timezone-utils';
 
 interface LocationSectionProps {
     clientData: any;
@@ -14,22 +14,25 @@ export function LocationSection({ clientData }: LocationSectionProps) {
         {
             type: 'Ceremonia',
             name: clientData.churchName || clientData.ceremonyLocationName,
-            time: formatTimeDisplay(clientData.weddingTime),
+            time: formatTimeForDisplay(clientData.weddingTime),
             address: clientData.ceremonyAddress,
             reference: clientData.ceremonyReference,
             mapUrl: clientData.ceremonyMapUrl,
             icon: '💒'
         },
-        ...(!clientData.isReceptionSameAsCeremony ? [{
+        {
             type: 'Recepción',
             name: clientData.receptionLocationName,
-            time: formatTimeDisplay(clientData.receptionTime),
+            time: formatTimeForDisplay(clientData.receptionTime),
             address: clientData.receptionAddress,
             reference: clientData.receptionReference,
             mapUrl: clientData.receptionMapUrl,
             icon: '🥂'
-        }] : [])
-    ];
+        }
+    ].filter(loc => {
+        if (loc.type === 'Recepción' && clientData.isReceptionSameAsCeremony) return false;
+        return true;
+    });
 
     return (
         <section

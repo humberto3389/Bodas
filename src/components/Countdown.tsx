@@ -5,10 +5,11 @@ import { getEventTimestampUTC } from '../lib/timezone-utils';
 
 interface CountdownProps {
     date: string | Date;
-    time?: string; // Hora del evento en formato HH:mm (24h) o "HH:mm AM/PM"
+    time?: string;
+    clientData?: any;
 }
 
-export function Countdown({ date, time }: CountdownProps) {
+export function Countdown({ date, time, clientData }: CountdownProps) {
     console.log('🔍 DEBUG GLOBAL - Countdown recibió:', {
         fecha: date,
         hora: time,
@@ -19,21 +20,16 @@ export function Countdown({ date, time }: CountdownProps) {
     });
 
     const targetTimestamp = useMemo(() => {
-        if (!date) return 0;
-
-        let dateStr = '';
-        if (date instanceof Date) {
-            dateStr = date.toISOString().split('T')[0];
-        } else if (typeof date === 'string') {
-            // Si viene con T (ISO), asegurarse de tomar solo la fecha
-            // "2026-06-21T00:00:00Z" -> "2026-06-21"
-            dateStr = date.split('T')[0];
+        // PRIORIDAD 1: Usar el UTC calculado por el servidor/admin si existe
+        if (clientData?.wedding_datetime_utc) {
+            return new Date(clientData.wedding_datetime_utc).getTime();
         }
 
-        // Usar la utilidad que combina fecha + hora y convierte a UTC
-        // Esto garantiza cálculos precisos independientemente de la zona del navegador
+        // PRIORIDAD 2: Recurso de emergencia si falla el UTC (cálculo local)
+        if (!date) return 0;
+        let dateStr = typeof date === 'string' ? date.split('T')[0] : date.toISOString().split('T')[0];
         return getEventTimestampUTC(dateStr, time || '00:00');
-    }, [date, time])
+    }, [clientData?.wedding_datetime_utc, date, time]);
 
     // Paso 6.1: Verificación final
     useEffect(() => {

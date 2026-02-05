@@ -152,7 +152,7 @@ export default function App({ clientData: propData }: AppProps) {
             <section id="cuenta-regresiva" className="py-6 relative">
               <div className="max-w-7xl mx-auto px-4">
                 <Suspense fallback={<div className="h-32" />}>
-                  <Countdown date={client.weddingDate} time={client.weddingTime} />
+                  <Countdown date={client.weddingDate} time={client.weddingTime} clientData={client} />
                 </Suspense>
               </div>
             </section>
