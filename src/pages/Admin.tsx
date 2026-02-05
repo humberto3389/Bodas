@@ -1,17 +1,11 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { supabase } from '../lib/supabase'
-import { getCurrentClientData } from '../lib/client-data'
-import { validateClientToken, authenticateClientWithToken, type ClientToken, mapSupabaseClientToToken } from '../lib/auth-system'
-import { formatTimeDisplay, localToUTC, validateAndFormatTime } from '../lib/timezone-utils'
-import { compressImageForWeb } from '../utils/compressImage'
-
 import { ToastContainer } from '../components/Toast'
 
 import { useToast } from '../hooks/useToast'
 import { useConfirmDialog } from '../hooks/useConfirmDialog'
 
-import type { MediaFile } from '../hooks/useUploader'
+import { useClientAdmin } from '../hooks/useClientAdmin'
 
 // Import Lazy Loaded Admin Sections
 import { AdminHeader } from './admin-sections/AdminHeader'
@@ -22,426 +16,50 @@ import { RSVPManager } from './admin-sections/RSVPManager'
 import { MessageManager } from './admin-sections/MessageManager'
 import { MediaManager } from './admin-sections/MediaManager'
 
-type RSVP = {
-  name: string;
-  email: string;
-  phone?: string;
-  guests: number;
-  created_at?: string;
-  is_attending?: boolean;
-  attending_names?: string;
-  not_attending_names?: string;
-}
-
-type Message = { name: string; message: string; created_at?: string }
-
 export default function Admin() {
-  const { toasts, addToast, removeToast } = useToast()
+  const { toasts, removeToast } = useToast()
   const { dialog } = useConfirmDialog()
 
-  // Auth State
-  const [authed, setAuthed] = useState(() => !!sessionStorage.getItem('clientAuth'))
+  const {
+    authed,
+    clientSession,
+    clientId,
+    editForm,
+    setEditForm,
+    saveStatus,
+    saveClientProfile,
+    login,
+    logout,
+    rsvps,
+    messages,
+    imageFiles,
+    audioFiles,
+    videoFiles,
+    handleUpload,
+    handleDelete
+  } = useClientAdmin()
+
   const [tokenInput, setTokenInput] = useState('')
   const [loginError, setLoginError] = useState('')
   const [activeTab, setActiveTab] = useState<'content' | 'rsvps' | 'messages' | 'media'>('content')
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
-  const [clientSession, setClientSession] = useState<ClientToken | null>(() => {
-    try {
-      const s = sessionStorage.getItem('clientAuth')
-      return s ? JSON.parse(s) : null
-    } catch { return null }
-  })
-
-  // Data State
-  const [rsvps, setRsvps] = useState<RSVP[]>([])
-  const [messages, setMessages] = useState<Message[]>([])
-  const [imageFiles, setImageFiles] = useState<MediaFile[]>([])
-  const [audioFiles, setAudioFiles] = useState<MediaFile[]>([])
-  const [videoFiles, setVideoFiles] = useState<MediaFile[]>([])
-
-  const totalGuests = useMemo(() => rsvps.reduce((a, r) => {
+  const totalGuests = rsvps.reduce((a, r) => {
     if (r.is_attending === false) return a;
     return a + (Number(r.guests) || 0) + 1;
-  }, 0), [rsvps])
+  }, 0)
 
-  const totalNotAttending = useMemo(() => rsvps.reduce((a, r) => {
+  const totalNotAttending = rsvps.reduce((a, r) => {
     if (r.is_attending !== false) return a;
     return a + 1;
-  }, 0), [rsvps])
-
-
-  const detectedClient = getCurrentClientData()
-  const clientLike = authed ? (clientSession || detectedClient) : null
-  const clientId = clientLike ? clientLike.id : null
-
-  // Form State
-  const [editForm, setEditForm] = useState({
-    clientName: clientLike?.clientName || 'Humberto & Nelida',
-    groomName: clientLike?.groomName || 'Humberto',
-    brideName: clientLike?.brideName || 'Nelida',
-    weddingDate: clientLike?.weddingDate ? (typeof clientLike.weddingDate === 'string' ? (clientLike.weddingDate as string).split('T')[0] : (clientLike.weddingDate as Date).toISOString().split('T')[0]) : '2026-01-24',
-    weddingTime: formatTimeDisplay(clientLike?.weddingTime || '18:00', false),
-    weddingLocation: clientLike?.weddingLocation || 'Iglesia San José',
-    weddingType: clientLike?.weddingType || 'Boda Cristiana',
-    religiousSymbol: clientLike?.religiousSymbol || '✝',
-    bibleVerse: clientLike?.bibleVerse || 'El amor es paciente, es bondadoso… el amor nunca deja de ser.',
-    bibleVerseBook: clientLike?.bibleVerseBook || '1 Corintios 13',
-    invitationText: clientLike?.invitationText || 'Están cordialmente invitados a celebrar con nosotros este día tan especial.',
-    backgroundAudioUrl: clientLike?.backgroundAudioUrl || '',
-    heroBackgroundUrl: clientLike?.heroBackgroundUrl || '/boda.avif',
-    heroBackgroundVideoUrl: clientSession?.heroBackgroundVideoUrl || '',
-    heroDisplayMode: (clientSession?.heroDisplayMode || 'image') as 'image' | 'video',
-    heroVideoAudioEnabled: clientSession?.heroVideoAudioEnabled || false,
-    advancedAnimations: clientSession?.advancedAnimations || {
-      enabled: false,
-      particleEffects: false,
-      parallaxScrolling: false,
-      floatingElements: false
-    },
-    mapCoordinates: clientLike?.mapCoordinates || { lat: -12.0932, lng: -77.0314 },
-    churchName: clientLike?.churchName || 'Iglesia San José',
-    ceremonyLocationName: clientLike?.ceremonyLocationName || 'Iglesia San José',
-    receptionLocationName: clientLike?.receptionLocationName || '',
-    receptionTime: formatTimeDisplay(clientLike?.receptionTime || '21:00', false),
-    ceremonyAddress: clientLike?.ceremonyAddress || '',
-    ceremonyReference: clientLike?.ceremonyReference || '',
-    ceremonyMapUrl: clientLike?.ceremonyMapUrl || '',
-    receptionAddress: clientLike?.receptionAddress || '',
-    receptionReference: clientLike?.receptionReference || '',
-    receptionMapUrl: clientLike?.receptionMapUrl || '',
-    isReceptionSameAsCeremony: clientLike?.isReceptionSameAsCeremony || false
-  })
-
-  const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'success' | 'error'>('idle')
-
-  // Maintain Auth
-  useEffect(() => {
-    if (!authed || !clientSession?.token) return
-    const maintainAuth = async () => await authenticateClientWithToken(clientSession.token)
-    maintainAuth()
-    const interval = setInterval(maintainAuth, 10 * 60 * 1000)
-    return () => clearInterval(interval)
-  }, [authed, clientSession?.token])
-
-  // Load Client Data
-  useEffect(() => {
-    if (!authed || !clientId) return
-
-    const loadClientData = async () => {
-      try {
-        const { data: clientData, error } = await supabase
-          .from('clients')
-          .select('*')
-          .eq('id', clientId)
-          .maybeSingle()
-
-        if (error || !clientData) return
-
-        // Usar mapeo centralizado para garantizar coherencia
-        const mappedClient = mapSupabaseClientToToken(clientData)
-        sessionStorage.setItem('clientAuth', JSON.stringify(mappedClient))
-        window.dispatchEvent(new CustomEvent('clientAuthUpdated', { detail: { clientAuth: JSON.stringify(mappedClient) } }))
-        setClientSession(mappedClient)
-
-        // Actualizar editForm con los datos cargados
-        setEditForm({
-          clientName: mappedClient.clientName || '',
-          groomName: mappedClient.groomName || '',
-          brideName: mappedClient.brideName || '',
-          weddingDate: mappedClient.weddingDate ? mappedClient.weddingDate.toISOString().split('T')[0] : '',
-          weddingTime: mappedClient.weddingTime || '',
-          receptionTime: mappedClient.receptionTime || '',
-          weddingLocation: mappedClient.weddingLocation || '',
-          weddingType: mappedClient.weddingType || 'Boda',
-          religiousSymbol: mappedClient.religiousSymbol || '✝',
-          bibleVerse: mappedClient.bibleVerse || '',
-          bibleVerseBook: mappedClient.bibleVerseBook || '',
-          invitationText: mappedClient.invitationText || '',
-          backgroundAudioUrl: mappedClient.backgroundAudioUrl || '',
-          heroBackgroundUrl: mappedClient.heroBackgroundUrl || '',
-          heroBackgroundVideoUrl: mappedClient.heroBackgroundVideoUrl || '',
-          heroDisplayMode: mappedClient.heroDisplayMode || 'image',
-          heroVideoAudioEnabled: mappedClient.heroVideoAudioEnabled || false,
-          advancedAnimations: (mappedClient.advancedAnimations as any) || {
-            enabled: false,
-            particleEffects: false,
-            parallaxScrolling: false,
-            floatingElements: false
-          },
-          mapCoordinates: mappedClient.mapCoordinates || { lat: -12.0932, lng: -77.0314 },
-          churchName: mappedClient.churchName || '',
-          ceremonyLocationName: mappedClient.ceremonyLocationName || '',
-          receptionLocationName: mappedClient.receptionLocationName || '',
-          ceremonyAddress: mappedClient.ceremonyAddress || '',
-          ceremonyReference: mappedClient.ceremonyReference || '',
-          ceremonyMapUrl: mappedClient.ceremonyMapUrl || '',
-          receptionAddress: mappedClient.receptionAddress || '',
-          receptionReference: mappedClient.receptionReference || '',
-          receptionMapUrl: mappedClient.receptionMapUrl || '',
-          isReceptionSameAsCeremony: mappedClient.isReceptionSameAsCeremony || false
-        })
-
-      } catch (err) {
-        console.error('[Admin] Error loading client data:', err)
-      }
-    }
-
-    loadClientData()
-  }, [authed, clientId])
-
-  // Load RSVPs and Messages
-  useEffect(() => {
-    if (!authed || !clientId) return
-    const fetchData = async () => {
-      const { data: rData } = await supabase.from('rsvps').select('*').eq('client_id', clientId).order('created_at', { ascending: false })
-      if (rData) setRsvps(rData as RSVP[])
-
-      const { data: mData } = await supabase.from('messages').select('*').eq('client_id', clientId).order('created_at', { ascending: false })
-      if (mData) setMessages(mData as Message[])
-    }
-    fetchData()
-  }, [authed, clientId])
-
-  // Load Files Helper
-  const listClientFiles = async (bucket: 'gallery' | 'audio' | 'videos'): Promise<MediaFile[]> => {
-    if (!clientId) return []
-    const folder = bucket === 'gallery' ? 'hero' : bucket === 'audio' ? 'audio' : 'video'
-    const { data } = await supabase.storage.from(bucket).list(`${clientId}/${folder}`, { limit: 200, sortBy: { column: 'created_at', order: 'desc' } })
-
-    const files: MediaFile[] = (data || []).filter(f => !f.name.startsWith('.') && f.id).map(f => ({
-      name: f.name,
-      path: `${clientId}/${folder}/${f.name}`,
-      created: f.created_at || new Date().toISOString()
-    }))
-    return files
-  }
-
-  // File Loading Effect
-  useEffect(() => {
-    if (!authed || !clientId) return
-    const loadFiles = async () => {
-      const [imgs, auds, vids] = await Promise.all([listClientFiles('gallery'), listClientFiles('audio'), listClientFiles('videos')])
-
-      setImageFiles([{ name: 'Imagen por Defecto', path: '/boda.avif', created: new Date().toISOString(), isSystem: true }, ...imgs])
-      setAudioFiles([{ name: 'Música por Defecto', path: '/audio.ogg', created: new Date().toISOString(), isSystem: true }, ...auds])
-      setVideoFiles([{ name: 'Video por Defecto', path: '/hero.webm', created: new Date().toISOString(), isSystem: true }, ...vids])
-    }
-    loadFiles()
-    const i = setInterval(loadFiles, 10000)
-    return () => clearInterval(i)
-  }, [authed, clientId])
-
-
-  //--- ACTIONS ---//
+  }, 0)
 
   const handleClientLogin = async () => {
     if (!tokenInput.trim()) { setLoginError('Ingresa un token'); return }
-    const validated = await validateClientToken(tokenInput.trim())
-    if (!validated) { setLoginError('Token inválido o expirado'); return }
-
-    const authSuccess = await authenticateClientWithToken(tokenInput.trim())
-    if (!authSuccess) { setLoginError('Error al autenticar en Supabase.'); return }
-
-    localStorage.setItem('clientAuth', JSON.stringify(validated))
-    window.dispatchEvent(new CustomEvent('clientAuthUpdated', { detail: { clientAuth: JSON.stringify(validated) } }))
-    setClientSession(validated)
-    setAuthed(true)
+    const success = await login(tokenInput.trim())
+    if (!success) { setLoginError('Token inválido o error al autenticar.'); return }
   }
 
-  const saveClientProfile = async () => {
-    if (!clientSession) return
-    setSaveStatus('saving')
-    try {
-      const currentPlanType = clientSession.planType || 'basic'
-
-      // --- Plan Validation Logic ---
-      let audioUrl: string | null = null
-      if (['premium', 'deluxe'].includes(currentPlanType) && editForm.backgroundAudioUrl) {
-        const trimmed = editForm.backgroundAudioUrl.trim()
-        if (trimmed && (trimmed.includes('supabase.co') || trimmed.startsWith('/'))) {
-          audioUrl = trimmed
-        }
-      }
-
-      let heroVideoUrl: string | null = null
-      if (currentPlanType === 'deluxe' && editForm.heroBackgroundVideoUrl) {
-        const trimmed = editForm.heroBackgroundVideoUrl.trim()
-        if (trimmed && (trimmed.includes('supabase.co') || trimmed.startsWith('/'))) {
-          heroVideoUrl = trimmed
-        }
-      }
-
-      const advancedAnimations = currentPlanType === 'deluxe'
-        ? editForm.advancedAnimations
-        : { enabled: false, particleEffects: false, parallaxScrolling: false, floatingElements: false }
-
-      // --- Debug & Paranoia Check for 12 PM ---
-      let timeInput = editForm.weddingTime;
-      // Ensure we are working with a clean string
-      if (!timeInput) timeInput = '12:00';
-
-      console.log('[saveClientProfile] Raw weddingTime from form:', timeInput);
-
-      const cleanTime = validateAndFormatTime(timeInput);
-      console.log('[saveClientProfile] Validated cleanTime:', cleanTime);
-
-      const weddingUTC = localToUTC(editForm.weddingDate, cleanTime);
-      console.log('[saveClientProfile] Calculated weddingUTC:', weddingUTC);
-
-
-
-
-      // --- DB Update ---
-      const { error: updateError } = await supabase
-        .from('clients')
-        .update({
-          client_name: editForm.clientName,
-          wedding_date: editForm.weddingDate ? `${editForm.weddingDate}T12:00:00` : null, // Fix time to noon to avoid zone shifts
-          wedding_datetime_utc: weddingUTC, // CRITICAL: Save absolute UTC time
-          groom_name: editForm.groomName || null,
-          bride_name: editForm.brideName || null,
-          wedding_time: validateAndFormatTime(editForm.weddingTime) || null,
-          wedding_location: editForm.weddingLocation || null,
-          wedding_type: editForm.weddingType || null,
-          religious_symbol: editForm.religiousSymbol || null,
-          bible_verse: editForm.bibleVerse || null,
-          bible_verse_book: editForm.bibleVerseBook || null,
-          ceremony_address: editForm.ceremonyAddress || null,
-          ceremony_reference: editForm.ceremonyReference || null,
-          ceremony_map_url: editForm.ceremonyMapUrl || null,
-          reception_address: editForm.receptionAddress || null,
-          reception_reference: editForm.receptionReference || null,
-          reception_map_url: editForm.receptionMapUrl || null,
-          reception_time: validateAndFormatTime(editForm.receptionTime) || null,
-          is_reception_same_as_ceremony: editForm.isReceptionSameAsCeremony,
-          invitation_text: editForm.invitationText || null,
-          background_audio_url: audioUrl,
-          hero_background_url: (editForm.heroBackgroundUrl && (editForm.heroBackgroundUrl.includes('supabase.co') || editForm.heroBackgroundUrl.startsWith('/'))) ? editForm.heroBackgroundUrl : null,
-          hero_background_video_url: heroVideoUrl,
-          hero_display_mode: editForm.heroDisplayMode || 'image',
-          hero_video_audio_enabled: editForm.heroVideoAudioEnabled,
-          church_name: editForm.churchName || null,
-          ceremony_location_name: editForm.ceremonyLocationName || null,
-          reception_location_name: editForm.receptionLocationName || null,
-          advanced_animations: advancedAnimations,
-        })
-        .eq('id', clientId)
-
-      if (updateError) throw updateError
-
-      // --- Local State Update ---
-      const updated: ClientToken = {
-        ...clientSession,
-        ...editForm as any, // lazy spread, be careful
-        backgroundAudioUrl: audioUrl || undefined,
-        heroBackgroundUrl: (editForm.heroBackgroundUrl && (editForm.heroBackgroundUrl.includes('supabase.co') || editForm.heroBackgroundUrl.startsWith('/'))) ? editForm.heroBackgroundUrl : undefined,
-        heroBackgroundVideoUrl: heroVideoUrl || undefined,
-        advancedAnimations: advancedAnimations,
-        weddingDate: editForm.weddingDate ? new Date(editForm.weddingDate) : clientSession.weddingDate,
-      }
-
-      sessionStorage.setItem('clientAuth', JSON.stringify(updated))
-      window.dispatchEvent(new CustomEvent('clientAuthUpdated', { detail: { clientAuth: JSON.stringify(updated) } }))
-      setClientSession(updated)
-      setSaveStatus('success')
-      setTimeout(() => setSaveStatus('idle'), 2000)
-    } catch (err) {
-      console.error(err)
-      setSaveStatus('error')
-      setTimeout(() => setSaveStatus('idle'), 2500)
-    }
-  }
-
-  const handleUpload = async (bucket: 'gallery' | 'audio' | 'videos', file: File): Promise<string | null> => {
-    if (!clientId) return null
-    try {
-      let fileToUpload = file;
-      if (file.type.startsWith('image/')) {
-        fileToUpload = await compressImageForWeb(file);
-      }
-
-      const folder = bucket === 'gallery' ? 'hero' : bucket === 'audio' ? 'audio' : 'video'
-      const path = `${clientId}/${folder}/${fileToUpload.name}`
-      const blob = new Blob([fileToUpload], { type: fileToUpload.type })
-
-      const { error: uploadError } = await supabase.storage.from(bucket).upload(path, blob, { upsert: true, contentType: fileToUpload.type })
-
-      if (uploadError) throw uploadError
-
-      // Refresh list
-      const [imgs, auds, vids] = await Promise.all([listClientFiles('gallery'), listClientFiles('audio'), listClientFiles('videos')])
-
-      setImageFiles([{ name: 'Imagen por Defecto', path: '/boda.webp', created: new Date().toISOString(), isSystem: true }, ...imgs])
-      setAudioFiles([{ name: 'Música por Defecto', path: '/audio.ogg', created: new Date().toISOString(), isSystem: true }, ...auds])
-      setVideoFiles([{ name: 'Video por Defecto', path: '/hero.webm', created: new Date().toISOString(), isSystem: true }, ...vids])
-
-      const { data } = supabase.storage.from(bucket).getPublicUrl(path)
-      return data.publicUrl
-    } catch (e) {
-      addToast('error', 'Error al subir archivo')
-      return null
-    }
-  }
-
-  const handleDelete = async (bucket: 'gallery' | 'audio' | 'videos', fileName: string): Promise<boolean> => {
-    if (!clientId) return false
-
-    // Determine path.
-    // listClientFiles returns path as: `${clientId}/${folder}/${f.name}`
-    // fileName coming from UI components usually is just the name OR the full path depending on implementation.
-    // AdminUploader usually passes the file object or name.
-    // Let's assume fileName is the full path if it contains /, otherwise construct it?
-    // In old Admin.tsx: 
-    // if (bucket === 'gallery') path = `${clientId}/hero/${fileName}`
-    // BUT listClientFiles there returned names. 
-    // Here listClientFiles returns objects with 'path'.
-    // AdminUploader calls onDelete(bucket, file.path) or file.name?
-    // Let's check AdminUploader. It uses file.name usually if it's simpler, or we pass the whole object.
-
-    // To be safe, let's look at ContentEditor calling it:
-    // onDelete={async (b, f) => { await onDelete(b, f); }}
-    // And AdminUploader calls it with: onDelete(bucket, file.name)
-
-    // So `fileName` is just the name (e.g. "photo.jpg").
-
-    const folder = bucket === 'gallery' ? 'hero' : bucket === 'audio' ? 'audio' : 'video'
-    // But wait, listClientFiles prepends clientId/folder/ to the path in the state object.
-    // If the UI passes back `file.name` from the state object, it will be the filename.
-
-    const path = `${clientId}/${folder}/${fileName}`
-
-    try {
-      const { error } = await supabase.storage.from(bucket).remove([path])
-      if (error) throw error
-
-      // Refresh
-      const [imgs, auds, vids] = await Promise.all([listClientFiles('gallery'), listClientFiles('audio'), listClientFiles('videos')])
-
-      setImageFiles([{ name: 'Imagen por Defecto', path: '/boda.jpg', created: new Date().toISOString(), isSystem: true }, ...imgs])
-      setAudioFiles([{ name: 'Música por Defecto', path: '/audio.mp3', created: new Date().toISOString(), isSystem: true }, ...auds])
-      setVideoFiles([{ name: 'Video por Defecto', path: '/hero.mp4', created: new Date().toISOString(), isSystem: true }, ...vids])
-
-      // Clear from form if selected
-      if (bucket === 'gallery' && editForm.heroBackgroundUrl?.includes(fileName)) {
-        setEditForm(prev => ({ ...prev, heroBackgroundUrl: '' }))
-      } else if (bucket === 'videos' && editForm.heroBackgroundVideoUrl?.includes(fileName)) {
-        setEditForm(prev => ({ ...prev, heroBackgroundVideoUrl: '' }))
-      } else if (bucket === 'audio' && editForm.backgroundAudioUrl?.includes(fileName)) {
-        setEditForm(prev => ({ ...prev, backgroundAudioUrl: '' }))
-      }
-
-      return true
-    } catch (err) {
-      addToast('error', 'Error al eliminar archivo')
-      return false
-    }
-  }
-
-  const getPublicUrl = (bucket: 'gallery' | 'audio' | 'videos', path: string) => {
-    const { data } = supabase.storage.from(bucket).getPublicUrl(path)
-    return data?.publicUrl || ''
-  }
   const downloadRSVPs = (filterStatus?: boolean) => {
     if (rsvps.length === 0) return
 
@@ -510,7 +128,10 @@ export default function Admin() {
     document.body.removeChild(link)
   }
 
-
+  const getPublicUrl = (bucket: string, path: string) => {
+    // Basic helper to avoid breaking child components
+    return `https://kzvzqlzxjvyxzjyjqvjy.supabase.co/storage/v1/object/public/${bucket}/${path}`;
+  }
 
   //--- RENDER ---//
 
@@ -542,7 +163,7 @@ export default function Admin() {
           planType={clientSession?.planType || 'basic'}
           mobileMenuOpen={mobileMenuOpen}
           setMobileMenuOpen={setMobileMenuOpen}
-          logout={() => { sessionStorage.removeItem('clientAuth'); setAuthed(false) }}
+          logout={logout}
           onUpgradeClick={() => window.open('https://wa.me/51958315579?text=Deseo%20mejorar%20mi%20plan', '_blank')}
         />
 
@@ -613,9 +234,8 @@ export default function Admin() {
           </AnimatePresence>
         </div>
       </div>
-      <ToastContainer toasts={toasts}
-        onClose={removeToast}
-      />{dialog}
+      <ToastContainer toasts={toasts} onClose={removeToast} />
+      {dialog}
     </>
   )
 }

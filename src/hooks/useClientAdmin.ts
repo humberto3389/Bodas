@@ -329,6 +329,105 @@ export function useClientAdmin() {
         }
     };
 
+    const [rsvps, setRsvps] = useState<any[]>([]);
+    const [messages, setMessages] = useState<any[]>([]);
+    const [imageFiles, setImageFiles] = useState<any[]>([]);
+    const [audioFiles, setAudioFiles] = useState<any[]>([]);
+    const [videoFiles, setVideoFiles] = useState<any[]>([]);
+
+    // Load RSVPs and Messages
+    const fetchData = useCallback(async () => {
+        if (!clientId) return;
+        const { data: rData } = await supabase.from('rsvps').select('*').eq('client_id', clientId).order('created_at', { ascending: false });
+        if (rData) setRsvps(rData);
+
+        const { data: mData } = await supabase.from('messages').select('*').eq('client_id', clientId).order('created_at', { ascending: false });
+        if (mData) setMessages(mData);
+    }, [clientId]);
+
+    useEffect(() => {
+        if (authed) fetchData();
+    }, [authed, fetchData]);
+
+    // Load Files Helper
+    const listClientFiles = useCallback(async (bucket: 'gallery' | 'audio' | 'videos') => {
+        if (!clientId) return [];
+        const folder = bucket === 'gallery' ? 'hero' : bucket === 'audio' ? 'audio' : 'video';
+        const { data } = await supabase.storage.from(bucket).list(`${clientId}/${folder}`, { limit: 200, sortBy: { column: 'created_at', order: 'desc' } });
+
+        return (data || []).filter(f => !f.name.startsWith('.') && f.id).map(f => ({
+            name: f.name,
+            path: `${clientId}/${folder}/${f.name}`,
+            created: f.created_at || new Date().toISOString()
+        }));
+    }, [clientId]);
+
+    const loadFiles = useCallback(async () => {
+        if (!authed || !clientId) return;
+        const [imgs, auds, vids] = await Promise.all([
+            listClientFiles('gallery'),
+            listClientFiles('audio'),
+            listClientFiles('videos')
+        ]);
+
+        setImageFiles([{ name: 'Imagen por Defecto', path: '/boda.webp', created: new Date().toISOString(), isSystem: true }, ...imgs]);
+        setAudioFiles([{ name: 'Música por Defecto', path: '/audio.ogg', created: new Date().toISOString(), isSystem: true }, ...auds]);
+        setVideoFiles([{ name: 'Video por Defecto', path: '/hero.webm', created: new Date().toISOString(), isSystem: true }, ...vids]);
+    }, [authed, clientId, listClientFiles]);
+
+    useEffect(() => {
+        loadFiles();
+        const i = setInterval(loadFiles, 30000);
+        return () => clearInterval(i);
+    }, [loadFiles]);
+
+    const handleUpload = async (bucket: 'gallery' | 'audio' | 'videos', file: File): Promise<string | null> => {
+        if (!clientId) return null;
+        try {
+            const folder = bucket === 'gallery' ? 'hero' : bucket === 'audio' ? 'audio' : 'video';
+            const path = `${clientId}/${folder}/${file.name}`;
+            const { error: uploadError } = await supabase.storage.from(bucket).upload(path, file, { upsert: true });
+
+            if (uploadError) throw uploadError;
+
+            await loadFiles();
+            const { data } = supabase.storage.from(bucket).getPublicUrl(path);
+            return data.publicUrl;
+        } catch (e) {
+            console.error('Error al subir archivo:', e);
+            return null;
+        }
+    };
+
+    const handleDelete = async (bucket: 'gallery' | 'audio' | 'videos', fileName: string): Promise<boolean> => {
+        if (!clientId) return false;
+        const folder = bucket === 'gallery' ? 'hero' : bucket === 'audio' ? 'audio' : 'video';
+        const path = `${clientId}/${folder}/${fileName}`;
+
+        try {
+            const { error } = await supabase.storage.from(bucket).remove([path]);
+            if (error) throw error;
+            await loadFiles();
+            return true;
+        } catch (err) {
+            console.error('Error al eliminar archivo:', err);
+            return false;
+        }
+    };
+
+    const login = async (token: string) => {
+        const validated = await authenticateClientWithToken(token);
+        if (validated) {
+            const s = sessionStorage.getItem('clientAuth');
+            if (s) {
+                setClientSession(JSON.parse(s));
+                setAuthed(true);
+                return true;
+            }
+        }
+        return false;
+    };
+
     const logout = useCallback(() => {
         sessionStorage.removeItem('clientAuth');
         setAuthed(false);
@@ -360,7 +459,16 @@ export function useClientAdmin() {
         setEditForm,
         saveStatus,
         saveClientProfile,
+        login,
         logout,
-        handleUpgradeRequest
+        handleUpgradeRequest,
+        rsvps,
+        messages,
+        imageFiles,
+        audioFiles,
+        videoFiles,
+        handleUpload,
+        handleDelete,
+        fetchData
     };
 }

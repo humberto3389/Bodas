@@ -20,33 +20,52 @@ export function localToUTC(fechaLocal: string, horaLocal: string): string {
     const clean24h = validateAndFormatTime(horaLocal);
     const [hours, minutes] = clean24h.split(':').map(Number);
 
+    // Lima es UTC-5. Para obtener UTC sumamos 5 horas.
     const offset = 5;
-    const utcDate = new Date(Date.UTC(year, month - 1, day, hours + offset, minutes, 0, 0));
+    const date = new Date(Date.UTC(year, month - 1, day, hours + offset, minutes, 0, 0));
 
-    return utcDate.toISOString();
+    return date.toISOString();
 }
 
-export function UTCToLocal(utcTime: string | Date): string {
+export function UTCToLocal(utcTime: string | Date | undefined | null): string {
     if (!utcTime) return '';
-    const date = typeof utcTime === 'string' ? new Date(utcTime) : utcTime;
-    const limaDate = new Date(date.getTime() - (5 * 60 * 60 * 1000));
-    const h = limaDate.getUTCHours();
-    const m = limaDate.getUTCMinutes();
+    try {
+        const date = typeof utcTime === 'string'
+            ? (utcTime.includes('T') ? new Date(utcTime) : new Date(utcTime.replace(' ', 'T') + (utcTime.includes('+') || utcTime.includes('Z') ? '' : 'Z')))
+            : utcTime;
 
-    const ampm = h >= 12 ? 'p. m.' : 'a. m.';
-    let displayH = h % 12;
-    if (displayH === 0) displayH = 12;
+        if (isNaN(date.getTime())) return '';
 
-    return `${displayH}:${String(m).padStart(2, '0')} ${ampm}`;
+        return new Intl.DateTimeFormat('es-PE', {
+            timeZone: PERU_TIMEZONE,
+            hour12: true,
+            hour: 'numeric',
+            minute: '2-digit'
+        }).format(date).toLowerCase().replace(/\s([ap])\.?\s?m\.?$/i, ' $1. m.');
+    } catch (e) {
+        return '';
+    }
 }
 
-export function UTCToLocal24h(utcTime: string | Date): string {
+export function UTCToLocal24h(utcTime: string | Date | undefined | null): string {
     if (!utcTime) return '12:00';
-    const date = typeof utcTime === 'string' ? new Date(utcTime) : utcTime;
-    const limaDate = new Date(date.getTime() - (5 * 60 * 60 * 1000));
-    const h = limaDate.getUTCHours();
-    const m = limaDate.getUTCMinutes();
-    return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+    try {
+        const date = typeof utcTime === 'string'
+            ? (utcTime.includes('T') ? new Date(utcTime) : new Date(utcTime.replace(' ', 'T') + (utcTime.includes('+') || utcTime.includes('Z') ? '' : 'Z')))
+            : utcTime;
+
+        if (isNaN(date.getTime())) return '12:00';
+
+        return new Intl.DateTimeFormat('en-GB', {
+            timeZone: PERU_TIMEZONE,
+            hour12: false,
+            hour: '2-digit',
+            minute: '2-digit'
+        }).format(date);
+    } catch (e) {
+        console.error('Error in UTCToLocal24h:', e);
+        return '12:00';
+    }
 }
 
 /**

@@ -126,10 +126,10 @@ function loadClientsFromStorage(): ClientToken[] {
   return DEFAULT_CLIENTS;
 }
 
-// Función para guardar clientes en localStorage
+// Función para guardar clientes en sessionStorage
 function saveClientsToStorage(clients: ClientToken[]): void {
   try {
-    localStorage.setItem('wedding-clients', JSON.stringify(clients));
+    sessionStorage.setItem('wedding-clients', JSON.stringify(clients));
   } catch (error) {
   }
 }
@@ -316,8 +316,8 @@ export function mapSupabaseClientToToken(row: any): ClientToken {
     // FIX: Usar wedding_datetime_utc como verdad absoluta si existe.
     weddingTime: row.wedding_datetime_utc
       ? UTCToLocal24h(row.wedding_datetime_utc)
-      : validateAndFormatTime(row.wedding_time),
-    receptionTime: validateAndFormatTime(row.reception_time),
+      : (row.wedding_time ? validateAndFormatTime(row.wedding_time) : '18:00'),
+    receptionTime: row.reception_time ? validateAndFormatTime(row.reception_time) : '21:00',
     bibleVerse: row.bible_verse,
     bibleVerseBook: row.bible_verse_book,
     invitationText: row.invitation_text,
