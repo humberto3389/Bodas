@@ -14,8 +14,8 @@ export interface ClientToken {
   isActive: boolean;
   createdAt: Date;
   lastUsed?: Date;
-  weddingDate?: Date;
-  accessUntil?: Date; // Fecha de expiración del acceso
+  weddingDate: Date;
+  accessUntil: Date; // Fecha de expiración del acceso
   planType: 'basic' | 'premium' | 'deluxe'; // Tipo de plan contratado
   maxGuests: number; // Límite de invitados según el plan
   features: string[]; // Características incluidas en el plan
@@ -73,7 +73,7 @@ export interface ClientToken {
   receptionMapUrl?: string;
   receptionReference?: string;
   isReceptionSameAsCeremony?: boolean;
-  expiresAt?: Date; // Fecha formal de expiración de la invitación
+  expiresAt: Date; // Fecha formal de expiración de la invitación
   wedding_datetime_utc?: string; // Nuevo campo para hora precisa
   timezone?: string; // Zona horaria del evento
   decorationImageUrl?: string;
@@ -111,21 +111,19 @@ function loadClientsFromStorage(): ClientToken[] {
     const stored = sessionStorage.getItem('clientAuth');
     if (stored) {
       const client = JSON.parse(stored);
-      // Es un objeto único de sesión, lo envolvemos en array para mantener compatibilidad si es necesario
-      // pero idealmente auth-system debería manejar sesión única vs lista de clientes.
-      // Por ahora, devolvemos el array con el cliente actual.
+      // Retornar solo el cliente actual mapeado correctamente
       return [{
         ...client,
         createdAt: new Date(client.createdAt),
-        weddingDate: new Date(client.weddingDate),
-        accessUntil: new Date(client.accessUntil),
-        expiresAt: new Date(client.expiresAt || client.accessUntil),
+        weddingDate: client.weddingDate ? new Date(client.weddingDate) : undefined,
+        accessUntil: client.accessUntil ? new Date(client.accessUntil) : undefined,
+        expiresAt: (client.expiresAt || client.accessUntil) ? new Date(client.expiresAt || client.accessUntil) : undefined,
         lastUsed: client.lastUsed ? new Date(client.lastUsed) : undefined
       }];
     }
   } catch (error) {
   }
-  return DEFAULT_CLIENTS;
+  return [];
 }
 
 // Función para guardar clientes en sessionStorage
@@ -309,11 +307,11 @@ export function mapSupabaseClientToToken(row: any): ClientToken {
     isActive: row.is_active,
     createdAt: new Date(row.created_at),
     lastUsed: row.last_used ? new Date(row.last_used) : undefined,
-    weddingDate: row.wedding_date ? new Date(row.wedding_date) : undefined,
-    accessUntil: row.access_until ? new Date(row.access_until) : undefined,
+    weddingDate: new Date(row.wedding_date),
+    accessUntil: new Date(row.access_until),
     planType: row.plan_type,
     maxGuests: row.max_guests,
-    expiresAt: (row.expires_at || row.access_until) ? new Date(row.expires_at || row.access_until) : undefined,
+    expiresAt: new Date(row.expires_at || row.access_until),
     features: row.features || [],
     groomName: row.groom_name,
     brideName: row.bride_name,
@@ -393,7 +391,7 @@ export function validateClientToken(token: string): ClientToken | null {
   const now = new Date();
 
   // Verificar si ha pasado la fecha de acceso
-  if (client.accessUntil && now > client.accessUntil) {
+  if (now > client.accessUntil) {
     client.isActive = false;
     // Purga de datos al expirar acceso
     purgeClientData(client).catch(() => { });
@@ -422,7 +420,7 @@ export function getClientBySubdomain(subdomain: string): ClientToken | null {
   const now = new Date();
 
   // Verificar si ha pasado la fecha de acceso
-  if (client.accessUntil && now > client.accessUntil) {
+  if (now > client.accessUntil) {
     client.isActive = false;
     purgeClientData(client).catch(() => { });
     return null;
@@ -570,7 +568,6 @@ export function checkAndDeactivateExpiredTokens(): ClientToken[] {
 
 // Función para obtener días restantes de acceso
 export function getDaysUntilExpiration(client: ClientToken): number {
-  if (!client.accessUntil) return 0;
   const now = new Date();
   const diffTime = client.accessUntil.getTime() - now.getTime();
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
@@ -734,7 +731,7 @@ export async function checkAndRevertExpiredUpgrades(clientId: string): Promise<b
 // Función para extender acceso (solo para casos especiales)
 export async function extendClientAccess(token: string, additionalDays: number): Promise<boolean> {
   const client = CLIENT_TOKENS.find(c => c.token === token);
-  if (client && client.accessUntil) {
+  if (client) {
     client.accessUntil.setDate(client.accessUntil.getDate() + additionalDays);
     saveClientsToStorage(CLIENT_TOKENS);
     await syncClientToSupabase(client);
@@ -845,7 +842,7 @@ export async function authenticateClientWithToken(token: string): Promise<boolea
             // Información adicional útil
             clientName: client.clientName,
             planType: client.planType,
-            weddingDate: client.weddingDate?.toISOString(),
+            weddingDate: client.weddingDate.toISOString(),
             // El rol se usa para determinar si es admin
             role: 'client' // Importante: 'client' NO es 'master_admin'
           }
@@ -884,8 +881,8 @@ export async function authenticateClientWithToken(token: string): Promise<boolea
 // Función para obtener estadísticas del negocio
 export function getBusinessStats() {
   const now = new Date();
-  const activeClients = CLIENT_TOKENS.filter(c => c.isActive && c.accessUntil && c.accessUntil > now);
-  const expiredClients = CLIENT_TOKENS.filter(c => !c.isActive || (c.accessUntil && c.accessUntil <= now));
+  const activeClients = CLIENT_TOKENS.filter(c => c.isActive && c.accessUntil > now);
+  const expiredClients = CLIENT_TOKENS.filter(c => !c.isActive || c.accessUntil <= now);
 
   const revenue = CLIENT_TOKENS.reduce((total, client) => {
     const plan = PLANS[client.planType];

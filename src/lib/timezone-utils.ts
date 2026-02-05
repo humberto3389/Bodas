@@ -21,8 +21,14 @@ export function localToUTC(fechaLocal: string, horaLocal: string): string | null
     const [hours, minutes] = clean24h.split(':').map(Number);
 
     // Lima es UTC-5. Para obtener UTC sumamos 5 horas.
-    const offset = 5;
-    const date = new Date(Date.UTC(year, month - 1, day, hours + offset, minutes, 0, 0));
+    // Usamos el constructor Date.UTC para evitar desfases locales del navegador.
+    const date = new Date(Date.UTC(year, month - 1, day, hours + 5, minutes, 0, 0));
+
+    console.log('[localToUTC] Conversión:', {
+        input: `${fechaLocal} ${horaLocal}`,
+        clean24h,
+        utcISO: date.toISOString()
+    });
 
     return date.toISOString();
 }
@@ -180,9 +186,9 @@ export function validateAndFormatTime(timeInput: string): string {
         horaFinal: finalHour,
         minutoFinal: finalMinute,
         resultado24h: result,
-        interpretacion: finalHour === 12 ? 'MEDIODÍA (12 PM)' :
-            finalHour === 0 ? 'MEDIANOCHE (12 AM)' :
-                finalHour > 12 ? `${finalHour - 12} PM` : `${finalHour} AM`
+        interpretacion: finalHour === 12 ? 'MEDIODÍA' :
+            finalHour === 0 ? 'MEDIANOCHE' :
+                finalHour > 12 ? `TARDE (${finalHour - 12} PM)` : `MAÑANA (${finalHour} AM)`
     });
 
     return result;
@@ -283,12 +289,5 @@ export function formatTimeForDisplay(time24h: string): string {
     if (!time24h) return '';
     const { hour, minute, ampm } = convert24hTo12h(time24h);
     const period = ampm === 'PM' ? 'p. m.' : 'a. m.';
-
-    // Añadir indicador explícito para las 12 para evitar confusiones al usuario
-    let hint = '';
-    if (hour === 12) {
-        hint = ampm === 'PM' ? ' (Mediodía)' : ' (Medianoche)';
-    }
-
-    return `${hour}:${String(minute).padStart(2, '0')} ${period}${hint}`;
+    return `${hour}:${String(minute).padStart(2, '0')} ${period}`;
 }

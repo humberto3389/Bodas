@@ -25,7 +25,7 @@ export function useClientAdmin() {
     });
 
     // Ref para rastrear si acabamos de guardar (previene race condition)
-    const lastSaveTimeRef = useRef<number>(0);
+    const isSavingRef = useRef<boolean>(false);
     const hasLoadedOnceRef = useRef<boolean>(false);
 
     const detectedClient = getCurrentClientData();
@@ -117,12 +117,15 @@ export function useClientAdmin() {
     useEffect(() => {
         if (!authed || !clientId || !clientSession) return;
 
-        // Force load every time hook mounts/updates to ensure fresh data
         let ignore = false;
 
         const loadClientData = async () => {
+            if (isSavingRef.current) {
+                console.log('[loadClientData] Guardado en progreso, ignorando auto-recarga.');
+                return;
+            }
+
             try {
-                // Verificar y revertir upgrades expirados antes de cargar datos
                 await checkAndRevertExpiredUpgrades(clientId);
 
                 const { data: clientData, error: fetchError } = await supabase
@@ -136,29 +139,17 @@ export function useClientAdmin() {
                     return;
                 }
 
-                // CRÍTICO: Verificar que los datos pertenezcan al mismo usuario antes de actualizar
-                if (clientData.id !== clientId) {
-                    console.warn('[loadClientData] Datos de otro usuario detectados, ignorando actualización', {
-                        esperado: clientId,
-                        recibido: clientData.id
-                    });
-                    return;
-                }
+                if (clientData.id !== clientId) return;
 
-                // Usar el mapeo centralizado para garantizar coherencia
                 const mappedClient = mapSupabaseClientToToken(clientData);
-
-                // Prevent infinite loops by checking if data actually changed
-                // BUT: Always sync on the first load to ensure the form is populated correctly
                 const isChanged = JSON.stringify(mappedClient) !== JSON.stringify(clientSession);
 
                 if (isChanged || !hasLoadedOnceRef.current) {
-                    console.log(`[loadClientData] ${isChanged ? 'Datos actualizados' : 'Primer carga'}, sincronizando UI...`);
+                    console.log(`[loadClientData] Sincronizando UI (${isChanged ? 'Datos nuevos' : 'Primer carga'})...`);
                     sessionStorage.setItem('clientAuth', JSON.stringify(mappedClient));
                     window.dispatchEvent(new CustomEvent('clientAuthUpdated', { detail: { clientAuth: JSON.stringify(mappedClient) } }));
                     setClientSession(mappedClient);
 
-                    // ACTUALIZAR editForm con los datos cargados de Supabase
                     setEditForm({
                         clientName: mappedClient.clientName || '',
                         groomName: mappedClient.groomName || '',
@@ -199,13 +190,9 @@ export function useClientAdmin() {
                         isReceptionSameAsCeremony: mappedClient.isReceptionSameAsCeremony || false,
                         decorationImageUrl: mappedClient.decorationImageUrl || ''
                     });
-
-                    console.log('[loadClientData] editForm actualizado con datos de Supabase');
-                } else {
-                    console.log('[loadClientData] Datos idénticos, saltando actualización para prevenir loop.');
                 }
 
-                hasLoadedOnceRef.current = true; // Marcar que ya cargamos una vez
+                hasLoadedOnceRef.current = true;
             } catch (err) {
                 console.error('Error loading client data:', err);
             }
@@ -215,18 +202,13 @@ export function useClientAdmin() {
         return () => { ignore = true; };
     }, [authed, clientId, clientSession?.id]);
 
-
     const saveClientProfile = async () => {
         if (!clientSession || !clientId) return;
         setSaveStatus('saving');
-
-        // Marcar timestamp de guardado para prevenir race condition
-        lastSaveTimeRef.current = Date.now();
+        isSavingRef.current = true;
 
         try {
             const effectivePlan = getEffectivePlan(clientSession);
-
-            // Logic for filtering fields based on plan before saving
             let audioUrl = editForm.backgroundAudioUrl;
             if (!['premium', 'deluxe'].includes(effectivePlan)) audioUrl = '';
 
@@ -237,50 +219,16 @@ export function useClientAdmin() {
                 ? editForm.advancedAnimations
                 : { enabled: false, particleEffects: false, parallaxScrolling: false, floatingElements: false };
 
-            const updated: ClientToken = {
-                ...clientSession,
-                ...editForm,
-                weddingDate: editForm.weddingDate ? new Date(`${editForm.weddingDate}T12:00:00Z`) : clientSession.weddingDate,
-                backgroundAudioUrl: audioUrl || undefined,
-                heroBackgroundUrl: editForm.heroBackgroundUrl || undefined,
-                heroBackgroundVideoUrl: heroVideoUrl || undefined,
-                advancedAnimations: advancedAnimations,
-                decorationImageUrl: editForm.decorationImageUrl || undefined
-            };
-
             const weddingUTC = localToUTC(editForm.weddingDate, editForm.weddingTime);
 
-            console.log('[saveClientProfile] Guardando datos:', {
-                groomName: editForm.groomName,
-                brideName: editForm.brideName,
-                weddingTime: editForm.weddingTime,
-                weddingDate_raw: editForm.weddingDate,
-                weddingDate_toSave: editForm.weddingDate ? `${editForm.weddingDate}T12:00:00` : null,
-                weddingUTC: weddingUTC,
-                bibleVerse: editForm.bibleVerse,
-                invitationText: editForm.invitationText
-            });
+            console.log('[saveClientProfile] Guardando...', { weddingUTC, time: editForm.weddingTime });
 
-            // CRÍTICO: Verificar que el updated pertenezca al mismo usuario
-            if (updated.id !== clientId) {
-                console.error('[saveClientProfile] ERROR CRÍTICO: Intento de guardar datos de otro usuario!', {
-                    esperado: clientId,
-                    recibido: updated.id
-                });
-                setSaveStatus('error');
-                return;
-            }
-
-            // Actualizar estado local inmediatamente para feedback UI
-            setClientSession(updated);
-
-            // Guardar en Supabase PRIMERO para asegurar consistencia
             const { data: updatedData, error: updateError } = await supabase
                 .from('clients')
                 .update({
                     client_name: editForm.clientName,
                     wedding_date: editForm.weddingDate || null,
-                    wedding_datetime_utc: weddingUTC || null, // CRITICAL: Save absolute UTC time or null
+                    wedding_datetime_utc: weddingUTC || null,
                     groom_name: editForm.groomName,
                     bride_name: editForm.brideName,
                     wedding_time: validateAndFormatTime(editForm.weddingTime) || null,
@@ -307,27 +255,30 @@ export function useClientAdmin() {
                     ceremony_location_name: editForm.ceremonyLocationName || null,
                     reception_location_name: editForm.receptionLocationName || null,
                     advanced_animations: advancedAnimations,
+                    decoration_image_url: editForm.decorationImageUrl || null
                 })
                 .eq('id', clientId)
-                .select();
+                .select()
+                .single();
 
-            if (updateError) {
-                if (updateError.message !== 'Supabase no está configurado.') {
-                    console.error('Error al guardar perfil (Supabase Update):', updateError);
-                    alert(`Error al guardar: ${updateError.message}`);
-                    throw updateError;
-                }
-            } else if (!updatedData || updatedData.length === 0) {
-                console.error('Error: No se actualizó ninguna fila. Verifique el ID del cliente o permisos RLS.', { clientId });
-                alert('Error: No se pudieron guardar los cambios. Parece que el cliente no existe o no tienes permisos.');
-                throw new Error('No rows updated');
+            if (updateError) throw updateError;
+
+            if (updatedData) {
+                console.log('[saveClientProfile] Éxito. Sincronizando sesión local.');
+                const freshClient = mapSupabaseClientToToken(updatedData);
+                sessionStorage.setItem('clientAuth', JSON.stringify(freshClient));
+                window.dispatchEvent(new CustomEvent('clientAuthUpdated', { detail: { clientAuth: JSON.stringify(freshClient) } }));
+                setClientSession(freshClient);
             }
 
-            console.log('[saveClientProfile] Guardado exitoso en Supabase');
             setSaveStatus('success');
-            setTimeout(() => setSaveStatus('idle'), 2000);
+            setTimeout(() => {
+                isSavingRef.current = false;
+                setSaveStatus('idle');
+            }, 5000);
         } catch (err) {
-            console.error('Error saving profile (Catch):', err);
+            console.error('Error saving profile:', err);
+            isSavingRef.current = false;
             setSaveStatus('error');
             setTimeout(() => setSaveStatus('idle'), 3000);
         }

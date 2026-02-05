@@ -25,10 +25,13 @@ export function Countdown({ date, time }: CountdownProps) {
         if (date instanceof Date) {
             dateStr = date.toISOString().split('T')[0];
         } else if (typeof date === 'string') {
+            // Si viene con T (ISO), asegurarse de tomar solo la fecha
+            // "2026-06-21T00:00:00Z" -> "2026-06-21"
             dateStr = date.split('T')[0];
         }
 
-        console.log(`[Countdown] 🕒 CALCULANDO: ${dateStr} @ ${time || '00:00'}`);
+        // Usar la utilidad que combina fecha + hora y convierte a UTC
+        // Esto garantiza cálculos precisos independientemente de la zona del navegador
         return getEventTimestampUTC(dateStr, time || '00:00');
     }, [date, time])
 
