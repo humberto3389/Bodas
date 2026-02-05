@@ -1,10 +1,10 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
-import { authenticateClientWithToken, type ClientToken, requestUpgrade, checkAndRevertExpiredUpgrades } from '../lib/auth-system';
+import { authenticateClientWithToken, type ClientToken, requestUpgrade, checkAndRevertExpiredUpgrades, mapSupabaseClientToToken } from '../lib/auth-system';
 import { getCurrentClientData } from '../lib/client-data';
 import { getEffectivePlan } from '../lib/plan-limits';
-import { localToUTC, validateAndFormatTime, UTCToLocal24h, formatTimeForDisplay } from '../lib/timezone-utils';
+import { localToUTC, validateAndFormatTime } from '../lib/timezone-utils';
 
 export function useClientAdmin() {
     const navigate = useNavigate();
@@ -115,8 +115,6 @@ export function useClientAdmin() {
         if (!authed || !clientId || !clientSession) return;
 
         // Force load every time hook mounts/updates to ensure fresh data
-        // Removing race condition check to fix stale data issue
-
         let ignore = false;
 
         const loadClientData = async () => {
@@ -124,156 +122,74 @@ export function useClientAdmin() {
                 // Verificar y revertir upgrades expirados antes de cargar datos
                 await checkAndRevertExpiredUpgrades(clientId);
 
-                const { data: clientData, error } = await supabase
+                const { data: clientData, error: fetchError } = await supabase
                     .from('clients')
                     .select('*')
                     .eq('id', clientId)
                     .maybeSingle();
 
-                if (ignore || error || !clientData) return;
-
-                // Acceder a campos de upgrade de manera segura (pueden no existir si la migración no se ejecutó)
-                const upgradeApprovedAt = (clientData as any).upgrade_approved_at
-                    ? new Date((clientData as any).upgrade_approved_at)
-                    : undefined;
-                const upgradeConfirmed = (clientData as any).upgrade_confirmed ?? false;
-                const originalPlanType = (clientData as any).original_plan_type;
-
-                const effectivePlan = getEffectivePlan({
-                    ...clientSession,
-                    planStatus: clientData.plan_status,
-                    pendingPlan: clientData.pending_plan,
-                    pendingSince: clientData.pending_since ? new Date(clientData.pending_since) : undefined,
-                    upgradeApprovedAt,
-                    upgradeConfirmed,
-                    originalPlanType
-                } as any);
-
-                // Filter data based on plan (Server side should also handle this, but frontend ensures consistency)
-                const audioUrl = ['premium', 'deluxe'].includes(effectivePlan)
-                    ? (clientData.background_audio_url || clientSession.backgroundAudioUrl)
-                    : undefined;
-
-                const videoUrl = effectivePlan === 'deluxe'
-                    ? (clientData.hero_background_video_url || clientSession.heroBackgroundVideoUrl)
-                    : undefined;
-
-                const advAnimations = effectivePlan === 'deluxe'
-                    ? (clientData.advanced_animations || clientSession.advancedAnimations || { enabled: false, particleEffects: false, parallaxScrolling: false, floatingElements: false })
-                    : { enabled: false, particleEffects: false, parallaxScrolling: false, floatingElements: false };
-
-                // Acceder a campos de upgrade de manera segura
-                const upgradeApprovedAtValue = (clientData as any).upgrade_approved_at
-                    ? new Date((clientData as any).upgrade_approved_at)
-                    : clientSession.upgradeApprovedAt;
-                const upgradeConfirmedValue = (clientData as any).upgrade_confirmed ?? clientSession.upgradeConfirmed;
-                const originalPlanTypeValue = (clientData as any).original_plan_type ?? clientSession.originalPlanType;
-
-                const updated: ClientToken = {
-                    ...clientSession,
-                    planType: clientData.plan_type ?? clientSession.planType,
-                    planStatus: clientData.plan_status ?? clientSession.planStatus,
-                    pendingPlan: clientData.pending_plan ?? clientSession.pendingPlan,
-                    pendingSince: clientData.pending_since ? new Date(clientData.pending_since) : clientSession.pendingSince,
-                    upgradeApprovedAt: upgradeApprovedAtValue,
-                    upgradeConfirmed: upgradeConfirmedValue,
-                    originalPlanType: originalPlanTypeValue,
-                    clientName: clientData.client_name ?? clientSession.clientName,
-                    groomName: clientData.groom_name ?? clientSession.groomName,
-                    brideName: clientData.bride_name ?? clientSession.brideName,
-                    weddingDate: clientData.wedding_date ? new Date(clientData.wedding_date) : clientSession.weddingDate,
-                    // FIX: Usar wedding_datetime_utc como VERDAD ABSOLUTA si existe.
-                    // Esto corrige el problema de "00:30" vs "12:30" ignorando el texto corrupto wedding_time.
-                    weddingTime: clientData.wedding_datetime_utc
-                        ? UTCToLocal24h(clientData.wedding_datetime_utc)
-                        : (clientData.wedding_time ?? clientSession.weddingTime),
-                    weddingLocation: clientData.wedding_location ?? clientSession.weddingLocation,
-                    weddingType: clientData.wedding_type ?? clientSession.weddingType,
-                    religiousSymbol: clientData.religious_symbol ?? clientSession.religiousSymbol,
-                    bibleVerse: clientData.bible_verse ?? clientSession.bibleVerse,
-                    bibleVerseBook: clientData.bible_verse_book ?? clientSession.bibleVerseBook,
-                    invitationText: clientData.invitation_text ?? clientSession.invitationText,
-                    ceremonyAddress: clientData.ceremony_address ?? clientSession.ceremonyAddress,
-                    ceremonyReference: clientData.ceremony_reference ?? clientSession.ceremonyReference,
-                    ceremonyMapUrl: clientData.ceremony_map_url ?? clientSession.ceremonyMapUrl,
-                    receptionAddress: clientData.reception_address ?? clientSession.receptionAddress,
-                    receptionReference: clientData.reception_reference ?? clientSession.receptionReference,
-                    receptionMapUrl: clientData.reception_map_url ?? clientSession.receptionMapUrl,
-                    isReceptionSameAsCeremony: clientData.is_reception_same_as_ceremony ?? clientSession.isReceptionSameAsCeremony ?? false,
-                    backgroundAudioUrl: audioUrl,
-                    heroBackgroundUrl: clientData.hero_background_url ?? clientSession.heroBackgroundUrl,
-                    heroBackgroundVideoUrl: videoUrl,
-                    heroDisplayMode: (clientData.hero_display_mode as 'image' | 'video') || clientSession.heroDisplayMode,
-                    heroVideoAudioEnabled: clientData.hero_video_audio_enabled ?? clientSession.heroVideoAudioEnabled,
-                    cinemaVideoAudioEnabled: clientData.cinema_video_audio_enabled ?? clientSession.cinemaVideoAudioEnabled,
-                    advancedAnimations: advAnimations,
-                    decorationImageUrl: clientData.decoration_image_url ?? clientSession.decorationImageUrl,
-                    mapCoordinates: clientData.map_coordinates || clientSession.mapCoordinates,
-                    churchName: clientData.church_name || clientSession.churchName,
-                    ceremonyLocationName: clientData.ceremony_location_name || clientSession.ceremonyLocationName,
-                    receptionLocationName: clientData.reception_location_name || clientSession.receptionLocationName,
-                    receptionTime: clientData.reception_time || clientSession.receptionTime,
-
-                };
-
-                console.log('[loadClientData] Datos cargados de Supabase:', {
-                    groomName: clientData.groom_name,
-                    brideName: clientData.bride_name,
-                    weddingTime: clientData.wedding_time,
-                    weddingDate_raw: clientData.wedding_date,
-                    weddingDate_processed: clientData.wedding_date ? new Date(clientData.wedding_date).toISOString().slice(0, 10) : null,
-                    bibleVerse: clientData.bible_verse
-                });
+                if (ignore || fetchError || !clientData) {
+                    if (fetchError) console.error('Error fetching client data:', fetchError);
+                    return;
+                }
 
                 // CRÍTICO: Verificar que los datos pertenezcan al mismo usuario antes de actualizar
-                if (updated.id !== clientId) {
+                if (clientData.id !== clientId) {
                     console.warn('[loadClientData] Datos de otro usuario detectados, ignorando actualización', {
                         esperado: clientId,
-                        recibido: updated.id
+                        recibido: clientData.id
                     });
                     return;
                 }
 
+                // Usar el mapeo centralizado para garantizar coherencia
+                const mappedClient = mapSupabaseClientToToken(clientData);
+
                 // Prevent infinite loops by checking if data actually changed
-                if (JSON.stringify(updated) !== JSON.stringify(clientSession)) {
+                if (JSON.stringify(mappedClient) !== JSON.stringify(clientSession)) {
                     console.log('[loadClientData] Datos actualizados, guardando nuevos datos...');
-                    sessionStorage.setItem('clientAuth', JSON.stringify(updated));
-                    window.dispatchEvent(new CustomEvent('clientAuthUpdated', { detail: { clientAuth: JSON.stringify(updated) } }));
-                    setClientSession(updated);
+                    sessionStorage.setItem('clientAuth', JSON.stringify(mappedClient));
+                    window.dispatchEvent(new CustomEvent('clientAuthUpdated', { detail: { clientAuth: JSON.stringify(mappedClient) } }));
+                    setClientSession(mappedClient);
 
                     // ACTUALIZAR editForm con los datos cargados de Supabase
                     setEditForm({
-                        clientName: clientData.client_name || '',
-                        groomName: clientData.groom_name || '',
-                        brideName: clientData.bride_name || '',
-                        weddingDate: clientData.wedding_date ? String(clientData.wedding_date).split('T')[0] : '',
-                        weddingTime: clientData.wedding_time || '',
-                        receptionTime: clientData.reception_time || '',
-                        weddingLocation: clientData.wedding_location || '',
-                        weddingType: clientData.wedding_type || '',
-                        religiousSymbol: clientData.religious_symbol || '',
-                        bibleVerse: clientData.bible_verse || '',
-                        bibleVerseBook: clientData.bible_verse_book || '',
-                        invitationText: clientData.invitation_text || '',
-                        backgroundAudioUrl: audioUrl || '',
-                        heroBackgroundUrl: clientData.hero_background_url || '',
-                        heroBackgroundVideoUrl: videoUrl || '',
-                        heroDisplayMode: (clientData.hero_display_mode as 'image' | 'video') || 'image',
-                        heroVideoAudioEnabled: clientData.hero_video_audio_enabled || false,
-                        cinemaVideoAudioEnabled: clientData.cinema_video_audio_enabled || false,
-                        advancedAnimations: advAnimations,
-                        mapCoordinates: clientData.map_coordinates || { lat: -12.0932, lng: -77.0314 },
-                        churchName: clientData.church_name || '',
-                        ceremonyLocationName: clientData.ceremony_location_name || '',
-                        receptionLocationName: clientData.reception_location_name || '',
-                        ceremonyAddress: clientData.ceremony_address || '',
-                        ceremonyReference: clientData.ceremony_reference || '',
-                        ceremonyMapUrl: clientData.ceremony_map_url || '',
-                        receptionAddress: clientData.reception_address || '',
-                        receptionReference: clientData.reception_reference || '',
-                        receptionMapUrl: clientData.reception_map_url || '',
-                        isReceptionSameAsCeremony: clientData.is_reception_same_as_ceremony || false,
-                        decorationImageUrl: clientData.decoration_image_url || ''
+                        clientName: mappedClient.clientName || '',
+                        groomName: mappedClient.groomName || '',
+                        brideName: mappedClient.brideName || '',
+                        weddingDate: mappedClient.weddingDate ? mappedClient.weddingDate.toISOString().split('T')[0] : '',
+                        weddingTime: mappedClient.weddingTime || '',
+                        receptionTime: mappedClient.receptionTime || '',
+                        weddingLocation: mappedClient.weddingLocation || '',
+                        weddingType: mappedClient.weddingType || 'Boda',
+                        religiousSymbol: mappedClient.religiousSymbol || '',
+                        bibleVerse: mappedClient.bibleVerse || '',
+                        bibleVerseBook: mappedClient.bibleVerseBook || '',
+                        invitationText: mappedClient.invitationText || '',
+                        backgroundAudioUrl: mappedClient.backgroundAudioUrl || '',
+                        heroBackgroundUrl: mappedClient.heroBackgroundUrl || '',
+                        heroBackgroundVideoUrl: mappedClient.heroBackgroundVideoUrl || '',
+                        heroDisplayMode: mappedClient.heroDisplayMode || 'image',
+                        heroVideoAudioEnabled: mappedClient.heroVideoAudioEnabled || false,
+                        cinemaVideoAudioEnabled: mappedClient.cinemaVideoAudioEnabled || false,
+                        advancedAnimations: (mappedClient.advancedAnimations as any) || {
+                            enabled: false,
+                            particleEffects: false,
+                            parallaxScrolling: false,
+                            floatingElements: false
+                        },
+                        mapCoordinates: mappedClient.mapCoordinates || { lat: -12.0932, lng: -77.0314 },
+                        churchName: mappedClient.churchName || '',
+                        ceremonyLocationName: mappedClient.ceremonyLocationName || '',
+                        receptionLocationName: mappedClient.receptionLocationName || '',
+                        ceremonyAddress: mappedClient.ceremonyAddress || '',
+                        ceremonyReference: mappedClient.ceremonyReference || '',
+                        ceremonyMapUrl: mappedClient.ceremonyMapUrl || '',
+                        receptionAddress: mappedClient.receptionAddress || '',
+                        receptionReference: mappedClient.receptionReference || '',
+                        receptionMapUrl: mappedClient.receptionMapUrl || '',
+                        isReceptionSameAsCeremony: mappedClient.isReceptionSameAsCeremony || false,
+                        decorationImageUrl: mappedClient.decorationImageUrl || ''
                     });
 
                     console.log('[loadClientData] editForm actualizado con datos de Supabase');
@@ -357,10 +273,11 @@ export function useClientAdmin() {
                     client_name: editForm.clientName,
                     // FIX ZONA HORARIA: Guardar mediodía UTC para evitar desplazamientos
                     wedding_date: editForm.weddingDate ? `${editForm.weddingDate}T12:00:00` : null,
-                    wedding_datetime_utc: weddingUTC,
+                    wedding_datetime_utc: weddingUTC, // CRITICAL: Save absolute UTC time
                     groom_name: editForm.groomName,
                     bride_name: editForm.brideName,
-                    wedding_time: validateAndFormatTime(editForm.weddingTime),
+                    wedding_time: validateAndFormatTime(editForm.weddingTime) || null,
+                    reception_time: validateAndFormatTime(editForm.receptionTime) || null,
                     wedding_location: editForm.weddingLocation,
                     wedding_type: editForm.weddingType,
                     religious_symbol: editForm.religiousSymbol,
@@ -383,7 +300,6 @@ export function useClientAdmin() {
                     church_name: editForm.churchName,
                     ceremony_location_name: editForm.ceremonyLocationName,
                     reception_location_name: editForm.receptionLocationName,
-                    reception_time: validateAndFormatTime(editForm.receptionTime),
                     advanced_animations: advancedAnimations,
                     decoration_image_url: editForm.decorationImageUrl || null,
                     map_coordinates: editForm.mapCoordinates,
@@ -425,7 +341,6 @@ export function useClientAdmin() {
         const success = await requestUpgrade(clientId, newPlan);
         if (success) {
             // Force reload to update UI
-            // We can manually update session here for instant feedback
             setClientSession(prev => prev ? {
                 ...prev,
                 planStatus: 'pending_upgrade',

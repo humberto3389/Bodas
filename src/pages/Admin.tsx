@@ -2,8 +2,8 @@ import { useEffect, useMemo, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { supabase } from '../lib/supabase'
 import { getCurrentClientData } from '../lib/client-data'
-import { validateClientToken, authenticateClientWithToken, type ClientToken } from '../lib/auth-system'
-import { formatTimeDisplay, localToUTC, UTCToLocal24h, validateAndFormatTime } from '../lib/timezone-utils'
+import { validateClientToken, authenticateClientWithToken, type ClientToken, mapSupabaseClientToToken } from '../lib/auth-system'
+import { formatTimeDisplay, localToUTC, validateAndFormatTime } from '../lib/timezone-utils'
 import { compressImageForWeb } from '../utils/compressImage'
 
 import { ToastContainer } from '../components/Toast'
@@ -128,9 +128,6 @@ export default function Admin() {
   useEffect(() => {
     if (!authed || !clientId) return
 
-    // safe session access
-    const currentSession = clientSession
-
     const loadClientData = async () => {
       try {
         const { data: clientData, error } = await supabase
@@ -139,94 +136,55 @@ export default function Admin() {
           .eq('id', clientId)
           .maybeSingle()
 
-        if (error || !clientData || !currentSession) return
+        if (error || !clientData) return
 
-        const currentPlanType = currentSession.planType || 'basic'
+        // Usar mapeo centralizado para garantizar coherencia
+        const mappedClient = mapSupabaseClientToToken(clientData)
+        sessionStorage.setItem('clientAuth', JSON.stringify(mappedClient))
+        window.dispatchEvent(new CustomEvent('clientAuthUpdated', { detail: { clientAuth: JSON.stringify(mappedClient) } }))
+        setClientSession(mappedClient)
 
-        // Logic to respect Plan limits when loading form data (similar to old admin)
-        const audioUrl = ['premium', 'deluxe'].includes(currentPlanType) && clientData.background_audio_url
-          ? clientData.background_audio_url
-          : (currentSession.backgroundAudioUrl || undefined)
+        // Actualizar editForm con los datos cargados
+        setEditForm({
+          clientName: mappedClient.clientName || '',
+          groomName: mappedClient.groomName || '',
+          brideName: mappedClient.brideName || '',
+          weddingDate: mappedClient.weddingDate ? mappedClient.weddingDate.toISOString().split('T')[0] : '',
+          weddingTime: mappedClient.weddingTime || '',
+          receptionTime: mappedClient.receptionTime || '',
+          weddingLocation: mappedClient.weddingLocation || '',
+          weddingType: mappedClient.weddingType || 'Boda',
+          religiousSymbol: mappedClient.religiousSymbol || '✝',
+          bibleVerse: mappedClient.bibleVerse || '',
+          bibleVerseBook: mappedClient.bibleVerseBook || '',
+          invitationText: mappedClient.invitationText || '',
+          backgroundAudioUrl: mappedClient.backgroundAudioUrl || '',
+          heroBackgroundUrl: mappedClient.heroBackgroundUrl || '',
+          heroBackgroundVideoUrl: mappedClient.heroBackgroundVideoUrl || '',
+          heroDisplayMode: mappedClient.heroDisplayMode || 'image',
+          heroVideoAudioEnabled: mappedClient.heroVideoAudioEnabled || false,
+          advancedAnimations: (mappedClient.advancedAnimations as any) || {
+            enabled: false,
+            particleEffects: false,
+            parallaxScrolling: false,
+            floatingElements: false
+          },
+          mapCoordinates: mappedClient.mapCoordinates || { lat: -12.0932, lng: -77.0314 },
+          churchName: mappedClient.churchName || '',
+          ceremonyLocationName: mappedClient.ceremonyLocationName || '',
+          receptionLocationName: mappedClient.receptionLocationName || '',
+          ceremonyAddress: mappedClient.ceremonyAddress || '',
+          ceremonyReference: mappedClient.ceremonyReference || '',
+          ceremonyMapUrl: mappedClient.ceremonyMapUrl || '',
+          receptionAddress: mappedClient.receptionAddress || '',
+          receptionReference: mappedClient.receptionReference || '',
+          receptionMapUrl: mappedClient.receptionMapUrl || '',
+          isReceptionSameAsCeremony: mappedClient.isReceptionSameAsCeremony || false
+        })
 
-        const videoUrl = clientData.hero_background_video_url || currentSession.heroBackgroundVideoUrl || undefined
-
-        const advAnimations = currentPlanType === 'deluxe'
-          ? (clientData.advanced_animations || currentSession.advancedAnimations || { enabled: false, particleEffects: false, parallaxScrolling: false, floatingElements: false })
-          : { enabled: false, particleEffects: false, parallaxScrolling: false, floatingElements: false }
-
-        const updated: ClientToken = {
-          ...currentSession,
-          clientName: clientData.client_name || currentSession.clientName,
-          groomName: clientData.groom_name || currentSession.groomName,
-          brideName: clientData.bride_name || currentSession.brideName,
-          weddingDate: clientData.wedding_date ? (typeof clientData.wedding_date === 'string' ? clientData.wedding_date.split('T')[0] : clientData.wedding_date) : currentSession.weddingDate,
-          weddingTime: clientData.wedding_datetime_utc
-            ? UTCToLocal24h(clientData.wedding_datetime_utc)
-            : formatTimeDisplay(clientData.wedding_time || currentSession.weddingTime, false),
-          weddingLocation: clientData.wedding_location || currentSession.weddingLocation,
-          weddingType: clientData.wedding_type || currentSession.weddingType,
-          religiousSymbol: clientData.religious_symbol || currentSession.religiousSymbol,
-          bibleVerse: clientData.bible_verse || currentSession.bibleVerse,
-          bibleVerseBook: clientData.bible_verse_book || currentSession.bibleVerseBook,
-          invitationText: clientData.invitation_text || currentSession.invitationText,
-          ceremonyAddress: clientData.ceremony_address || currentSession.ceremonyAddress,
-          ceremonyReference: clientData.ceremony_reference || currentSession.ceremonyReference,
-          ceremonyMapUrl: clientData.ceremony_map_url || currentSession.ceremonyMapUrl,
-          receptionAddress: clientData.reception_address || currentSession.receptionAddress,
-          receptionReference: clientData.reception_reference || currentSession.receptionReference,
-          receptionMapUrl: clientData.reception_map_url || currentSession.receptionMapUrl,
-          isReceptionSameAsCeremony: clientData.is_reception_same_as_ceremony ?? currentSession.isReceptionSameAsCeremony ?? false,
-          backgroundAudioUrl: audioUrl,
-          heroBackgroundUrl: clientData.hero_background_url || currentSession.heroBackgroundUrl,
-          heroBackgroundVideoUrl: videoUrl,
-          heroDisplayMode: (clientData.hero_display_mode || currentSession.heroDisplayMode || 'image') as 'image' | 'video',
-          heroVideoAudioEnabled: clientData.hero_video_audio_enabled ?? currentSession.heroVideoAudioEnabled ?? false,
-          advancedAnimations: advAnimations,
-          mapCoordinates: clientData.map_coordinates || currentSession.mapCoordinates,
-          churchName: clientData.church_name || currentSession.churchName,
-          ceremonyLocationName: clientData.ceremony_location_name || currentSession.ceremonyLocationName,
-          receptionLocationName: clientData.reception_location_name || currentSession.receptionLocationName,
-          receptionTime: formatTimeDisplay(clientData.reception_time || currentSession.receptionTime, false),
-        }
-
-        sessionStorage.setItem('clientAuth', JSON.stringify(updated))
-        window.dispatchEvent(new CustomEvent('clientAuthUpdated', { detail: { clientAuth: JSON.stringify(updated) } }))
-        setClientSession(updated)
-
-        setEditForm(prev => ({
-          ...prev,
-          clientName: updated.clientName || prev.clientName,
-          groomName: updated.groomName || prev.groomName,
-          brideName: updated.brideName || prev.brideName,
-          weddingDate: updated.weddingDate ? (updated.weddingDate instanceof Date ? updated.weddingDate.toISOString().split('T')[0] : (typeof updated.weddingDate === 'string' ? (updated.weddingDate as string).split('T')[0] : '')) : prev.weddingDate,
-          weddingTime: updated.weddingTime || prev.weddingTime,
-          weddingLocation: updated.weddingLocation || prev.weddingLocation,
-          weddingType: updated.weddingType || prev.weddingType,
-          religiousSymbol: updated.religiousSymbol || prev.religiousSymbol,
-          bibleVerse: updated.bibleVerse || prev.bibleVerse,
-          bibleVerseBook: updated.bibleVerseBook || prev.bibleVerseBook,
-          ceremonyAddress: updated.ceremonyAddress || prev.ceremonyAddress,
-          ceremonyReference: updated.ceremonyReference || prev.ceremonyReference,
-          ceremonyMapUrl: updated.ceremonyMapUrl || prev.ceremonyMapUrl,
-          receptionAddress: updated.receptionAddress || prev.receptionAddress,
-          receptionReference: updated.receptionReference || prev.receptionReference,
-          receptionMapUrl: updated.receptionMapUrl || prev.receptionMapUrl,
-          isReceptionSameAsCeremony: updated.isReceptionSameAsCeremony ?? prev.isReceptionSameAsCeremony ?? false,
-          invitationText: updated.invitationText || prev.invitationText,
-          backgroundAudioUrl: updated.backgroundAudioUrl || prev.backgroundAudioUrl,
-          heroBackgroundUrl: updated.heroBackgroundUrl || prev.heroBackgroundUrl,
-          heroBackgroundVideoUrl: updated.heroBackgroundVideoUrl || prev.heroBackgroundVideoUrl,
-          heroDisplayMode: updated.heroDisplayMode || prev.heroDisplayMode,
-          heroVideoAudioEnabled: updated.heroVideoAudioEnabled || prev.heroVideoAudioEnabled,
-          advancedAnimations: updated.advancedAnimations || prev.advancedAnimations,
-          mapCoordinates: updated.mapCoordinates || prev.mapCoordinates,
-          churchName: updated.churchName || prev.churchName,
-          ceremonyLocationName: updated.ceremonyLocationName || prev.ceremonyLocationName,
-          receptionLocationName: updated.receptionLocationName || prev.receptionLocationName,
-          receptionTime: updated.receptionTime || prev.receptionTime,
-        }))
-
-      } catch (err) { console.error(err) }
+      } catch (err) {
+        console.error('[Admin] Error loading client data:', err)
+      }
     }
 
     loadClientData()

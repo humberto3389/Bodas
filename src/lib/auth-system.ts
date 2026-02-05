@@ -1,6 +1,6 @@
 // Sistema de autenticación para alquiler de sitios de bodas
 import { supabase } from './supabase';
-import { formatTimeDisplay, validateAndFormatTime } from './timezone-utils';
+import { validateAndFormatTime, UTCToLocal24h } from './timezone-utils';
 
 // Debounce para evitar sincronizaciones repetidas
 const syncDebounceMap = new Map<string, number>();
@@ -276,49 +276,8 @@ async function loadClientsFromSupabase(): Promise<ClientToken[]> {
     }
 
     if (data && data.length > 0) {
-      // Convertir datos de Supabase a ClientToken
-      return data.map((row: any) => ({
-        id: row.id,
-        clientName: row.client_name,
-        subdomain: row.subdomain,
-        token: row.token,
-        isActive: row.is_active,
-        createdAt: new Date(row.created_at),
-        lastUsed: row.last_used ? new Date(row.last_used) : undefined,
-        weddingDate: new Date(row.wedding_date),
-        accessUntil: new Date(row.access_until),
-        planType: row.plan_type,
-        maxGuests: row.max_guests,
-        expiresAt: new Date(row.expires_at || row.access_until),
-        features: row.features || [],
-        groomName: row.groom_name,
-        brideName: row.bride_name,
-        weddingLocation: row.wedding_location,
-        weddingTime: validateAndFormatTime(row.wedding_time),
-        bibleVerse: row.bible_verse,
-        invitationText: row.invitation_text,
-        wedding_datetime_utc: row.wedding_datetime_utc,
-        timezone: row.timezone,
-        backgroundAudioUrl: row.background_audio_url || undefined,
-        heroBackgroundUrl: row.hero_background_url || undefined,
-        heroBackgroundVideoUrl: row.hero_background_video_url || undefined,
-        heroDisplayMode: row.hero_display_mode || 'image',
-        heroVideoAudioEnabled: row.hero_video_audio_enabled || false,
-        cinemaVideoAudioEnabled: row.cinema_video_audio_enabled || false,
-        advancedAnimations: row.advanced_animations || {
-          enabled: false,
-          particleEffects: false,
-          parallaxScrolling: false,
-          floatingElements: false
-        },
-        mapCoordinates: row.map_coordinates || { lat: -12.0932, lng: -77.0314 },
-        ceremonyLocationName: row.ceremony_location_name || undefined,
-        receptionLocationName: row.reception_location_name || undefined,
-        receptionTime: formatTimeDisplay(row.reception_time, false) || undefined,
-        churchName: row.church_name || undefined,
-        weddingType: row.wedding_type || undefined,
-        decorationImageUrl: row.decoration_image_url || undefined,
-      }));
+      // Convertir datos de Supabase a ClientToken usando el mapeo centralizado
+      return data.map((row: any) => mapSupabaseClientToToken(row));
     }
   } catch (error) {
     // Silencioso en modo desarrollo
@@ -330,6 +289,66 @@ async function loadClientsFromSupabase(): Promise<ClientToken[]> {
 
   // Fallback a localStorage
   return loadClientsFromStorage();
+}
+
+/**
+ * Mapea una fila de Supabase al formato ClientToken de forma centralizada.
+ * Esta es la ÚNICA fuente de verdad para el mapeo de datos del cliente.
+ */
+export function mapSupabaseClientToToken(row: any): ClientToken {
+  return {
+    id: row.id,
+    clientName: row.client_name,
+    subdomain: row.subdomain,
+    token: row.token,
+    isActive: row.is_active,
+    createdAt: new Date(row.created_at),
+    lastUsed: row.last_used ? new Date(row.last_used) : undefined,
+    weddingDate: new Date(row.wedding_date),
+    accessUntil: new Date(row.access_until),
+    planType: row.plan_type,
+    maxGuests: row.max_guests,
+    expiresAt: new Date(row.expires_at || row.access_until),
+    features: row.features || [],
+    groomName: row.groom_name,
+    brideName: row.bride_name,
+    weddingLocation: row.wedding_location,
+    // FIX: Usar wedding_datetime_utc como verdad absoluta si existe.
+    weddingTime: row.wedding_datetime_utc
+      ? UTCToLocal24h(row.wedding_datetime_utc)
+      : validateAndFormatTime(row.wedding_time),
+    receptionTime: validateAndFormatTime(row.reception_time),
+    bibleVerse: row.bible_verse,
+    bibleVerseBook: row.bible_verse_book,
+    invitationText: row.invitation_text,
+    wedding_datetime_utc: row.wedding_datetime_utc,
+    timezone: row.timezone,
+    backgroundAudioUrl: row.background_audio_url || undefined,
+    heroBackgroundUrl: row.hero_background_url || undefined,
+    heroBackgroundVideoUrl: row.hero_background_video_url || undefined,
+    heroDisplayMode: row.hero_display_mode || 'image',
+    heroVideoAudioEnabled: row.hero_video_audio_enabled || false,
+    cinemaVideoAudioEnabled: row.cinema_video_audio_enabled || false,
+    advancedAnimations: row.advanced_animations || {
+      enabled: false,
+      particleEffects: false,
+      parallaxScrolling: false,
+      floatingElements: false
+    },
+    mapCoordinates: row.map_coordinates || { lat: -12.0932, lng: -77.0314 },
+    ceremonyLocationName: row.ceremony_location_name || undefined,
+    receptionLocationName: row.reception_location_name || undefined,
+    churchName: row.church_name || undefined,
+    ceremonyAddress: row.ceremony_address,
+    ceremonyReference: row.ceremony_reference,
+    ceremonyMapUrl: row.ceremony_map_url,
+    receptionAddress: row.reception_address,
+    receptionMapUrl: row.reception_map_url,
+    receptionReference: row.reception_reference,
+    isReceptionSameAsCeremony: row.is_reception_same_as_ceremony,
+    weddingType: row.wedding_type || undefined,
+    decorationImageUrl: row.decoration_image_url || undefined,
+  };
 }
 
 // Cargar clientes iniciales
@@ -421,51 +440,8 @@ export async function fetchClientBySubdomain(subdomain: string): Promise<ClientT
 
   if (error || !clientData) return null;
 
-  // Mapear a ClientToken
-  return {
-    id: clientData.id,
-    clientName: clientData.client_name,
-    subdomain: clientData.subdomain,
-    token: clientData.token,
-    isActive: clientData.is_active,
-    createdAt: new Date(clientData.created_at),
-    weddingDate: new Date(clientData.wedding_date),
-    accessUntil: new Date(clientData.access_until),
-    planType: clientData.plan_type,
-    maxGuests: clientData.max_guests,
-    expiresAt: new Date(clientData.expires_at || clientData.access_until),
-    features: clientData.features || [],
-    groomName: clientData.groom_name,
-    brideName: clientData.bride_name,
-    weddingLocation: clientData.wedding_location,
-    weddingTime: validateAndFormatTime(clientData.wedding_time),
-    receptionTime: validateAndFormatTime(clientData.reception_time),
-    bibleVerse: clientData.bible_verse,
-    bibleVerseBook: clientData.bible_verse_book,
-    invitationText: clientData.invitation_text,
-    backgroundAudioUrl: clientData.background_audio_url || undefined,
-    heroBackgroundUrl: clientData.hero_background_url || undefined,
-    heroBackgroundVideoUrl: clientData.hero_background_video_url || undefined,
-    heroDisplayMode: clientData.hero_display_mode || 'image',
-    heroVideoAudioEnabled: clientData.hero_video_audio_enabled || false,
-    cinemaVideoAudioEnabled: clientData.cinema_video_audio_enabled || false,
-    weddingType: clientData.wedding_type || undefined,
-    advancedAnimations: clientData.advanced_animations || undefined,
-    mapCoordinates: clientData.map_coordinates || { lat: -12.0932, lng: -77.0314 },
-    ceremonyLocationName: clientData.ceremony_location_name || undefined,
-    receptionLocationName: clientData.reception_location_name || undefined,
-    churchName: clientData.church_name || undefined,
-    ceremonyAddress: clientData.ceremony_address,
-    ceremonyReference: clientData.ceremony_reference,
-    ceremonyMapUrl: clientData.ceremony_map_url,
-    receptionAddress: clientData.reception_address,
-    receptionMapUrl: clientData.reception_map_url,
-    receptionReference: clientData.reception_reference,
-    isReceptionSameAsCeremony: clientData.is_reception_same_as_ceremony,
-    wedding_datetime_utc: clientData.wedding_datetime_utc,
-    timezone: clientData.timezone,
-    decorationImageUrl: clientData.decoration_image_url,
-  };
+  // Mapear a ClientToken usando el mapeo centralizado
+  return mapSupabaseClientToToken(clientData);
 }
 
 // Función para generar UUIDs simples (sin librerías externas)
@@ -781,52 +757,8 @@ export async function authenticateClientWithToken(token: string): Promise<boolea
       return false;
     }
 
-    // Mapear a ClientToken completo
-    const client: ClientToken = {
-      id: clientData.id,
-      clientName: clientData.client_name,
-      subdomain: clientData.subdomain,
-      token: clientData.token,
-      isActive: clientData.is_active,
-      createdAt: new Date(), // Esto podría venir de la BD también
-      weddingDate: new Date(clientData.wedding_date),
-      accessUntil: new Date(clientData.access_until || new Date()),
-      planType: clientData.plan_type,
-      maxGuests: clientData.max_guests,
-      expiresAt: new Date(clientData.expires_at || clientData.wedding_date),
-      features: clientData.features || [],
-
-      // Mapear el resto de campos para mantener la consistencia
-      groomName: clientData.groom_name,
-      brideName: clientData.bride_name,
-      weddingLocation: clientData.wedding_location,
-      weddingTime: validateAndFormatTime(clientData.wedding_time),
-      receptionTime: validateAndFormatTime(clientData.reception_time), // Nuevo campo
-      bibleVerse: clientData.bible_verse,
-      bibleVerseBook: clientData.bible_verse_book,
-      invitationText: clientData.invitation_text,
-      backgroundAudioUrl: clientData.background_audio_url || undefined,
-      heroBackgroundUrl: clientData.hero_background_url || undefined,
-      heroBackgroundVideoUrl: clientData.hero_background_video_url || undefined,
-      heroDisplayMode: clientData.hero_display_mode || 'image',
-      heroVideoAudioEnabled: clientData.hero_video_audio_enabled || false,
-      cinemaVideoAudioEnabled: clientData.cinema_video_audio_enabled || false,
-      advancedAnimations: clientData.advanced_animations || undefined,
-      mapCoordinates: clientData.map_coordinates || { lat: -12.0932, lng: -77.0314 },
-      ceremonyLocationName: clientData.ceremony_location_name || undefined,
-      receptionLocationName: clientData.reception_location_name || undefined,
-      churchName: clientData.church_name || undefined,
-      ceremonyAddress: clientData.ceremony_address,
-      ceremonyReference: clientData.ceremony_reference,
-      ceremonyMapUrl: clientData.ceremony_map_url,
-      receptionAddress: clientData.reception_address,
-      receptionMapUrl: clientData.reception_map_url,
-      receptionReference: clientData.reception_reference,
-      isReceptionSameAsCeremony: clientData.is_reception_same_as_ceremony,
-      wedding_datetime_utc: clientData.wedding_datetime_utc,
-      timezone: clientData.timezone,
-      decorationImageUrl: clientData.decoration_image_url,
-    };
+    // Mapear a ClientToken completo usando el mapeo centralizado
+    const client: ClientToken = mapSupabaseClientToToken(clientData);
 
     // ✅ USAR EMAIL REAL: Usar el email guardado en la BD, o fallback al formato generado
     const email = clientData.email || `client-${client.subdomain}@invitacionbodas.com`;

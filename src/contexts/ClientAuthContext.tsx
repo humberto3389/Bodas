@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import type { ReactNode } from 'react';
-import { type ClientToken, validateClientToken, getClientBySubdomain } from '../lib/auth-system';
+import { type ClientToken, validateClientToken, getClientBySubdomain, mapSupabaseClientToToken } from '../lib/auth-system';
 import { supabase } from '../lib/supabase';
 
 interface ClientAuthContextType {
@@ -59,60 +59,8 @@ export function ClientAuthProvider({ children }: ClientAuthProviderProps) {
 
             if (!error && supabaseData) {
               // Priorizar datos de Supabase (Source of Truth) sobre localStorage (Cache)
-              // Solo usar merged (localStorage) si Supabase devuelve null/undefined para ese campo
-              merged = {
-                ...merged,
-                clientName: supabaseData.client_name || merged.clientName,
-                groomName: supabaseData.groom_name !== null ? supabaseData.groom_name : merged.groomName,
-                brideName: supabaseData.bride_name !== null ? supabaseData.bride_name : merged.brideName,
-
-                // Fecha: Usar lógica de conversión local si viene de Supabase
-                weddingDate: supabaseData.wedding_date
-                  ? (() => {
-                    // Asegurar interpretación correcta de fecha UTC
-                    const s = String(supabaseData.wedding_date);
-                    const raw = s.includes('T') ? s.split('T')[0] : s;
-                    const [y, m, d] = raw.split('-').map(Number);
-                    return (y && m && d) ? new Date(y, m - 1, d) : new Date(supabaseData.wedding_date);
-                  })()
-                  : merged.weddingDate,
-
-                weddingTime: supabaseData.wedding_time || merged.weddingTime,
-                weddingLocation: supabaseData.wedding_location || merged.weddingLocation,
-                bibleVerse: supabaseData.bible_verse || merged.bibleVerse,
-                bibleVerseBook: supabaseData.bible_verse_book || merged.bibleVerseBook,
-                weddingType: supabaseData.wedding_type || merged.weddingType,
-                religiousSymbol: supabaseData.religious_symbol || merged.religiousSymbol,
-                invitationText: supabaseData.invitation_text || merged.invitationText,
-
-                backgroundAudioUrl: (supabaseData.background_audio_url && !supabaseData.background_audio_url.includes('audioRos.mp3'))
-                  ? supabaseData.background_audio_url
-                  : (merged.backgroundAudioUrl || '/audio.ogg'),
-
-                heroBackgroundUrl: supabaseData.hero_background_url || merged.heroBackgroundUrl,
-                heroBackgroundVideoUrl: supabaseData.hero_background_video_url || merged.heroBackgroundVideoUrl,
-
-                advancedAnimations: supabaseData.advanced_animations || merged.advancedAnimations || {
-                  enabled: false,
-                  particleEffects: false,
-                  parallaxScrolling: false,
-                  floatingElements: false
-                },
-
-                ceremonyLocationName: supabaseData.ceremony_location_name || merged.ceremonyLocationName,
-                ceremonyAddress: supabaseData.ceremony_address || merged.ceremonyAddress,
-                ceremonyMapUrl: supabaseData.ceremony_map_url || merged.ceremonyMapUrl,
-                ceremonyReference: supabaseData.ceremony_reference || merged.ceremonyReference,
-
-                receptionLocationName: supabaseData.reception_location_name || merged.receptionLocationName,
-                receptionAddress: supabaseData.reception_address || merged.receptionAddress,
-                receptionMapUrl: supabaseData.reception_map_url || merged.receptionMapUrl,
-                receptionReference: supabaseData.reception_reference || merged.receptionReference,
-                isReceptionSameAsCeremony: supabaseData.is_reception_same_as_ceremony ?? merged.isReceptionSameAsCeremony,
-
-                churchName: supabaseData.church_name || merged.churchName,
-                mapCoordinates: supabaseData.map_coordinates || merged.mapCoordinates,
-              };
+              // Usar el mapeo centralizado para garantizar coherencia en fechas y horas
+              merged = mapSupabaseClientToToken(supabaseData);
 
               // Actualizar storage con datos de Supabase
               sessionStorage.setItem('clientAuth', JSON.stringify(merged));

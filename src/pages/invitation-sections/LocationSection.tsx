@@ -1,41 +1,9 @@
 import { motion } from 'framer-motion';
 import { SectionTitle } from './SectionTitle';
+import { formatTimeDisplay } from '../../lib/timezone-utils';
 
 interface LocationSectionProps {
     clientData: any;
-}
-
-// Función local robusta para formatear hora
-// Asegura que 12:XX se muestre correctamente como PM
-function formatTimeRobust(timeStr: string): string {
-    if (!timeStr) return '';
-
-    // 1. Limpieza básica
-    const clean = timeStr.trim();
-
-    // 2. Detectar si viene con AM/PM explícito (dirty data)
-    const hasPM = /PM/i.test(clean);
-    const hasAM = /AM/i.test(clean);
-
-    // 3. Extraer horas y minutos
-    const match = clean.match(/(\d{1,2}):(\d{1,2})/);
-    if (!match) return ''; // Retornar vacío si no hay match, o podría ser '12:00 p. m.'
-
-    let h = parseInt(match[1], 10);
-    const m = parseInt(match[2], 10);
-
-    // 4. Corrección de ambigüedad si venía con sufijo
-    if (hasPM && h < 12) h += 12;
-    if (hasAM && h === 12) h = 0;
-
-    // 5. Formato 12h
-    // h=12 (12 PM) -> p. m.
-    // h=0  (12 AM) -> a. m.
-    const ampm = h >= 12 ? 'p. m.' : 'a. m.';
-    let h12 = h % 12;
-    if (h12 === 0) h12 = 12;
-
-    return `${h12}:${String(m).padStart(2, '0')} ${ampm}`;
 }
 
 export function LocationSection({ clientData }: LocationSectionProps) {
@@ -46,7 +14,7 @@ export function LocationSection({ clientData }: LocationSectionProps) {
         {
             type: 'Ceremonia',
             name: clientData.churchName || clientData.ceremonyLocationName,
-            time: formatTimeRobust(clientData.weddingTime),
+            time: formatTimeDisplay(clientData.weddingTime),
             address: clientData.ceremonyAddress,
             reference: clientData.ceremonyReference,
             mapUrl: clientData.ceremonyMapUrl,
@@ -55,7 +23,7 @@ export function LocationSection({ clientData }: LocationSectionProps) {
         ...(!clientData.isReceptionSameAsCeremony ? [{
             type: 'Recepción',
             name: clientData.receptionLocationName,
-            time: formatTimeRobust(clientData.receptionTime),
+            time: formatTimeDisplay(clientData.receptionTime),
             address: clientData.receptionAddress,
             reference: clientData.receptionReference,
             mapUrl: clientData.receptionMapUrl,
