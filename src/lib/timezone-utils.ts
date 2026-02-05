@@ -199,9 +199,9 @@ export function getEventTimestampUTC(dateStr: string, timeStr: string, timezone:
     // IMPORTANTE: new Date con UTC crea en UTC, pero queremos Lima primero
     const limaDate = new Date(Date.UTC(year, month - 1, day, hours, minutes, 0, 0));
 
-    // 4. RESTAR 5 horas (Lima UTC-5) para obtener UTC real
+    // 4. SUMAR 5 horas (Lima UTC-5) para obtener UTC real
     const limaOffset = 5 * 60 * 60 * 1000; // 5 horas en milisegundos
-    const utcTimestamp = limaDate.getTime() - limaOffset;
+    const utcTimestamp = limaDate.getTime() + limaOffset;
 
     const fechaUTC = new Date(utcTimestamp);
     const fechaLima = new Date(utcTimestamp + limaOffset);
