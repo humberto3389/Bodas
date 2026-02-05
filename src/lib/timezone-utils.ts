@@ -56,12 +56,20 @@ export function UTCToLocal24h(utcTime: string | Date | undefined | null): string
 
         if (isNaN(date.getTime())) return '12:00';
 
-        return new Intl.DateTimeFormat('en-GB', {
+        const result = new Intl.DateTimeFormat('en-GB', {
             timeZone: PERU_TIMEZONE,
             hour12: false,
             hour: '2-digit',
             minute: '2-digit'
         }).format(date);
+
+        console.log('🕒 UTCToLocal24h:', {
+            input: utcTime,
+            parsedISO: date.toISOString(),
+            limaResult: result
+        });
+
+        return result;
     } catch (e) {
         console.error('Error in UTCToLocal24h:', e);
         return '12:00';
@@ -82,7 +90,8 @@ export function validateAndFormatTime(timeInput: string): string {
     const originalInput = timeInput;
     const clean = timeInput.trim().toUpperCase();
 
-    console.log('🔧 DEBUG validateAndFormatTime - Inicio:', {
+    console.group('🛠️ validateAndFormatTime');
+    console.log('🔧 Inicio:', {
         original: originalInput,
         clean: clean,
         length: clean.length

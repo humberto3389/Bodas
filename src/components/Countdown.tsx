@@ -10,12 +10,12 @@ interface CountdownProps {
 
 export function Countdown({ date, time }: CountdownProps) {
     console.log('🔍 DEBUG GLOBAL - Countdown recibió:', {
-        fecha: date,           // Ej: "2026-02-21"
-        hora: time,            // Ej: "12:30 PM"
+        fecha: date,
+        hora: time,
         tipoFecha: typeof date,
         tipoHora: typeof time,
         timestampActual: Date.now(),
-        fechaActual: new Date().toLocaleString('es-PE')
+        fechaActual: new Date().toLocaleString('es-PE', { timeZone: 'America/Lima' })
     });
 
     const targetTimestamp = useMemo(() => {
@@ -45,8 +45,8 @@ export function Countdown({ date, time }: CountdownProps) {
 
             console.log('✅ VERIFICACIÓN FINAL - Countdown:', {
                 horaBodaUTC: new Date(targetTimestamp).toISOString(),
-                horaBodaLima: new Date(targetTimestamp + (5 * 60 * 60 * 1000)).toLocaleString('es-PE'),
-                horaActual: new Date().toLocaleString('es-PE'),
+                horaBodaLima: new Date(targetTimestamp).toLocaleString('es-PE', { timeZone: 'America/Lima' }),
+                horaActualLima: new Date().toLocaleString('es-PE', { timeZone: 'America/Lima' }),
                 diferenciaTotalHoras: Math.round(diferenciaHoras * 100) / 100,
                 diferenciaDiasCompletos: Math.floor(diferenciaDias),
                 horasRestantes: Math.floor((diferenciaDias % 1) * 24),
