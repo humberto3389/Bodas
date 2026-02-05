@@ -219,9 +219,16 @@ export function useClientAdmin() {
                 ? editForm.advancedAnimations
                 : { enabled: false, particleEffects: false, parallaxScrolling: false, floatingElements: false };
 
-            const weddingUTC = localToUTC(editForm.weddingDate, editForm.weddingTime);
+            const weddingTimeFormatted = validateAndFormatTime(editForm.weddingTime);
+            const receptionTimeFormatted = validateAndFormatTime(editForm.receptionTime);
 
-            console.log('[saveClientProfile] Guardando...', { weddingUTC, time: editForm.weddingTime });
+            console.log('[saveClientProfile] Guardando...', {
+                weddingTime_input: editForm.weddingTime,
+                weddingTime_formatted: weddingTimeFormatted,
+                receptionTime_input: editForm.receptionTime,
+                receptionTime_formatted: receptionTimeFormatted,
+                weddingUTC
+            });
 
             const { data: updatedData, error: updateError } = await supabase
                 .from('clients')
@@ -231,8 +238,8 @@ export function useClientAdmin() {
                     wedding_datetime_utc: weddingUTC || null,
                     groom_name: editForm.groomName,
                     bride_name: editForm.brideName,
-                    wedding_time: validateAndFormatTime(editForm.weddingTime) || null,
-                    reception_time: validateAndFormatTime(editForm.receptionTime) || null,
+                    wedding_time: weddingTimeFormatted || null,
+                    reception_time: receptionTimeFormatted || null,
                     wedding_location: editForm.weddingLocation,
                     wedding_type: editForm.weddingType,
                     religious_symbol: editForm.religiousSymbol,
