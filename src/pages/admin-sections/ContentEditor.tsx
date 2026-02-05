@@ -331,41 +331,68 @@ export function ContentEditor({
                         <h2 className="text-lg font-semibold text-slate-900">Textos personalizados</h2>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="space-y-5">
-                            <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-2">Versículo o poema</label>
-                                <textarea
-                                    name="bibleVerse"
-                                    value={editForm.bibleVerse}
-                                    onChange={handleChange}
-                                    rows={3}
-                                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all resize-none"
-                                />
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {/* Text Col */}
+                        <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="space-y-5">
+                                <div>
+                                    <label className="block text-sm font-medium text-slate-700 mb-2">Versículo o poema</label>
+                                    <textarea
+                                        name="bibleVerse"
+                                        value={editForm.bibleVerse}
+                                        onChange={handleChange}
+                                        rows={3}
+                                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all resize-none font-elegant text-lg"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-medium text-slate-700 mb-2">Referencia</label>
+                                    <input
+                                        type="text"
+                                        name="bibleVerseBook"
+                                        value={editForm.bibleVerseBook}
+                                        onChange={handleChange}
+                                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all"
+                                    />
+                                </div>
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-2">Referencia</label>
-                                <input
-                                    type="text"
-                                    name="bibleVerseBook"
-                                    value={editForm.bibleVerseBook}
+                                <label className="block text-sm font-medium text-slate-700 mb-2">Mensaje de invitación</label>
+                                <textarea
+                                    name="invitationText"
+                                    value={editForm.invitationText}
                                     onChange={handleChange}
-                                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all"
+                                    rows={6}
+                                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all resize-none leading-relaxed"
+                                    placeholder="Escribe un mensaje especial para tus invitados..."
                                 />
                             </div>
                         </div>
 
-                        <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-2">Mensaje de invitación</label>
-                            <textarea
-                                name="invitationText"
-                                value={editForm.invitationText}
-                                onChange={handleChange}
-                                rows={6}
-                                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all resize-none"
-                                placeholder="Escribe un mensaje especial para tus invitados..."
-                            />
+                        {/* Decoration Image Col */}
+                        <div className="lg:col-span-1 space-y-4">
+                            <div>
+                                <label className="block text-sm font-medium text-slate-700 mb-2">Imagen de decoración</label>
+                                <p className="text-[10px] text-slate-500 uppercase tracking-widest mb-3 font-semibold">Anillos, flores o ilustración</p>
+                                <div className="bg-slate-50 rounded-xl border-2 border-dashed border-slate-200 p-4">
+                                    <AdminUploader
+                                        title=""
+                                        bucket="gallery"
+                                        files={imageFiles}
+                                        onUploadSuccess={async () => { }}
+                                        onUpload={onUpload}
+                                        onDelete={async (b, f) => { await onDelete(b, f); }}
+                                        getPublicUrl={getPublicUrl}
+                                        setFileAsBackground={(url) => setEditForm({ ...editForm, decorationImageUrl: url })}
+                                        currentBackground={editForm.decorationImageUrl}
+                                        client={client}
+                                        maxFiles={1}
+                                        onUpgradeClick={onUpgradeClick}
+                                    />
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

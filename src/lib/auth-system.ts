@@ -76,6 +76,7 @@ export interface ClientToken {
   expiresAt: Date; // Fecha formal de expiración de la invitación
   wedding_datetime_utc?: string; // Nuevo campo para hora precisa
   timezone?: string; // Zona horaria del evento
+  decorationImageUrl?: string;
 }
 
 // Planes disponibles
@@ -316,6 +317,7 @@ async function loadClientsFromSupabase(): Promise<ClientToken[]> {
         receptionTime: formatTimeDisplay(row.reception_time, false) || undefined,
         churchName: row.church_name || undefined,
         weddingType: row.wedding_type || undefined,
+        decorationImageUrl: row.decoration_image_url || undefined,
       }));
     }
   } catch (error) {
@@ -462,6 +464,7 @@ export async function fetchClientBySubdomain(subdomain: string): Promise<ClientT
     isReceptionSameAsCeremony: clientData.is_reception_same_as_ceremony,
     wedding_datetime_utc: clientData.wedding_datetime_utc,
     timezone: clientData.timezone,
+    decorationImageUrl: clientData.decoration_image_url,
   };
 }
 
@@ -822,6 +825,7 @@ export async function authenticateClientWithToken(token: string): Promise<boolea
       isReceptionSameAsCeremony: clientData.is_reception_same_as_ceremony,
       wedding_datetime_utc: clientData.wedding_datetime_utc,
       timezone: clientData.timezone,
+      decorationImageUrl: clientData.decoration_image_url,
     };
 
     // ✅ USAR EMAIL REAL: Usar el email guardado en la BD, o fallback al formato generado

@@ -67,7 +67,8 @@ export function useClientAdmin() {
         receptionAddress: '',
         receptionReference: '',
         receptionMapUrl: '',
-        isReceptionSameAsCeremony: false
+        isReceptionSameAsCeremony: false,
+        decorationImageUrl: ''
     });
 
     const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'success' | 'error'>('idle');
@@ -206,6 +207,7 @@ export function useClientAdmin() {
                     heroVideoAudioEnabled: clientData.hero_video_audio_enabled ?? clientSession.heroVideoAudioEnabled,
                     cinemaVideoAudioEnabled: clientData.cinema_video_audio_enabled ?? clientSession.cinemaVideoAudioEnabled,
                     advancedAnimations: advAnimations,
+                    decorationImageUrl: clientData.decoration_image_url ?? clientSession.decorationImageUrl,
                     mapCoordinates: clientData.map_coordinates || clientSession.mapCoordinates,
                     churchName: clientData.church_name || clientSession.churchName,
                     ceremonyLocationName: clientData.ceremony_location_name || clientSession.ceremonyLocationName,
@@ -270,7 +272,8 @@ export function useClientAdmin() {
                         receptionAddress: clientData.reception_address || '',
                         receptionReference: clientData.reception_reference || '',
                         receptionMapUrl: clientData.reception_map_url || '',
-                        isReceptionSameAsCeremony: clientData.is_reception_same_as_ceremony || false
+                        isReceptionSameAsCeremony: clientData.is_reception_same_as_ceremony || false,
+                        decorationImageUrl: clientData.decoration_image_url || ''
                     });
 
                     console.log('[loadClientData] editForm actualizado con datos de Supabase');
@@ -318,6 +321,7 @@ export function useClientAdmin() {
                 heroBackgroundUrl: editForm.heroBackgroundUrl || undefined,
                 heroBackgroundVideoUrl: heroVideoUrl || undefined,
                 advancedAnimations: advancedAnimations,
+                decorationImageUrl: editForm.decorationImageUrl || undefined
             };
 
             const weddingUTC = localToUTC(editForm.weddingDate, editForm.weddingTime);
@@ -381,6 +385,7 @@ export function useClientAdmin() {
                     reception_location_name: editForm.receptionLocationName,
                     reception_time: validateAndFormatTime(editForm.receptionTime),
                     advanced_animations: advancedAnimations,
+                    decoration_image_url: editForm.decorationImageUrl || null,
                     map_coordinates: editForm.mapCoordinates,
                 })
                 .eq('id', clientId)
