@@ -76,7 +76,7 @@ export interface ClientToken {
   expiresAt: Date; // Fecha formal de expiración de la invitación
   wedding_datetime_utc?: string; // Nuevo campo para hora precisa
   timezone?: string; // Zona horaria del evento
-  decorationImageUrl?: string;
+  verseImageUrl?: string;
 }
 
 // Planes disponibles
@@ -326,6 +326,7 @@ export function mapSupabaseClientToToken(row: any): ClientToken {
     invitationText: row.invitation_text,
     wedding_datetime_utc: row.wedding_datetime_utc,
     timezone: row.timezone,
+    verseImageUrl: row.verse_image_url || null,
     backgroundAudioUrl: row.background_audio_url || undefined,
     heroBackgroundUrl: row.hero_background_url || undefined,
     heroBackgroundVideoUrl: row.hero_background_video_url || undefined,

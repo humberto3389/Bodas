@@ -45,7 +45,7 @@ export interface ClientData {
   isReceptionSameAsCeremony?: boolean;
   wedding_datetime_utc?: string;
   timezone?: string;
-  decorationImageUrl?: string;
+  verseImageUrl?: string;
 }
 
 // Función para obtener datos del cliente actual desde el contexto de autenticación
@@ -85,7 +85,7 @@ export function getCurrentClientData(): ClientData | null {
         features: clientToken.features || [],
         wedding_datetime_utc: clientToken.wedding_datetime_utc,
         timezone: clientToken.timezone,
-        decorationImageUrl: clientToken.decorationImageUrl
+        verseImageUrl: clientToken.verseImageUrl
       };
     }
   } catch (error) {

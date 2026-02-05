@@ -20,7 +20,7 @@ export function VerseSection({ clientData }: VerseSectionProps) {
                     </SectionTitle>
 
                     {/* Decoration Image */}
-                    {clientData.decorationImageUrl && (
+                    {clientData.verseImageUrl && (
                         <motion.div
                             initial={{ opacity: 0, scale: 0.9 }}
                             whileInView={{ opacity: 1, scale: 1 }}
@@ -30,7 +30,7 @@ export function VerseSection({ clientData }: VerseSectionProps) {
                         >
                             <div className="relative w-48 h-48 sm:w-64 sm:h-64">
                                 <img
-                                    src={clientData.decorationImageUrl}
+                                    src={clientData.verseImageUrl}
                                     alt="Decoración"
                                     className="w-full h-full object-contain"
                                     style={{

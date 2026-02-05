@@ -385,8 +385,8 @@ export function ContentEditor({
                                         onUpload={onUpload}
                                         onDelete={async (b, f) => { await onDelete(b, f); }}
                                         getPublicUrl={getPublicUrl}
-                                        setFileAsBackground={(url) => setEditForm({ ...editForm, decorationImageUrl: url })}
-                                        currentBackground={editForm.decorationImageUrl}
+                                        setFileAsBackground={(url) => setEditForm({ ...editForm, verseImageUrl: url })}
+                                        currentBackground={editForm.verseImageUrl}
                                         client={client}
                                         maxFiles={1}
                                         onUpgradeClick={onUpgradeClick}

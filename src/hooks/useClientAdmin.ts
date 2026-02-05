@@ -70,7 +70,7 @@ export function useClientAdmin() {
             receptionReference: s?.receptionReference || '',
             receptionMapUrl: s?.receptionMapUrl || '',
             isReceptionSameAsCeremony: s?.isReceptionSameAsCeremony || false,
-            decorationImageUrl: s?.decorationImageUrl || ''
+            verseImageUrl: s?.verseImageUrl || ''
         };
     });
 
@@ -188,7 +188,7 @@ export function useClientAdmin() {
                         receptionReference: mappedClient.receptionReference || '',
                         receptionMapUrl: mappedClient.receptionMapUrl || '',
                         isReceptionSameAsCeremony: mappedClient.isReceptionSameAsCeremony || false,
-                        decorationImageUrl: mappedClient.decorationImageUrl || ''
+                        verseImageUrl: mappedClient.verseImageUrl || ''
                     });
                 }
 
@@ -255,7 +255,7 @@ export function useClientAdmin() {
                     ceremony_location_name: editForm.ceremonyLocationName || null,
                     reception_location_name: editForm.receptionLocationName || null,
                     advanced_animations: advancedAnimations,
-                    decoration_image_url: editForm.decorationImageUrl || null
+                    verse_image_url: editForm.verseImageUrl || null
                 })
                 .eq('id', clientId)
                 .select()
