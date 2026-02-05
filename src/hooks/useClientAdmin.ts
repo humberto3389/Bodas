@@ -32,43 +32,46 @@ export function useClientAdmin() {
     const clientLike = authed ? (clientSession || detectedClient) : null;
     const clientId = clientLike ? clientLike.id : null;
 
-    const [editForm, setEditForm] = useState({
-        clientName: '',
-        groomName: '',
-        brideName: '',
-        weddingDate: '',
-        weddingTime: '',
-        receptionTime: '',
-        weddingLocation: '',
-        weddingType: '',
-        religiousSymbol: '',
-        bibleVerse: '',
-        bibleVerseBook: '',
-        invitationText: '',
-        backgroundAudioUrl: '',
-        heroBackgroundUrl: '',
-        heroBackgroundVideoUrl: '',
-        heroDisplayMode: 'image' as 'image' | 'video',
-        heroVideoAudioEnabled: false,
-        cinemaVideoAudioEnabled: false,
-        advancedAnimations: {
-            enabled: false,
-            particleEffects: false,
-            parallaxScrolling: false,
-            floatingElements: false
-        },
-        mapCoordinates: { lat: -12.0932, lng: -77.0314 },
-        churchName: '',
-        ceremonyLocationName: '',
-        receptionLocationName: '',
-        ceremonyAddress: '',
-        ceremonyReference: '',
-        ceremonyMapUrl: '',
-        receptionAddress: '',
-        receptionReference: '',
-        receptionMapUrl: '',
-        isReceptionSameAsCeremony: false,
-        decorationImageUrl: ''
+    const [editForm, setEditForm] = useState(() => {
+        const s = clientSession;
+        return {
+            clientName: s?.clientName || '',
+            groomName: s?.groomName || '',
+            brideName: s?.brideName || '',
+            weddingDate: s?.weddingDate ? (s.weddingDate instanceof Date ? s.weddingDate.toISOString().split('T')[0] : String(s.weddingDate).split('T')[0]) : '',
+            weddingTime: s?.weddingTime || '',
+            receptionTime: s?.receptionTime || '',
+            weddingLocation: s?.weddingLocation || '',
+            weddingType: s?.weddingType || 'Boda',
+            religiousSymbol: s?.religiousSymbol || '',
+            bibleVerse: s?.bibleVerse || '',
+            bibleVerseBook: s?.bibleVerseBook || '',
+            invitationText: s?.invitationText || '',
+            backgroundAudioUrl: s?.backgroundAudioUrl || '',
+            heroBackgroundUrl: s?.heroBackgroundUrl || '',
+            heroBackgroundVideoUrl: s?.heroBackgroundVideoUrl || '',
+            heroDisplayMode: (s?.heroDisplayMode as any) || 'image',
+            heroVideoAudioEnabled: s?.heroVideoAudioEnabled || false,
+            cinemaVideoAudioEnabled: s?.cinemaVideoAudioEnabled || false,
+            advancedAnimations: (s?.advancedAnimations as any) || {
+                enabled: false,
+                particleEffects: false,
+                parallaxScrolling: false,
+                floatingElements: false
+            },
+            mapCoordinates: s?.mapCoordinates || { lat: -12.0932, lng: -77.0314 },
+            churchName: s?.churchName || '',
+            ceremonyLocationName: s?.ceremonyLocationName || '',
+            receptionLocationName: s?.receptionLocationName || '',
+            ceremonyAddress: s?.ceremonyAddress || '',
+            ceremonyReference: s?.ceremonyReference || '',
+            ceremonyMapUrl: s?.ceremonyMapUrl || '',
+            receptionAddress: s?.receptionAddress || '',
+            receptionReference: s?.receptionReference || '',
+            receptionMapUrl: s?.receptionMapUrl || '',
+            isReceptionSameAsCeremony: s?.isReceptionSameAsCeremony || false,
+            decorationImageUrl: s?.decorationImageUrl || ''
+        };
     });
 
     const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'success' | 'error'>('idle');
@@ -146,8 +149,11 @@ export function useClientAdmin() {
                 const mappedClient = mapSupabaseClientToToken(clientData);
 
                 // Prevent infinite loops by checking if data actually changed
-                if (JSON.stringify(mappedClient) !== JSON.stringify(clientSession)) {
-                    console.log('[loadClientData] Datos actualizados, guardando nuevos datos...');
+                // BUT: Always sync on the first load to ensure the form is populated correctly
+                const isChanged = JSON.stringify(mappedClient) !== JSON.stringify(clientSession);
+
+                if (isChanged || !hasLoadedOnceRef.current) {
+                    console.log(`[loadClientData] ${isChanged ? 'Datos actualizados' : 'Primer carga'}, sincronizando UI...`);
                     sessionStorage.setItem('clientAuth', JSON.stringify(mappedClient));
                     window.dispatchEvent(new CustomEvent('clientAuthUpdated', { detail: { clientAuth: JSON.stringify(mappedClient) } }));
                     setClientSession(mappedClient);

@@ -108,18 +108,20 @@ const DEFAULT_CLIENTS: ClientToken[] = [];
 // Función para cargar clientes desde localStorage
 function loadClientsFromStorage(): ClientToken[] {
   try {
-    const stored = localStorage.getItem('wedding-clients');
+    const stored = sessionStorage.getItem('clientAuth');
     if (stored) {
-      const clients = JSON.parse(stored);
-      // Convertir fechas de string a Date
-      return clients.map((client: any) => ({
+      const client = JSON.parse(stored);
+      // Es un objeto único de sesión, lo envolvemos en array para mantener compatibilidad si es necesario
+      // pero idealmente auth-system debería manejar sesión única vs lista de clientes.
+      // Por ahora, devolvemos el array con el cliente actual.
+      return [{
         ...client,
         createdAt: new Date(client.createdAt),
         weddingDate: new Date(client.weddingDate),
         accessUntil: new Date(client.accessUntil),
         expiresAt: new Date(client.expiresAt || client.accessUntil),
         lastUsed: client.lastUsed ? new Date(client.lastUsed) : undefined
-      }));
+      }];
     }
   } catch (error) {
   }
@@ -129,7 +131,10 @@ function loadClientsFromStorage(): ClientToken[] {
 // Función para guardar clientes en sessionStorage
 function saveClientsToStorage(clients: ClientToken[]): void {
   try {
-    sessionStorage.setItem('wedding-clients', JSON.stringify(clients));
+    // Si tenemos clientes, guardamos el primero como sesión activa
+    if (clients.length > 0) {
+      sessionStorage.setItem('clientAuth', JSON.stringify(clients[0]));
+    }
   } catch (error) {
   }
 }
@@ -860,6 +865,10 @@ export async function authenticateClientWithToken(token: string): Promise<boolea
         console.warn('[authenticateClientWithToken] Error inesperado al actualizar user:', err);
         // Continuar de todas formas
       }
+
+      // ✅ PASO 5: Guardar sesión localmente para el Administrador
+      sessionStorage.setItem('clientAuth', JSON.stringify(client));
+      window.dispatchEvent(new CustomEvent('clientAuthUpdated', { detail: { clientAuth: JSON.stringify(client) } }));
 
       return true;
     }
