@@ -51,6 +51,7 @@ export function mapClientDataFromBFF(clientData: any): ClientToken {
     isReceptionSameAsCeremony: clientData.is_reception_same_as_ceremony || false,
     wedding_datetime_utc: clientData.wedding_datetime_utc || undefined,
     timezone: clientData.timezone || undefined,
+    decorationImageUrl: clientData.decoration_image_url || undefined,
   };
 }
 
