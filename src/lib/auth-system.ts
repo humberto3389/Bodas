@@ -328,14 +328,12 @@ export function mapSupabaseClientToToken(row: any): ClientToken {
     heroBackgroundVideoUrl: row.hero_background_video_url || undefined,
     heroDisplayMode: row.hero_display_mode || 'image',
     heroVideoAudioEnabled: row.hero_video_audio_enabled || false,
-    cinemaVideoAudioEnabled: row.cinema_video_audio_enabled || false,
     advancedAnimations: row.advanced_animations || {
       enabled: false,
       particleEffects: false,
       parallaxScrolling: false,
       floatingElements: false
     },
-    mapCoordinates: row.map_coordinates || { lat: -12.0932, lng: -77.0314 },
     ceremonyLocationName: row.ceremony_location_name || undefined,
     receptionLocationName: row.reception_location_name || undefined,
     churchName: row.church_name || undefined,
@@ -347,7 +345,6 @@ export function mapSupabaseClientToToken(row: any): ClientToken {
     receptionReference: row.reception_reference,
     isReceptionSameAsCeremony: row.is_reception_same_as_ceremony,
     weddingType: row.wedding_type || undefined,
-    decorationImageUrl: row.decoration_image_url || undefined,
   };
 }
 

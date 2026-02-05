@@ -292,17 +292,14 @@ export function useClientAdmin() {
                     is_reception_same_as_ceremony: editForm.isReceptionSameAsCeremony,
                     invitation_text: editForm.invitationText,
                     background_audio_url: audioUrl || null,
-                    hero_background_url: editForm.heroBackgroundUrl || null,
+                    hero_background_url: (editForm.heroBackgroundUrl && (editForm.heroBackgroundUrl.includes('supabase.co') || editForm.heroBackgroundUrl.startsWith('/'))) ? editForm.heroBackgroundUrl : null,
                     hero_background_video_url: heroVideoUrl || null,
                     hero_display_mode: editForm.heroDisplayMode || 'image',
                     hero_video_audio_enabled: editForm.heroVideoAudioEnabled,
-                    cinema_video_audio_enabled: editForm.cinemaVideoAudioEnabled,
-                    church_name: editForm.churchName,
-                    ceremony_location_name: editForm.ceremonyLocationName,
-                    reception_location_name: editForm.receptionLocationName,
+                    church_name: editForm.churchName || null,
+                    ceremony_location_name: editForm.ceremonyLocationName || null,
+                    reception_location_name: editForm.receptionLocationName || null,
                     advanced_animations: advancedAnimations,
-                    decoration_image_url: editForm.decorationImageUrl || null,
-                    map_coordinates: editForm.mapCoordinates,
                 })
                 .eq('id', clientId)
                 .select();
