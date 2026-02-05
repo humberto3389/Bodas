@@ -66,7 +66,7 @@ export function getCurrentClientData(): ClientData | null {
         groomName: clientToken.groomName || 'Novio',
         brideName: clientToken.brideName || 'Novia',
         weddingLocation: clientToken.weddingLocation || 'Iglesia San José',
-        weddingTime: clientToken.weddingTime || '6:00 PM',
+        weddingTime: clientToken.weddingTime || '18:00',
         receptionTime: clientToken.receptionTime || undefined,
         bibleVerse: clientToken.bibleVerse || 'El amor es paciente, es bondadoso… el amor nunca deja de ser.',
         invitationText: clientToken.invitationText || 'Están cordialmente invitados a celebrar con nosotros este día tan especial.',

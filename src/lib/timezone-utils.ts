@@ -67,19 +67,19 @@ export function convert12hTo24h(hour: number, minute: number, ampm: 'AM' | 'PM')
  */
 export function convert24hTo12h(time24h: string | undefined | null): { hour: number; minute: number; ampm: 'AM' | 'PM' } {
     if (!time24h) return { hour: 12, minute: 0, ampm: 'PM' };
-    const clean = time24h.replace(/(AM|PM|A\.M\.|P\.M\.)/gi, '').trim();
-    const match = clean.match(/(\d{1,2}):(\d{1,2})/);
 
-    if (!match) return { hour: 12, minute: 0, ampm: 'PM' };
+    // Primero normalizamos a formato estricto 24h (HH:mm) para manejar entradas mezcladas (12h/24h)
+    const normalized = validateAndFormatTime(time24h);
+    const [hStr, mStr] = normalized.split(':');
 
-    const h = parseInt(match[1], 10);
-    const m = parseInt(match[2], 10);
+    const h = parseInt(hStr, 10);
+    const m = parseInt(mStr, 10);
 
-    const ampm = (h >= 12 && h < 24) ? 'PM' : 'AM';
+    const ampm = (h >= 12) ? 'PM' : 'AM';
     let hour12 = h % 12;
     if (hour12 === 0) hour12 = 12;
 
-    return { hour: hour12, minute: m || 0, ampm };
+    return { hour: hour12, minute: m, ampm };
 }
 
 /**
