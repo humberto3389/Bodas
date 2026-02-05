@@ -7,9 +7,12 @@ export const PERU_TIMEZONE = 'America/Lima';
  * Convierte cualquier entrada de hora a formato estricto 24h (HH:mm).
  * Maneja AM/PM y formatos de 24h directos.
  * 
- * REGLA ESPECIAL: Un "12:xx" sin contexto AM/PM se asume como 12:xx PM (mediodía)
- * porque es lo que un usuario seleccionaría en un timepicker de 12h.
- * Para 12:xx AM (medianoche), se debe pasar explícitamente "00:xx" o "12:xx AM".
+ * REGLA ESPECIAL CRÍTICA:
+ * - Un "12:xx" SIN indicador AM/PM se asume como 12:xx PM (mediodía)
+ * - Un "12:xx AM" SIEMPRE se convierte a "00:xx" (medianoche)
+ * - Un "12:xx PM" o "12:xx" SIEMPRE se convierte a "12:xx" (mediodía)
+ * 
+ * Esta función NUNCA debe convertir "12:30 PM" a "00:30".
  */
 export function validateAndFormatTime(timeInput: string | undefined | null): string {
     if (!timeInput) return '12:00';
@@ -26,23 +29,29 @@ export function validateAndFormatTime(timeInput: string | undefined | null): str
     let hour = parseInt(timeMatch[1], 10);
     const minute = parseInt(timeMatch[2], 10);
 
+    // ===== LÓGICA EXPLÍCITA =====
     if (hasPM) {
-        // Explícitamente marcado como PM
-        if (hour < 12) hour += 12;
+        // Explícitamente PM: 1 PM -> 13, 12 PM -> 12, etc.
+        if (hour !== 12) {
+            hour = hour + 12;  // 1-11 PM -> 13-23
+        }
         // 12 PM se mantiene como 12
     } else if (hasAM) {
-        // Explícitamente marcado como AM
-        if (hour === 12) hour = 0;  // 12 AM -> 00 (medianoche)
+        // Explícitamente AM: 12 AM -> 00, 1 AM -> 01, etc.
+        if (hour === 12) {
+            hour = 0;  // 12 AM -> 00 (medianoche)
+        }
         // 1-11 AM se mantiene igual
     } else {
-        // SIN especificar AM/PM explícitamente
-        // Un "12:xx" se asume como 12:xx PM (MEDIODÍA)
-        // porque es lo que seleccionaría un usuario en un selector 12h
+        // SIN indicador AM/PM:
+        // Un "12:xx" sin contexto se asume como 12:xx PM (MEDIODÍA)
+        // porque es lo que un usuario seleccionaría en un timepicker 12h
         if (hour === 12) {
-            // 12:xx -> se mantiene como 12 (MEDIODÍA)
-            // NO convertir a 00
+            // "12:xx" -> se mantiene como 12 (MEDIODÍA, NO convertir a 0)
+            // No hacer nada
         }
-        // Otras horas se mantienen como están (1-11 = AM, 13-23 = ya es 24h)
+        // Otras horas (1-11) se asumen como AM
+        // Horas 13-23 ya están en formato 24h
     }
 
     const finalHour = Math.max(0, Math.min(23, hour));
@@ -100,20 +109,31 @@ export function formatTimeForDisplay(time24h: string | undefined | null): string
  * 12:xx PM -> 12:xx (noon hour)
  * 1-11 AM -> 01-11 (morning)
  * 1-11 PM -> 13-23 (afternoon/evening)
+ * 
+ * NOTA: Esta función siempre retorna la hora en formato 24h puro sin AM/PM.
  */
 export function convert12hTo24h(hour: number, minute: number, ampm: 'AM' | 'PM'): string {
     let h = hour;
     
-    // La hora 12 es especial
+    // La hora 12 es especial en formato 12h
     if (h === 12) {
-        // 12:xx AM -> 00:xx (medianoche)
-        // 12:xx PM -> 12:xx (mediodía)
-        h = (ampm === 'AM') ? 0 : 12;
-    } else if (ampm === 'PM') {
-        // 1-11 PM -> 13-23
-        h += 12;
+        if (ampm === 'AM') {
+            // 12:xx AM -> 00:xx (medianoche)
+            h = 0;
+        } else {
+            // 12:xx PM -> 12:xx (mediodía)
+            h = 12;
+        }
+    } else {
+        // Horas 1-11
+        if (ampm === 'PM') {
+            // 1-11 PM -> 13-23
+            h = hour + 12;
+        } else {
+            // 1-11 AM -> 01-11
+            h = hour;
+        }
     }
-    // Si ampm === 'AM' y h !== 12, h se mantiene como está (1-11)
     
     return `${String(h).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
 }
