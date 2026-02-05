@@ -223,14 +223,6 @@ export function useClientAdmin() {
             const receptionTimeFormatted = validateAndFormatTime(editForm.receptionTime);
             const weddingUTC = localToUTC(editForm.weddingDate, editForm.weddingTime);
 
-            console.log('[saveClientProfile] Guardando...', {
-                weddingTime_input: editForm.weddingTime,
-                weddingTime_formatted: weddingTimeFormatted,
-                receptionTime_input: editForm.receptionTime,
-                receptionTime_formatted: receptionTimeFormatted,
-                weddingUTC
-            });
-
             const { data: updatedData, error: updateError } = await supabase
                 .from('clients')
                 .update({

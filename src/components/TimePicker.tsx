@@ -41,8 +41,6 @@ export const TimePicker: React.FC<TimePickerProps> = ({ value, onChange, label, 
 
     const handleUpdate = (newH: number, newM: number, newP: 'AM' | 'PM') => {
         const time24 = convert12hTo24h(newH, newM, newP);
-        console.log(`[TimePicker] Update: ${newH}:${String(newM).padStart(2, '0')} ${newP} -> ${time24}`);
-        console.log(`[TimePicker] Enviando onChange: "${time24}"`);
         onChange(time24);
     };
 
