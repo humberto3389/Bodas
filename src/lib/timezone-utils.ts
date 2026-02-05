@@ -88,14 +88,45 @@ export function UTCToLocal24h(utcTime: string | undefined | null): string {
     }
 }
 
-/**
- * Utilidad para el Countdown: Calcula el timestamp UTC real para una fecha y hora de Lima.
- */
+// Utilidades para el Countdown: Calcula el timestamp UTC real para una fecha y hora de Lima.
 export function getEventTimestampUTC(dateStr: string, timeStr: string): number {
     const iso = localToUTC(dateStr, timeStr);
     return iso ? new Date(iso).getTime() : 0;
 }
 
-// Retrocompatibilidad (opcional, mapear a las nuevas)
+/**
+ * Convierte componentes 12h a string 24h (HH:mm).
+ */
+export function convert12hTo24h(hour: number, minute: number, ampm: 'AM' | 'PM'): string {
+    let h = hour;
+    if (h === 12) {
+        h = (ampm === 'PM') ? 12 : 0;
+    } else {
+        if (ampm === 'PM') h += 12;
+    }
+    return `${String(h).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
+}
+
+/**
+ * Convierte string 24h a componentes 12h.
+ */
+export function convert24hTo12h(time24h: string): { hour: number; minute: number; ampm: 'AM' | 'PM' } {
+    if (!time24h) return { hour: 12, minute: 0, ampm: 'PM' };
+    const clean = time24h.replace(/(AM|PM|A\.M\.|P\.M\.)/gi, '').trim();
+    const match = clean.match(/(\d{1,2}):(\d{1,2})/);
+
+    if (!match) return { hour: 12, minute: 0, ampm: 'PM' };
+
+    const h = parseInt(match[1], 10);
+    const m = parseInt(match[2], 10);
+
+    const ampm = (h >= 12 && h < 24) ? 'PM' : 'AM';
+    let hour12 = h % 12;
+    if (hour12 === 0) hour12 = 12;
+
+    return { hour: hour12, minute: m || 0, ampm };
+}
+
+// Retrocompatibilidad
 export const formatTimeDisplay = (t: any) => formatTimeForDisplay(t);
 export const UTCToLocal = (utc: any) => formatTimeForDisplay(UTCToLocal24h(utc));
