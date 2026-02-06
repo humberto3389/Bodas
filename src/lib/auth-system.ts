@@ -745,7 +745,15 @@ export async function authenticateClientWithToken(token: string): Promise<boolea
     // ✅ CRÍTICO: Limpiar sesión anterior antes de hacer login
     // Esto previene que se mezclen datos de diferentes usuarios
     console.log('[authenticateClientWithToken] Limpiando sesión anterior...');
-    await supabase.auth.signOut();
+    try {
+      // Intentar cerrar sesión de Supabase si está disponible
+      if (supabase.auth && typeof supabase.auth.signOut === 'function') {
+        await supabase.auth.signOut();
+      }
+    } catch (signOutError) {
+      // Si falla el signOut, continuar de todas formas (puede que no haya sesión)
+      console.warn('[authenticateClientWithToken] Error al cerrar sesión anterior (continuando):', signOutError);
+    }
     sessionStorage.removeItem('clientAuth');
 
     // ✅ PASO 1: Buscar cliente por token EN SUPABASE (fuente de verdad)

@@ -52,9 +52,12 @@ function createSafeSupabase() {
     },
     auth: {
       signInWithPassword: async () => errorResponse('Auth no está configurado'),
+      signOut: async () => ({ error: null }), // Retornar éxito silencioso si no está configurado
       getUser: async () => errorResponse('Auth no está configurado'),
       getSession: async () => ({ data: { session: null } }),
-      onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => { } } } })
+      onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => { } } } }),
+      updateUser: async () => errorResponse('Auth no está configurado'),
+      refreshSession: async () => ({ data: { session: null }, error: null })
     },
     functions: {
       invoke: async () => errorResponse('Functions no está configurado')

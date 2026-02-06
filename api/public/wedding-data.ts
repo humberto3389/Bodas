@@ -30,18 +30,28 @@ interface CachedData {
 // --- FUNCIÓN PARA OBTENER CLIENTE DE SUPABASE ---
 function getSupabaseClient() {
   // ✅ CORRECTO para funciones serverless (API Routes) - usar process.env
-  const supabaseUrl = process.env.SUPABASE_URL;
-  const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
+  // Intentar primero sin prefijo VITE_ (para funciones serverless)
+  // Luego con prefijo VITE_ (fallback para compatibilidad)
+  const supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
+  const supabaseAnonKey = process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY;
 
   // Logs de debug para verificar variables de entorno
   console.log('[BFF Debug] SUPABASE_URL:', supabaseUrl ? 'Definida' : 'UNDEFINED');
   console.log('[BFF Debug] SUPABASE_ANON_KEY:', supabaseAnonKey ? 'Definida' : 'UNDEFINED');
+  console.log('[BFF Debug] Variables disponibles:', {
+    'SUPABASE_URL': !!process.env.SUPABASE_URL,
+    'VITE_SUPABASE_URL': !!process.env.VITE_SUPABASE_URL,
+    'SUPABASE_ANON_KEY': !!process.env.SUPABASE_ANON_KEY,
+    'VITE_SUPABASE_ANON_KEY': !!process.env.VITE_SUPABASE_ANON_KEY
+  });
 
   // Validación explícita antes de crear el cliente
   if (!supabaseUrl || !supabaseAnonKey) {
     const errorMsg = 'Las variables de entorno de Supabase no están configuradas en el servidor. ' +
       `SUPABASE_URL: ${supabaseUrl ? 'OK' : 'FALTA'}, ` +
-      `SUPABASE_ANON_KEY: ${supabaseAnonKey ? 'OK' : 'FALTA'}`;
+      `SUPABASE_ANON_KEY: ${supabaseAnonKey ? 'OK' : 'FALTA'}. ` +
+      `IMPORTANTE: En Vercel, las funciones serverless necesitan las variables SIN el prefijo VITE_. ` +
+      `Configura SUPABASE_URL y SUPABASE_ANON_KEY en Vercel Dashboard → Settings → Environment Variables.`;
     console.error('[BFF Error]', errorMsg);
     throw new Error(errorMsg);
   }

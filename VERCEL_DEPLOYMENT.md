@@ -49,10 +49,28 @@ https://bodas-ez22.vercel.app/admin/login
 
 ### 4. Verificar Variables de Entorno
 
-Asegúrate de que en Vercel Dashboard → Settings → Environment Variables estén configuradas:
-- `VITE_SUPABASE_URL`
-- `VITE_SUPABASE_ANON_KEY`
-- `VITE_MAIN_DOMAIN` (opcional)
+**⚠️ CRÍTICO**: Debes configurar las variables de entorno en DOS formatos:
+
+#### Para el Cliente (Frontend) - Con prefijo VITE_:
+- `VITE_SUPABASE_URL` - URL de tu proyecto Supabase
+- `VITE_SUPABASE_ANON_KEY` - Clave anónima pública de Supabase
+- `VITE_MAIN_DOMAIN` (opcional) - Dominio principal
+
+#### Para Funciones Serverless (API Routes) - SIN prefijo VITE_:
+- `SUPABASE_URL` - URL de tu proyecto Supabase (mismo valor que VITE_SUPABASE_URL)
+- `SUPABASE_ANON_KEY` - Clave anónima pública de Supabase (mismo valor que VITE_SUPABASE_ANON_KEY)
+
+**IMPORTANTE**: Las funciones serverless en Vercel NO pueden acceder a variables con prefijo `VITE_`. Por eso necesitas configurar ambas versiones.
+
+**Cómo configurar:**
+1. Ve a Vercel Dashboard → Settings → Environment Variables
+2. Agrega las 4 variables (2 con VITE_ y 2 sin VITE_)
+3. Usa los mismos valores para `VITE_SUPABASE_URL` y `SUPABASE_URL`
+4. Usa los mismos valores para `VITE_SUPABASE_ANON_KEY` y `SUPABASE_ANON_KEY`
+5. Selecciona los ambientes: Production, Preview (y Development si lo necesitas)
+6. Haz un **Redeploy** después de agregar las variables
+
+**Ver más detalles en:** `VERCEL_ENV_SETUP.md`
 
 ### 5. Verificar Logs de Build
 
