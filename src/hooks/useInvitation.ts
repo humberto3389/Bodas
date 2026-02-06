@@ -18,17 +18,10 @@ export function useInvitation(subdomain?: string, initialData?: ClientToken, ref
         const loadClient = async () => {
             if (!subdomain) return;
 
-            // Si es la carga inicial y ya tenemos initialData, podemos saltarnos la primera llamada al BFF
-            // PERO si refresh es true o refreshTrigger > 0, FORZAMOS la carga para actualizar.
-            if (initialData && refreshTrigger === 0 && !refresh && !urlClient) {
-                setUrlClient(initialData);
-                setLoading(false);
-                return;
-            }
-
             setLoading(true);
             try {
-                // ✅ USAR BFF
+                // ✅ SIEMPRE cargar desde el BFF para garantizar que obtenemos el cliente correcto del subdominio
+                // NO usar initialData directamente en caso de navegación entre subdomains
                 const bffData = await fetchWeddingDataFromBFF(subdomain, refresh || refreshTrigger > 0);
                 const mappedClient = mapClientDataFromBFF(bffData.client);
                 setUrlClient(mappedClient);
@@ -38,14 +31,14 @@ export function useInvitation(subdomain?: string, initialData?: ClientToken, ref
                 setPadrinos(bffData.padrinos || []);
             } catch (e) {
                 console.error("[useInvitation] Error loading client from BFF:", e);
-                if (!initialData) setUrlClient(null);
+                setUrlClient(null);
             } finally {
                 setLoading(false);
             }
         };
 
         loadClient();
-    }, [subdomain, refresh, refreshTrigger]); // Quitamos initialData de aquí para evitar loops, pero lo manejamos dentro
+    }, [subdomain, refresh, refreshTrigger]); // CRÍTICO: Incluir subdomain en las dependencias para recargar cuando cambie
 
     // Realtime: Escuchar cambios en mensajes (solo para actualizaciones en tiempo real)
     // NOTA: La carga inicial viene del BFF, pero escuchamos cambios para mantener UI actualizada
