@@ -16,7 +16,23 @@ const supabaseAnonKey = normalize(import.meta.env.VITE_SUPABASE_ANON_KEY)
  */
 function createSafeSupabase() {
   if (supabaseUrl && supabaseAnonKey) {
-    return createClient(supabaseUrl, supabaseAnonKey)
+    /**
+     * ✅ CRÍTICO (multi-pestaña / multi-tenant):
+     * Supabase Auth persiste la sesión en localStorage por defecto, lo cual se comparte
+     * entre pestañas del mismo origen. Eso hace que si inicias sesión como Cliente A en
+     * una pestaña y Cliente B en otra, la última sesión pisa a la anterior y al recargar
+     * ambas pestañas terminan "unificadas" (mismo JWT / mismo usuario).
+     *
+     * Solución: persistir Auth en sessionStorage (aislado por pestaña).
+     */
+    return createClient(supabaseUrl, supabaseAnonKey, {
+      auth: {
+        storage: window.sessionStorage,
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true
+      }
+    })
   }
 
   // ⚠️ CRÍTICO: Variables de entorno no configuradas
