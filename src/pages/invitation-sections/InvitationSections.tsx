@@ -1,3 +1,5 @@
+import { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence, useInView } from 'framer-motion';
 import { useAudioContext } from '../../contexts/AudioContext';
 import { SectionTitle } from './SectionTitle';
 
