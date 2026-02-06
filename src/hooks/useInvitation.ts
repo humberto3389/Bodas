@@ -18,12 +18,14 @@ export function useInvitation(subdomain?: string, initialData?: ClientToken, ref
         const loadClient = async () => {
             if (!subdomain) return;
 
+            console.log(`[useInvitation] Cargando datos para subdomain: ${subdomain}`);
             setLoading(true);
             try {
                 // ✅ SIEMPRE cargar desde el BFF para garantizar que obtenemos el cliente correcto del subdominio
                 // NO usar initialData directamente en caso de navegación entre subdomains
                 const bffData = await fetchWeddingDataFromBFF(subdomain, refresh || refreshTrigger > 0);
                 const mappedClient = mapClientDataFromBFF(bffData.client);
+                console.log(`[useInvitation] ✅ Datos cargados para ${subdomain}. Client ID: ${mappedClient.id}`);
                 setUrlClient(mappedClient);
                 setMessages(bffData.messages || []);
                 setGalleryImages(bffData.galleryImages || []);

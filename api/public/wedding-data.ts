@@ -22,9 +22,10 @@ interface CachedData {
   _cachedAt: string;
 }
 
-const cachedData: Record<string, CachedData> = {};
-const cacheExpiry: Record<string, number> = {};
-const CACHE_TTL_MS = 15 * 1000; // 15 SEGUNDOS de vida de caché (antes 5 min)
+// ❌ ELIMINAR: Cache en memoria global causa problemas con Vercel serverless
+// const cachedData: Record<string, CachedData> = {};
+// const cacheExpiry: Record<string, number> = {};
+// const CACHE_TTL_MS = 15 * 1000; // 15 SEGUNDOS de vida de caché (antes 5 min)
 
 // --- FUNCIÓN PARA OBTENER CLIENTE DE SUPABASE ---
 function getSupabaseClient() {
@@ -48,22 +49,12 @@ function getSupabaseClient() {
   return createClient(supabaseUrl, supabaseAnonKey);
 }
 
-// --- FUNCIÓN PARA OBTENER DATOS (CON CACHÉ) ---
+// --- FUNCIÓN PARA OBTENER DATOS (SIN CACHÉ EN MEMORIA) ---
 async function getPublicPageData(subdomain: string, bypassCache: boolean = false): Promise<CachedData> {
-  const now = Date.now();
-  const cacheKey = subdomain;
-
-  // 1. VERIFICAR SI LA CACHÉ ES VÁLIDA (Si no pedimos bypass)
-  if (!bypassCache && cachedData[cacheKey] && cacheExpiry[cacheKey] && now < cacheExpiry[cacheKey]) {
-    console.log(`[BFF] Sirviendo datos desde caché para ${subdomain}.`);
-    return cachedData[cacheKey];
-  }
-
-  if (bypassCache) {
-    console.log(`[BFF] Bypass de caché solicitado para ${subdomain}, consultando Supabase...`);
-  } else {
-    console.log(`[BFF] Caché expirada para ${subdomain}, consultando Supabase...`);
-  }
+  // ✅ SIMPLIFICADO: No usar caché en memoria
+  // El caché HTTP de Vercel es suficiente y evita problemas de estado compartido
+  
+  console.log(`[BFF] Consultando Supabase para subdomain: ${subdomain}...`);
 
   try {
     // Obtener cliente de Supabase (con validación de variables de entorno)
@@ -150,7 +141,7 @@ async function getPublicPageData(subdomain: string, bypassCache: boolean = false
       console.error('[BFF] Error cargando videos:', videoErr);
     }
 
-    // 3. ESTRUCTURAR Y GUARDAR EN CACHÉ
+    // 3. ESTRUCTURAR RESULTADO
     const result: CachedData = {
       client: clientData,
       messages: messages || [],
@@ -160,19 +151,14 @@ async function getPublicPageData(subdomain: string, bypassCache: boolean = false
       _cachedAt: new Date().toISOString()
     };
 
-    cachedData[cacheKey] = result;
-    cacheExpiry[cacheKey] = now + CACHE_TTL_MS;
-
+    // ✅ NO guardar en caché en memoria
+    // El caché HTTP de Vercel maneja todo
     return result;
 
   } catch (error: any) {
     console.error('[BFF] Error grave consultando Supabase:', error);
-    // Si hay caché expirada, servirla como fallback
-    if (cachedData[cacheKey]) {
-      console.log('[BFF] Sirviendo caché expirada como fallback.');
-      return cachedData[cacheKey];
-    }
-    throw new Error(`No se pudieron obtener los datos: ${error.message}`);
+    // Si hay error, retornar error (no servir caché vieja)
+    throw error;
   }
 }
 
