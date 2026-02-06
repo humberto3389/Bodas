@@ -10,15 +10,6 @@ interface CountdownProps {
 }
 
 export function Countdown({ date, time, clientData }: CountdownProps) {
-    console.log('🔍 DEBUG GLOBAL - Countdown recibió:', {
-        fecha: date,
-        hora: time,
-        tipoFecha: typeof date,
-        tipoHora: typeof time,
-        timestampActual: Date.now(),
-        fechaActual: new Date().toLocaleString('es-PE', { timeZone: 'America/Lima' })
-    });
-
     const targetTimestamp = useMemo(() => {
         // PRIORIDAD 1: Usar el UTC calculado por el servidor/admin si existe
         if (clientData?.wedding_datetime_utc) {
@@ -31,30 +22,7 @@ export function Countdown({ date, time, clientData }: CountdownProps) {
         return getEventTimestampUTC(dateStr, time || '00:00');
     }, [clientData?.wedding_datetime_utc, date, time]);
 
-    // Paso 6.1: Verificación final
-    useEffect(() => {
-        if (targetTimestamp > 0) {
-            const ahora = Date.now();
-            const diferenciaMs = targetTimestamp - ahora;
-            const diferenciaHoras = diferenciaMs / (1000 * 60 * 60);
-            const diferenciaDias = diferenciaMs / (1000 * 60 * 60 * 24);
 
-            console.log('✅ VERIFICACIÓN FINAL - Countdown:', {
-                horaBodaUTC: new Date(targetTimestamp).toISOString(),
-                horaBodaLima: new Date(targetTimestamp).toLocaleString('es-PE', { timeZone: 'America/Lima' }),
-                horaActualLima: new Date().toLocaleString('es-PE', { timeZone: 'America/Lima' }),
-                diferenciaTotalHoras: Math.round(diferenciaHoras * 100) / 100,
-                diferenciaDiasCompletos: Math.floor(diferenciaDias),
-                horasRestantes: Math.floor((diferenciaDias % 1) * 24),
-                minutosRestantes: Math.floor(((diferenciaDias % 1) * 24 * 60) % 60)
-            });
-
-            // Validación: Debe ser ~402 horas (16 días + 18 horas)
-            if (diferenciaHoras < 400 || diferenciaHoras > 410) {
-                console.warn('⚠️ Alerta de diferencia horaria:', diferenciaHoras);
-            }
-        }
-    }, [targetTimestamp]);
 
     const calculateTimeLeft = useMemo(() => () => {
         const now = Date.now();

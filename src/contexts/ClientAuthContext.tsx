@@ -86,11 +86,10 @@ export function ClientAuthProvider({ children }: ClientAuthProviderProps) {
   }, []);
 
   const login = useCallback((clientData: ClientToken) => {
-    console.log('[ClientAuthContext] login() llamado. Guardando datos y disparando evento...');
     setClient(clientData);
     setIsAuthenticated(true);
     const dataStr = JSON.stringify(clientData);
-    
+
     // ✅ CRÍTICO: Usar el sistema de gestión de pestañas para evitar conflictos
     import('../lib/tab-manager').then(({ storeClientSession, getTabId }) => {
       const tabId = getTabId();
@@ -110,7 +109,7 @@ export function ClientAuthProvider({ children }: ClientAuthProviderProps) {
     // ✅ CRÍTICO: Verificar conflictos de sesión entre pestañas
     import('../lib/tab-manager').then((tabManager) => {
       const tabId = tabManager.getTabId();
-      
+
       // Verificar si hay un conflicto de sesión
       if (tabManager.checkSessionConflict()) {
         console.warn('[ClientAuthContext] Conflicto de sesión detectado. Limpiando sesión de esta pestaña...');
@@ -119,7 +118,7 @@ export function ClientAuthProvider({ children }: ClientAuthProviderProps) {
         setIsAuthenticated(false);
         return;
       }
-      
+
       // Intentar obtener la sesión usando el sistema de gestión de pestañas
       const session = tabManager.getClientSession();
       if (session && session.tabId === tabId) {

@@ -39,7 +39,8 @@ const ClientCreateForm = ({
   createClient,
   setIsCreatingClient,
   subdomainManual,
-  setSubdomainManual
+  setSubdomainManual,
+  isCreating
 }: {
   newClient: NewClientForm;
   setNewClient: (client: NewClientForm) => void;
@@ -47,6 +48,7 @@ const ClientCreateForm = ({
   setIsCreatingClient: (creating: boolean) => void;
   subdomainManual: boolean;
   setSubdomainManual: (manual: boolean) => void;
+  isCreating: boolean;
 }) => {
   const generateSubdomain = (clientName: string): string => {
     return clientName
@@ -193,18 +195,31 @@ const ClientCreateForm = ({
 
         <div className="md:col-span-2 flex gap-3 pt-4">
           <motion.button
-            whileHover={{ scale: 1.02, y: -1 }}
-            whileTap={{ scale: 0.98 }}
+            whileHover={!isCreating ? { scale: 1.02, y: -1 } : {}}
+            whileTap={!isCreating ? { scale: 0.98 } : {}}
             onClick={createClient}
-            className="flex-1 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+            disabled={isCreating}
+            className={`flex-1 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2 ${isCreating ? 'opacity-70 cursor-not-allowed' : ''}`}
           >
-            Crear Cliente
+            {isCreating ? (
+              <>
+                <motion.div
+                  className="w-5 h-5 border-2 border-white border-t-transparent rounded-full"
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                />
+                <span>Creando...</span>
+              </>
+            ) : (
+              'Crear Cliente'
+            )}
           </motion.button>
           <motion.button
             whileHover={{ scale: 1.02, y: -1 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => setIsCreatingClient(false)}
-            className="px-6 py-3 border border-slate-300 text-slate-700 rounded-xl hover:bg-slate-50 transition-all duration-300"
+            disabled={isCreating}
+            className={`px-6 py-3 border border-slate-300 text-slate-700 rounded-xl hover:bg-slate-50 transition-all duration-300 ${isCreating ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
             Cancelar
           </motion.button>
@@ -463,7 +478,6 @@ const LandingPageEditor = () => {
         setNotification({ type: 'error', message: 'Error al guardar el contenido' });
       }
     } catch (error: any) {
-      console.error('[DEBUG] Error al guardar Landing Page:', error);
       setNotification({ type: 'error', message: `Error: ${error.message || 'No se pudo guardar el contenido'}` });
     } finally {
       setIsSaving(false);
@@ -1280,6 +1294,7 @@ export default function MasterAdmin() {
     subdomainManual,
     setSubdomainManual,
     provisionStatus,
+    isCreating,
     createClient,
     updateClientStatus,
     deleteClient,
@@ -1755,6 +1770,7 @@ export default function MasterAdmin() {
                         setIsCreatingClient={setIsCreatingClient}
                         subdomainManual={subdomainManual}
                         setSubdomainManual={setSubdomainManual}
+                        isCreating={isCreating}
                       />
                     ) : activeView === 'grid' ? (
                       <ClientGridView

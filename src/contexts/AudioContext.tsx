@@ -15,13 +15,11 @@ export function AudioProvider({ children }: { children: ReactNode }) {
 
     const requestFocus = useCallback((source: AudioSource) => {
         setActiveSource(source);
-        console.log('[AudioContext] Focus requested by:', source);
     }, []);
 
     const releaseFocus = useCallback((source: AudioSource) => {
         setActiveSource((current) => {
             if (current === source) {
-                console.log('[AudioContext] Focus released by:', source);
                 return null;
             }
             return current;

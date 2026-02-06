@@ -10,16 +10,13 @@ export function useClientAdmin() {
     const navigate = useNavigate();
     const [authed, setAuthed] = useState(() => {
         const hasAuth = !!sessionStorage.getItem('clientAuth');
-        console.log('[useClientAdmin] Estado inicial authed:', hasAuth);
         return hasAuth;
     });
     const [clientSession, setClientSession] = useState<ClientToken | null>(() => {
         try {
             const s = sessionStorage.getItem('clientAuth');
-            console.log('[useClientAdmin] Sesión cargada:', s ? 'Sí' : 'No');
             return s ? JSON.parse(s) : null;
         } catch (err) {
-            console.error('[useClientAdmin] Error parseando sesión:', err);
             return null;
         }
     });
@@ -81,22 +78,18 @@ export function useClientAdmin() {
         // Double check storage to prevent race conditions
         const storedAuth = sessionStorage.getItem('clientAuth');
         if (!authed && storedAuth) {
-            console.log('[useClientAdmin] Recuperando sesión perdida de storage...');
             try {
                 const parsed = JSON.parse(storedAuth);
                 setClientSession(parsed);
                 setAuthed(true);
                 return; // Stop redirect
             } catch (e) {
-                console.error('[useClientAdmin] Error recuperando sesión:', e);
             }
         }
 
         if (!authed && !storedAuth) {
-            console.warn('[useClientAdmin] No authed, redirigiendo a /login...');
             navigate('/login', { replace: true });
         } else {
-            console.log('[useClientAdmin] Usuario autenticado, permaneciendo en Admin.');
         }
     }, [authed, navigate]);
 
@@ -121,7 +114,6 @@ export function useClientAdmin() {
 
         const loadClientData = async () => {
             if (isSavingRef.current) {
-                console.log('[loadClientData] Guardado en progreso, ignorando auto-recarga.');
                 return;
             }
 
@@ -145,7 +137,6 @@ export function useClientAdmin() {
                 const isChanged = JSON.stringify(mappedClient) !== JSON.stringify(clientSession);
 
                 if (isChanged || !hasLoadedOnceRef.current) {
-                    console.log(`[loadClientData] Sincronizando UI (${isChanged ? 'Datos nuevos' : 'Primer carga'})...`);
                     sessionStorage.setItem('clientAuth', JSON.stringify(mappedClient));
                     window.dispatchEvent(new CustomEvent('clientAuthUpdated', { detail: { clientAuth: JSON.stringify(mappedClient) } }));
                     setClientSession(mappedClient);
@@ -264,7 +255,6 @@ export function useClientAdmin() {
             if (updateError) throw updateError;
 
             if (updatedData) {
-                console.log('[saveClientProfile] Éxito. Sincronizando sesión local.');
                 const freshClient = mapSupabaseClientToToken(updatedData);
                 sessionStorage.setItem('clientAuth', JSON.stringify(freshClient));
                 window.dispatchEvent(new CustomEvent('clientAuthUpdated', { detail: { clientAuth: JSON.stringify(freshClient) } }));
@@ -277,7 +267,6 @@ export function useClientAdmin() {
                 setSaveStatus('idle');
             }, 5000);
         } catch (err) {
-            console.error('Error saving profile:', err);
             isSavingRef.current = false;
             setSaveStatus('error');
             setTimeout(() => setSaveStatus('idle'), 3000);

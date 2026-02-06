@@ -186,7 +186,6 @@ export function useMasterAdmin() {
                 calculateStats(formattedClients);
             }
         } catch (err) {
-            console.error('Error in loadClients:', err);
         } finally {
             isFetchingRef.current = false;
             setLoadingClients(false);
@@ -204,7 +203,6 @@ export function useMasterAdmin() {
             if (error) throw error;
             setMessages(data || []);
         } catch (err: any) {
-            console.error('Error loading messages:', err);
             showNotification('error', `Error al cargar mensajes: ${err.message}`);
         } finally {
             setLoadingMessages(false);
@@ -223,7 +221,6 @@ export function useMasterAdmin() {
             loadMessages();
             return true;
         } catch (err: any) {
-            console.error('Error updating message status:', err);
             showNotification('error', `Error: ${err.message}`);
             return false;
         }
@@ -255,7 +252,6 @@ export function useMasterAdmin() {
             loadClients();
             return true;
         } catch (err: any) {
-            console.error('Error approving upgrade:', err);
             showNotification('error', `Error al aprobar: ${err.message}`);
             return false;
         }
@@ -282,7 +278,6 @@ export function useMasterAdmin() {
             loadClients();
             return true;
         } catch (err: any) {
-            console.error('Error confirming upgrade payment:', err);
             showNotification('error', `Error al confirmar pago: ${err.message}`);
             return false;
         }
@@ -298,8 +293,6 @@ export function useMasterAdmin() {
             setAdminInfo(null);
             navigate('/admin/login', { replace: true });
         } catch (error) {
-            console.error('Error logging out:', error);
-            // Backup redirect
             navigate('/admin/login', { replace: true });
         }
     };
@@ -361,7 +354,6 @@ export function useMasterAdmin() {
             loadClients(); // Refresh list
             return true;
         } catch (err: any) {
-            console.error('Error confirming upgrade:', err);
             showNotification('error', `Error al confirmar upgrade: ${err.message}`);
             return false;
         }

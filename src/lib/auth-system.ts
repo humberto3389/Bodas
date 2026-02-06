@@ -751,7 +751,6 @@ export async function authenticateClientWithToken(token: string): Promise<boolea
   try {
     // ✅ CRÍTICO: Limpiar sesión anterior antes de hacer login
     // Esto previene que se mezclen datos de diferentes usuarios
-    console.log('[authenticateClientWithToken] Limpiando sesión anterior...');
     try {
       // Intentar cerrar sesión de Supabase si está disponible
       if (supabase.auth && typeof supabase.auth.signOut === 'function') {
@@ -759,7 +758,6 @@ export async function authenticateClientWithToken(token: string): Promise<boolea
       }
     } catch (signOutError) {
       // Si falla el signOut, continuar de todas formas (puede que no haya sesión)
-      console.warn('[authenticateClientWithToken] Error al cerrar sesión anterior (continuando):', signOutError);
     }
     sessionStorage.removeItem('clientAuth');
 
@@ -773,7 +771,6 @@ export async function authenticateClientWithToken(token: string): Promise<boolea
       .maybeSingle();
 
     if (fetchError || !clientData) {
-      console.warn('[authenticateClientWithToken] Token no encontrado o inactivo');
       return false;
     }
 
@@ -784,12 +781,6 @@ export async function authenticateClientWithToken(token: string): Promise<boolea
     const email = clientData.email || `client-${client.subdomain}@invitacionbodas.com`;
     const password = token;
 
-    console.log('[authenticateClientWithToken] Intentando login...', {
-      email,
-      tokenPrefix: token.substring(0, 10) + '...',
-      clientSubdomain: client.subdomain
-    });
-
     // ✅ PASO 2: Intentar login con el usuario en auth.users
     const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
       email,
@@ -797,13 +788,11 @@ export async function authenticateClientWithToken(token: string): Promise<boolea
     });
 
     if (authError) {
-      console.warn('[authenticateClientWithToken] Error en signInWithPassword:', authError.message);
 
       // Si el error es credenciales inválidas, intentar "Auto-Repair" creando el usuario
       // Esto sirve si el usuario de Auth fue borrado pero el Cliente sigue en la BD,
       // o si se quiere forzar la recreación (requiere borrar el usuario en Supabase Console primero si existe con otra pass)
       if (authError.message.includes('Invalid login credentials') || authError.status === 400) {
-        console.log('[authenticateClientWithToken] Intentando autorrecuperación (SignUp)...');
 
         const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
           email,
@@ -820,13 +809,11 @@ export async function authenticateClientWithToken(token: string): Promise<boolea
         });
 
         if (signUpData?.user && !signUpError) {
-          console.log('[authenticateClientWithToken] Autorrecuperación exitosa. Usuario recreado.');
           // Login exitoso tras creación
           return true;
         }
 
         if (signUpError) {
-          console.error('[authenticateClientWithToken] Falló la autorrecuperación:', signUpError.message);
         }
       }
 

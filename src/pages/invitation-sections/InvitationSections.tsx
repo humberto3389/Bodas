@@ -1,6 +1,3 @@
-import { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence, useInView } from 'framer-motion';
-import { supabase } from '../../lib/supabase';
 import { useAudioContext } from '../../contexts/AudioContext';
 import { SectionTitle } from './SectionTitle';
 
@@ -73,7 +70,6 @@ export function VideoSection({ clientData, videos: propVideos }: { clientData: a
         if (videos.length > 0 && audioEnabled && isInView) {
             requestFocus('cinema');
         } else {
-            // console.log('[VideoSection] Releasing Focus: cinema');
             // Sólo soltamos si nosotros lo teníamos o si no estamos en vista, 
             // pero releaseFocus suele ser seguro de llamar.
             releaseFocus('cinema');

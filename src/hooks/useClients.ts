@@ -28,6 +28,7 @@ export function useClients(
     const [showEditModal, setShowEditModal] = useState(false);
     const [subdomainManual, setSubdomainManual] = useState(false);
     const [provisionStatus, setProvisionStatus] = useState<Record<string, { status: 'idle' | 'in_progress' | 'success' | 'error'; error?: string }>>({});
+    const [isCreating, setIsCreating] = useState(false);
 
     // Form state for new client
     const [newClient, setNewClient] = useState<NewClientForm>({
@@ -52,6 +53,7 @@ export function useClients(
             return;
         }
 
+        setIsCreating(true);
         try {
             const result = await createNewClient({
                 ...newClient,
@@ -116,6 +118,8 @@ export function useClients(
             showNotification('success', `✅ Cliente "${createdClientName}" creado exitosamente`);
         } catch (error: any) {
             showNotification('error', 'Error al crear el cliente: ' + (error.message || 'Error desconocido'));
+        } finally {
+            setIsCreating(false);
         }
     };
 
@@ -333,8 +337,7 @@ export function useClients(
                 await supabase.auth.setSession({
                     access_token: currentSession.access_token,
                     refresh_token: currentSession.refresh_token
-                }).catch((err) => {
-                    console.warn('Error al restaurar sesión:', err);
+                }).catch(() => {
                     supabase.auth.refreshSession(currentSession).catch(() => { });
                 });
             }
@@ -396,6 +399,7 @@ export function useClients(
         setSubdomainManual,
         provisionStatus,
         setProvisionStatus,
+        isCreating,
         createClient,
         updateClientStatus,
         deleteClient,

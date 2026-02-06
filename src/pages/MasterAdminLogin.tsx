@@ -38,12 +38,11 @@ export default function MasterAdminLogin() {
   // Verificar si ya hay sesión activa al cargar
   useEffect(() => {
     const checkAuth = async () => {
-      console.log('[Master Admin Login] Iniciando verificación de autenticación...');
+
 
       // Safety timeout: si en 10 segundos no ha terminado, forzamos la salida del estado de carga
       const safetyTimeout = setTimeout(() => {
         if (isLoading) {
-          console.warn('[Master Admin Login] Autenticación tardó demasiado, forzando estado listo.');
           setIsLoading(false);
         }
       }, 10000);
@@ -54,19 +53,14 @@ export default function MasterAdminLogin() {
         const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('TIMEOUT_SESSION')), 5000));
 
         const session = await Promise.race([sessionPromise, timeoutPromise]) as any;
-        console.log('[Master Admin Login] Sesión verificada:', session ? 'Existe' : 'No existe');
 
         if (session?.user) {
           const isMaster = isMasterAdmin(session.user);
-          const currentRole = session.user.app_metadata?.role || session.user.user_metadata?.role || 'sin rol definido';
-          console.log(`[Master Admin Login] Usuario detectado: ${session.user.email} | Rol: ${currentRole} | Es Admin: ${isMaster}`);
 
           if (isMaster) {
-            console.log('[Master Admin Login] Acceso autorizado. Redirigiendo a /admin');
             navigate('/admin')
             return
           } else {
-            console.warn('[Master Admin Login] El usuario actual no es admin. Cerrando sesión para permitir ingresar como admin.');
             await supabase.auth.signOut();
             // Recargar para limpiar estado
             window.location.reload();
@@ -74,11 +68,6 @@ export default function MasterAdminLogin() {
           }
         }
       } catch (error: any) {
-        if (error?.message === 'TIMEOUT_SESSION') {
-          console.error('[Master Admin Login] La comunicación con la base de datos ha tardado demasiado.');
-        } else {
-          console.error('[Master Admin Login] Error en verificación inicial:', error);
-        }
       } finally {
         clearTimeout(safetyTimeout);
         setIsLoading(false);
@@ -92,7 +81,6 @@ export default function MasterAdminLogin() {
     try {
       const { data } = supabase.auth.onAuthStateChange(
         (event, session) => {
-          console.log(`[Master Admin Login] Evento Auth: ${event}`);
           if (event === 'SIGNED_IN' && session?.user) {
             if (isMasterAdmin(session.user)) {
               navigate('/admin')
@@ -102,7 +90,6 @@ export default function MasterAdminLogin() {
       )
       authSubscription = data?.subscription;
     } catch (e) {
-      console.error('[Master Admin Login] Error al suscribirse a eventos de auth:', e);
     }
 
     return () => {
@@ -117,7 +104,6 @@ export default function MasterAdminLogin() {
 
     try {
       // Login: autenticarse con Supabase Auth
-      console.log('[Master Admin] Intentando login con:', email)
 
       const { data: authData, error: signInError } = await supabase.auth.signInWithPassword({
         email,
@@ -125,18 +111,15 @@ export default function MasterAdminLogin() {
       })
 
       if (signInError) {
-        console.error('[Master Admin] Error en login:', signInError)
         setLoginError(`❌ Error al iniciar sesión: ${signInError.message}`)
         setAuthLoading(false)
         return
       }
 
       if (authData.session?.user) {
-        console.log('[Master Admin] Usuario autenticado:', authData.session.user.id)
 
         // Verificar que sea master admin
         if (!isMasterAdmin(authData.session.user)) {
-          console.warn('[Master Admin] Usuario no tiene rol master_admin')
           setLoginError(`❌ No tienes permisos de administrador maestro.\n\nTu rol actual: ${authData.session.user.app_metadata?.role ||
             authData.session.user.user_metadata?.role ||
             'sin definir'
@@ -146,7 +129,6 @@ export default function MasterAdminLogin() {
           return
         }
 
-        console.log('[Master Admin] ✅ Master admin autenticado correctamente')
 
         // El rol ya está en raw_app_meta_data desde que se creó el usuario admin
         // Solo necesitamos refrescar la sesión para asegurar que el JWT está actualizado
@@ -163,11 +145,9 @@ export default function MasterAdminLogin() {
         sessionStorage.setItem('adminFullName', fullNameValue)
 
         // Redirigir al panel master admin
-        console.log('[Master Admin] Redirigiendo a /admin')
         navigate('/admin')
       }
     } catch (error: any) {
-      console.error('[Master Admin] Error inesperado:', error)
       setLoginError(`❌ Error inesperado: ${error.message || 'Error desconocido'}`)
     } finally {
       setAuthLoading(false)
