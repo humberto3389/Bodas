@@ -1,4 +1,4 @@
-﻿import './index.css';
+import './index.css';
 import { useParams } from 'react-router-dom';
 import { useClientAuth } from './contexts/ClientAuthContext';
 import { LoadingSpinner } from './components/LoadingSpinner';
@@ -7,6 +7,7 @@ import { useToast } from './hooks/useToast';
 import { useInvitation } from './hooks/useInvitation';
 import { useState, useEffect, Suspense, lazy } from 'react';
 import { AudioProvider } from './contexts/AudioContext';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 
 // Componentes críticos para el render inicial (cargados inmediatamente)
 import { HeroSection } from './pages/invitation-sections/HeroSection';
@@ -204,6 +205,7 @@ export default function App({ clientData: propData }: AppProps) {
         )}
 
         <ToastContainer toasts={toasts} onClose={removeToast} />
+        <SpeedInsights />
       </div>
     </AudioProvider>
   );
