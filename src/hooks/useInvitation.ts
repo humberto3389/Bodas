@@ -18,7 +18,6 @@ export function useInvitation(subdomain?: string, initialData?: ClientToken, ref
         const loadClient = async () => {
             if (!subdomain) return;
 
-            console.log(`[useInvitation] Cargando datos para subdomain: ${subdomain}`);
             setLoading(true);
             
             // ✅ CRÍTICO: Limpiar cliente anterior cuando cambia el subdomain
@@ -34,23 +33,17 @@ export function useInvitation(subdomain?: string, initialData?: ClientToken, ref
                 
                 // ✅ CRÍTICO: Verificar que el cliente cargado corresponde al subdomain de la URL
                 if (mappedClient.subdomain.toLowerCase() !== subdomain.toLowerCase()) {
-                    console.error(`[useInvitation] ERROR CRÍTICO: El cliente cargado no corresponde al subdomain de la URL`, {
-                        subdomainURL: subdomain,
-                        subdomainCliente: mappedClient.subdomain
-                    });
                     setUrlClient(null);
                     setLoading(false);
                     return;
                 }
                 
-                console.log(`[useInvitation] ✅ Datos cargados para ${subdomain}. Client ID: ${mappedClient.id}`);
                 setUrlClient(mappedClient);
                 setMessages(bffData.messages || []);
                 setGalleryImages(bffData.galleryImages || []);
                 setVideos(bffData.videos || []);
                 setPadrinos(bffData.padrinos || []);
             } catch (e) {
-                console.error("[useInvitation] Error loading client from BFF:", e);
                 setUrlClient(null);
             } finally {
                 setLoading(false);
@@ -93,8 +86,6 @@ export function useInvitation(subdomain?: string, initialData?: ClientToken, ref
         const currentClient = initialData || urlClient;
         if (!currentClient?.id) return;
 
-        console.log(`[useInvitation] Intentando suscribirse a cambios para cliente ${currentClient.id}...`);
-
         const channel = supabase
             .channel(`client-live-updates-${currentClient.id}`)
             .on('postgres_changes',
@@ -105,19 +96,16 @@ export function useInvitation(subdomain?: string, initialData?: ClientToken, ref
                     filter: `id=eq.${currentClient.id}`
                 },
                 (payload) => {
-                    console.log("[useInvitation] ⚡ ¡Cambio detectado en tiempo real!", payload);
                     setRefreshTrigger(prev => prev + 1);
                 }
             )
             .subscribe((status, err) => {
-                console.log(`[useInvitation] Suscripción 'clients' status: ${status}`, err ? err : "");
                 if (status === 'CHANNEL_ERROR') {
-                    console.error("[useInvitation] Error en canal de Realtime. Verifica que Realtime esté habilitado en la tabla 'clients'.");
+                    // No interrumpir experiencia del invitado si Realtime falla.
                 }
             });
 
         return () => {
-            console.log("[useInvitation] Limpiando canal de Realtime");
             supabase.removeChannel(channel);
         };
     }, [urlClient?.id, initialData?.id]);

@@ -18,7 +18,7 @@ export function VideoSection({ clientData, videos: propVideos }: { clientData: a
                 // Si el audio está habilitado, comportamiento de foco estricto
                 if (isInView) {
                     videoRef.current.muted = false; // Desmutear
-                    videoRef.current.play().catch(e => console.log('Autoplay blocked:', e));
+                    videoRef.current.play().catch(() => { });
                 } else {
                     videoRef.current.pause();
                 }
@@ -70,16 +70,7 @@ export function VideoSection({ clientData, videos: propVideos }: { clientData: a
     const audioEnabled = clientData.cinemaVideoAudioEnabled || false;
 
     useEffect(() => {
-        // DEBUG LOGS
-        console.log('[VideoSection] State:', {
-            videos: videos.length,
-            audioEnabled,
-            isInView,
-            dbValue: clientData.cinemaVideoAudioEnabled
-        });
-
         if (videos.length > 0 && audioEnabled && isInView) {
-            console.log('[VideoSection] Requesting Focus: cinema');
             requestFocus('cinema');
         } else {
             // console.log('[VideoSection] Releasing Focus: cinema');

@@ -31,7 +31,6 @@ export function BackgroundMusic({ src, shouldPlay = true }: { src: string; shoul
         const playPromise = audio.play();
         if (playPromise !== undefined) {
             playPromise.catch(() => {
-                console.log("Autoplay bloqueado por el navegador");
                 setNeedsUnlock(true);
             });
         }

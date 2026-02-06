@@ -35,14 +35,8 @@ export default function ClientLogin({ onLogin }: ClientLoginProps) {
     setIsLoading(true);
 
     try {
-      console.log('[ClientLogin] Intentando login token', {
-        inputSubdomain: username?.toLowerCase?.(),
-        tokenPrefix: password ? `${password.substring(0, 12)}...` : '',
-        hostname: window.location.hostname
-      });
       // ✅ CRÍTICO: Limpiar sesión anterior antes de hacer login
       // Esto previene que se mezclen datos de diferentes usuarios
-      console.log('[ClientLogin] Limpiando sesión anterior...');
       try {
         // Intentar cerrar sesión de Supabase si está disponible
         if (supabase.auth && typeof supabase.auth.signOut === 'function') {
@@ -64,31 +58,21 @@ export default function ClientLogin({ onLogin }: ClientLoginProps) {
         .maybeSingle();
 
       if (fetchError) {
-        console.error('[ClientLogin] Error fetching client:', fetchError);
         setError('Error al verificar credenciales. Intenta nuevamente.');
         setIsLoading(false);
         return;
       }
 
       if (!clientData) {
-        console.warn('[ClientLogin] Cliente no encontrado con esas credenciales');
         setError('Credenciales incorrectas. Verifica tu usuario y token.');
         setIsLoading(false);
         return;
       }
 
-      console.log('[ClientLogin] ✅ Cliente encontrado en Supabase:', {
-        id: clientData.id,
-        subdomain: clientData.subdomain,
-        client_name: clientData.client_name,
-        email: clientData.email
-      });
-
       // Verificar que el cliente no haya expirado
       const now = new Date();
       const accessUntil = new Date(clientData.access_until);
       if (now > accessUntil) {
-        console.warn('[ClientLogin] Acceso expirado');
         setError('Tu acceso ha expirado. Contacta al administrador.');
         setIsLoading(false);
         return;
@@ -96,7 +80,6 @@ export default function ClientLogin({ onLogin }: ClientLoginProps) {
 
       // Autenticar con Supabase Auth usando el email y token
       const clientEmail = clientData.email || `client-${clientData.subdomain}@invitacionbodas.com`;
-      console.log('[ClientLogin] Intentando Auth con:', clientEmail);
 
       const { error: authError } = await supabase.auth.signInWithPassword({
         email: clientEmail,
@@ -104,13 +87,10 @@ export default function ClientLogin({ onLogin }: ClientLoginProps) {
       });
 
       if (authError) {
-        console.error('[ClientLogin] Auth error:', authError.message);
         setError('Error de autenticación: ' + authError.message);
         setIsLoading(false);
         return;
       }
-
-      console.log('[ClientLogin] Auth exitoso');
 
       // Crear objeto ClientToken compatible
       const client: ClientToken = {
@@ -143,17 +123,13 @@ export default function ClientLogin({ onLogin }: ClientLoginProps) {
         pendingSince: clientData.pending_since ? new Date(clientData.pending_since) : undefined,
       };
 
-      console.log('[ClientLogin] Llamando a onLogin...');
-      
       // ✅ CRÍTICO: Usar el sistema de gestión de pestañas para evitar conflictos
       const { storeClientSession, getTabId } = await import('../lib/tab-manager');
       const tabId = getTabId();
       storeClientSession(client, tabId);
-      console.log('[ClientLogin] sessionStorage.clientAuth (post storeClientSession):', sessionStorage.getItem('clientAuth'));
       
       onLogin(client);
     } catch (err) {
-      console.error('[ClientLogin] Error inesperado:', err);
       setError('Error al iniciar sesión. Intenta nuevamente.');
     } finally {
       setIsLoading(false);
@@ -168,7 +144,6 @@ export default function ClientLogin({ onLogin }: ClientLoginProps) {
     try {
       // ✅ CRÍTICO: Limpiar sesión anterior antes de hacer login
       // Esto previene que se mezclen datos de diferentes usuarios
-      console.log('[ClientLogin] Limpiando sesión anterior...');
       try {
         // Intentar cerrar sesión de Supabase si está disponible
         if (supabase.auth && typeof supabase.auth.signOut === 'function') {
@@ -176,7 +151,6 @@ export default function ClientLogin({ onLogin }: ClientLoginProps) {
         }
       } catch (signOutError) {
         // Si falla el signOut, continuar de todas formas (puede que no haya sesión)
-        console.warn('[ClientLogin] Error al cerrar sesión anterior (continuando):', signOutError);
       }
       sessionStorage.removeItem('clientAuth');
 

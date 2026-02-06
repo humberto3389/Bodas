@@ -21,7 +21,7 @@ export function GuestbookSection({ messages, onSendMessage }: GuestbookSectionPr
             setName('');
             setMessage('');
         } catch (err) {
-            console.error(err);
+            // Silencioso: el UI de envío/estado ya informa implícitamente (spinner/botón deshabilitado).
         } finally {
             setIsSending(false);
         }
