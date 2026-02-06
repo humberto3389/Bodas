@@ -71,23 +71,23 @@ export function validateAndFormatTime(timeInput: string | undefined | null): str
  */
 export function formatTimeForDisplay(time24h: string | undefined | null): string {
     if (!time24h) return '';
-    
+
     // Limpiar y normalizar - pero SIN hacer inferencias sobre AM/PM
     let timeStr = (time24h || '').trim();
-    
+
     // Extraer solo números (por si viene con AM/PM)
     const match = timeStr.match(/(\d{1,2}):(\d{2})/);
     if (!match) return '';
-    
+
     const h = parseInt(match[1], 10);
     const m = parseInt(match[2], 10);
-    
+
     // Validar rango 24h
     if (h < 0 || h > 23 || m < 0 || m > 59) return '';
 
     // Determinar AM/PM basado ÚNICAMENTE en valor 24h
     const ampm = (h >= 12 && h <= 23) ? 'p. m.' : 'a. m.';
-    
+
     // Convertir a 12h
     let h12: number;
     if (h === 0) {
@@ -114,7 +114,7 @@ export function formatTimeForDisplay(time24h: string | undefined | null): string
  */
 export function convert12hTo24h(hour: number, minute: number, ampm: 'AM' | 'PM'): string {
     let h = hour;
-    
+
     // La hora 12 es especial en formato 12h
     if (h === 12) {
         if (ampm === 'AM') {
@@ -134,7 +134,7 @@ export function convert12hTo24h(hour: number, minute: number, ampm: 'AM' | 'PM')
             h = hour;
         }
     }
-    
+
     return `${String(h).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
 }
 
@@ -159,7 +159,7 @@ export function convert24hTo12h(time24h: string | undefined | null): { hour: num
     // 00:00-11:59 -> AM
     // 12:00-23:59 -> PM
     const ampm = (h >= 12 && h <= 23) ? 'PM' : 'AM';
-    
+
     // Convertir a formato 12h
     let hour12: number;
     if (h === 0) {
@@ -178,6 +178,9 @@ export function convert24hTo12h(time24h: string | undefined | null): { hour: num
 /**
  * Combina una fecha civil (YYYY-MM-DD) y una hora civil (HH:mm) en un ISO String UTC.
  * Asume que la entrada es en hora de Lima (UTC-5).
+ * 
+ * Ejemplo: Si en Lima es "2026-02-10" a las "18:00" (6:00 PM),
+ * en UTC será "2026-02-10T23:00:00.000Z" (11:00 PM UTC).
  */
 export function localToUTC(fechaLocal: string, horaLocal: string): string | null {
     if (!fechaLocal || !horaLocal) return null;
@@ -188,10 +191,22 @@ export function localToUTC(fechaLocal: string, horaLocal: string): string | null
 
     if (dateParts.length !== 3) return null;
 
-    // Crear fecha asumiendo UTC y luego ajustar el offset de Lima (UTC-5 -> +5 horas para llegar a UTC)
-    const date = new Date(Date.UTC(dateParts[0], dateParts[1] - 1, dateParts[2], h + 5, m, 0, 0));
+    // Crear la fecha interpretando los valores como hora LOCAL de Lima
+    // Usamos un string ISO que el navegador interpretará en la zona horaria local,
+    // luego obtenemos el timestamp UTC correcto
+    const year = dateParts[0];
+    const month = dateParts[1] - 1; // Los meses en JS son 0-indexed
+    const day = dateParts[2];
 
-    return date.toISOString();
+    // Crear fecha en UTC con los valores dados
+    const dateUTC = new Date(Date.UTC(year, month, day, h, m, 0, 0));
+
+    // Ajustar por el offset de Lima (UTC-5 = -300 minutos)
+    // Si en Lima son las 18:00, en UTC son las 23:00 (18 + 5)
+    const LIMA_OFFSET_MINUTES = -5 * 60; // UTC-5 = -300 minutos
+    const adjustedTimestamp = dateUTC.getTime() - (LIMA_OFFSET_MINUTES * 60 * 1000);
+
+    return new Date(adjustedTimestamp).toISOString();
 }
 
 /**
