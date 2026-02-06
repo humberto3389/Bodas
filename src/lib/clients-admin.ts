@@ -150,8 +150,6 @@ export async function createNewClient(data: {
                     signUpError.message?.includes('duplicate') ||
                     signUpError.message?.includes('User already registered')) {
 
-                    console.log(`[createNewClient] Usuario Auth existente detectado (${clientEmail}). Intentando limpieza automática con force_delete_user...`);
-
                     // Intentar borrar el usuario zombie usando la RPC segura
                     const { error: rpcError } = await supabase.rpc('force_delete_user', { target_email: clientEmail });
 
@@ -166,7 +164,6 @@ export async function createNewClient(data: {
                     }
 
                     // Reintentar creación tras borrado exitoso
-                    console.log('[createNewClient] Limpieza exitosa. Reintentando creación de Auth User...');
                     const { data: retrySignUpData, error: retrySignUpError } = await supabase.auth.signUp({
                         email: clientEmail,
                         password: clientToken.token,
@@ -191,8 +188,6 @@ export async function createNewClient(data: {
                     }
 
                     // Éxito tras reintento
-                    console.log('[createNewClient] Reintento exitoso. Cliente y Auth sincronizados.');
-
                     // Marcar como provisionado
                     await supabase
                         .from('clients')

@@ -36,7 +36,6 @@ export function useVideoEditor(videoUrl: string, videoFile: File | null) {
             const ffmpeg = ffmpegRef.current;
 
             ffmpeg.on('log', ({ message }) => {
-                console.log('[FFmpeg]', message);
             });
 
             ffmpeg.on('progress', ({ progress: p }) => {

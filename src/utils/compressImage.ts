@@ -21,7 +21,6 @@ export const compressImageForWeb = async (imageFile: File): Promise<File> => {
     };
 
     try {
-        console.log(`🔄 Comprimiendo: ${imageFile.name} (${(imageFile.size / 1024 / 1024).toFixed(2)} MB)`);
         const compressedBlob = await imageCompression(imageFile, options);
 
         // Convertir el Blob de vuelta a File, manteniendo nombre y tipo
@@ -31,7 +30,6 @@ export const compressImageForWeb = async (imageFile: File): Promise<File> => {
             { type: imageFile.type }
         );
 
-        console.log(`✅ Comprimido: ${compressedFile.name} (${(compressedFile.size / 1024 / 1024).toFixed(2)} MB)`);
         return compressedFile;
     } catch (error) {
         console.error('❌ Error comprimiendo imagen:', error);

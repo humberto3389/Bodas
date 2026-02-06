@@ -38,8 +38,6 @@ export async function deleteClientStorage(clientId: string): Promise<{ success: 
 
                 if (deleteError) {
                     console.error(`[Cleanup] Error borrando archivos en ${bucket}:`, deleteError);
-                } else {
-                    console.log(`[Cleanup] Borrados ${pathsToDelete.length} archivos de ${bucket}/${fullFolderPath}`);
                 }
             }
 
