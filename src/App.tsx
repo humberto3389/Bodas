@@ -33,8 +33,9 @@ interface AppProps {
 
 export default function App({ clientData: propData }: AppProps) {
   const { subdomain } = useParams<{ subdomain: string }>();
-  // ✅ Solo usar ClientAuthContext si NO hay subdomain (área de admin)
-  // Si hay subdomain, es página pública y debe usar solo el BFF
+  // ✅ CRÍTICO: Si hay subdomain en la URL, es página pública y NO debe usar ClientAuthContext
+  // El subdomain de la URL es la única fuente de verdad para páginas de invitación
+  // Solo usar ClientAuthContext si NO hay subdomain (área de admin en /panel)
   const { client: authClient } = useClientAuth();
   const { toasts, removeToast } = useToast();
 
@@ -50,6 +51,11 @@ export default function App({ clientData: propData }: AppProps) {
   const searchParams = new URLSearchParams(window.location.search);
   const shouldRefresh = searchParams.get('admin') === 'true' || searchParams.get('refresh') === 'true';
 
+  // ✅ CRÍTICO: Si hay subdomain en la URL, NO usar authClient del contexto
+  // Esto previene que se muestre el perfil de otro usuario al recargar la página
+  // El subdomain de la URL es la única fuente de verdad para páginas de invitación
+  const initialData = subdomain ? undefined : (propData || authClient || undefined);
+
   const {
     client,
     loading,
@@ -61,7 +67,7 @@ export default function App({ clientData: propData }: AppProps) {
     galleryImages,
     videos,
     padrinos
-  } = useInvitation(subdomain, propData || authClient || undefined, shouldRefresh);
+  } = useInvitation(subdomain, initialData, shouldRefresh);
 
   if (loading) {
     return (

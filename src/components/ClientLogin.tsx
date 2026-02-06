@@ -35,6 +35,12 @@ export default function ClientLogin({ onLogin }: ClientLoginProps) {
     setIsLoading(true);
 
     try {
+      // ✅ CRÍTICO: Limpiar sesión anterior antes de hacer login
+      // Esto previene que se mezclen datos de diferentes usuarios
+      console.log('[ClientLogin] Limpiando sesión anterior...');
+      await supabase.auth.signOut();
+      sessionStorage.removeItem('clientAuth');
+
       // Buscar el cliente en Supabase por subdomain y token
       const { data: clientData, error: fetchError } = await supabase
         .from('clients')
@@ -135,6 +141,12 @@ export default function ClientLogin({ onLogin }: ClientLoginProps) {
     setIsLoading(true);
 
     try {
+      // ✅ CRÍTICO: Limpiar sesión anterior antes de hacer login
+      // Esto previene que se mezclen datos de diferentes usuarios
+      console.log('[ClientLogin] Limpiando sesión anterior...');
+      await supabase.auth.signOut();
+      sessionStorage.removeItem('clientAuth');
+
       // Primero validar si Supabase Auth está disponible
       const { data: { user: currentUser }, error: sessionError } = await supabase.auth.getUser();
 

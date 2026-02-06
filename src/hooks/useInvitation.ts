@@ -20,11 +20,29 @@ export function useInvitation(subdomain?: string, initialData?: ClientToken, ref
 
             console.log(`[useInvitation] Cargando datos para subdomain: ${subdomain}`);
             setLoading(true);
+            
+            // ✅ CRÍTICO: Limpiar cliente anterior cuando cambia el subdomain
+            // Esto previene que se muestre el perfil de otro usuario al recargar
+            setUrlClient(null);
+            
             try {
                 // ✅ SIEMPRE cargar desde el BFF para garantizar que obtenemos el cliente correcto del subdominio
                 // NO usar initialData directamente en caso de navegación entre subdomains
+                // El subdomain de la URL es la única fuente de verdad
                 const bffData = await fetchWeddingDataFromBFF(subdomain, refresh || refreshTrigger > 0);
                 const mappedClient = mapClientDataFromBFF(bffData.client);
+                
+                // ✅ CRÍTICO: Verificar que el cliente cargado corresponde al subdomain de la URL
+                if (mappedClient.subdomain.toLowerCase() !== subdomain.toLowerCase()) {
+                    console.error(`[useInvitation] ERROR CRÍTICO: El cliente cargado no corresponde al subdomain de la URL`, {
+                        subdomainURL: subdomain,
+                        subdomainCliente: mappedClient.subdomain
+                    });
+                    setUrlClient(null);
+                    setLoading(false);
+                    return;
+                }
+                
                 console.log(`[useInvitation] ✅ Datos cargados para ${subdomain}. Client ID: ${mappedClient.id}`);
                 setUrlClient(mappedClient);
                 setMessages(bffData.messages || []);
@@ -104,8 +122,18 @@ export function useInvitation(subdomain?: string, initialData?: ClientToken, ref
         };
     }, [urlClient?.id, initialData?.id]);
 
-    // Calcular client usando useMemo para que se actualice cuando cambien las dependencias
-    const client = useMemo(() => initialData || urlClient, [initialData, urlClient]);
+    // ✅ CRÍTICO: Si hay subdomain en la URL, NUNCA usar initialData
+    // El subdomain de la URL es la única fuente de verdad para páginas de invitación
+    // Solo usar initialData si NO hay subdomain (área de admin en /panel)
+    const client = useMemo(() => {
+        if (subdomain) {
+            // Si hay subdomain, solo usar urlClient (cargado desde BFF)
+            return urlClient;
+        } else {
+            // Si no hay subdomain, usar initialData (área de admin)
+            return initialData || urlClient;
+        }
+    }, [subdomain, initialData, urlClient]);
 
     const submitRSVP = useCallback(async (data: {
         name: string;

@@ -84,8 +84,30 @@ export function useClientAdmin() {
             console.log('[useClientAdmin] Recuperando sesión perdida de storage...');
             try {
                 const parsed = JSON.parse(storedAuth);
-                setClientSession(parsed);
-                setAuthed(true);
+                
+                // ✅ CRÍTICO: Verificar que la sesión de Supabase Auth corresponde al cliente guardado
+                const verifySession = async () => {
+                    const { data: { session } } = await supabase.auth.getSession();
+                    if (session?.user) {
+                        const sessionClientId = session.user.user_metadata?.client_id || session.user.user_metadata?.clientId;
+                        if (sessionClientId && sessionClientId !== parsed.id) {
+                            console.error('[useClientAdmin] ERROR CRÍTICO: La sesión de Supabase no corresponde al cliente guardado', {
+                                sessionClientId,
+                                storedClientId: parsed.id
+                            });
+                            // Limpiar sesión incorrecta
+                            sessionStorage.removeItem('clientAuth');
+                            await supabase.auth.signOut();
+                            navigate('/login', { replace: true });
+                            return;
+                        }
+                    }
+                    
+                    setClientSession(parsed);
+                    setAuthed(true);
+                };
+                
+                verifySession();
                 return; // Stop redirect
             } catch (e) {
                 console.error('[useClientAdmin] Error recuperando sesión:', e);
@@ -371,13 +393,50 @@ export function useClientAdmin() {
     };
 
     const login = async (token: string) => {
+        // ✅ CRÍTICO: Limpiar sesión anterior antes de hacer login
+        // authenticateClientWithToken ya lo hace, pero asegurémonos aquí también
+        sessionStorage.removeItem('clientAuth');
+        
         const validated = await authenticateClientWithToken(token);
         if (validated) {
             const s = sessionStorage.getItem('clientAuth');
             if (s) {
-                setClientSession(JSON.parse(s));
-                setAuthed(true);
-                return true;
+                try {
+                    const parsedClient = JSON.parse(s);
+                    // ✅ CRÍTICO: Verificar que el cliente guardado corresponde al token usado
+                    // Buscar el cliente por token para asegurar que es el correcto
+                    const { data: clientData, error: fetchError } = await supabase
+                        .from('clients')
+                        .select('*')
+                        .eq('token', token)
+                        .eq('is_active', true)
+                        .maybeSingle();
+                    
+                    if (fetchError || !clientData) {
+                        console.error('[useClientAdmin] Error verificando cliente después del login:', fetchError);
+                        return false;
+                    }
+                    
+                    // Verificar que el cliente guardado corresponde al token
+                    if (parsedClient.id !== clientData.id) {
+                        console.error('[useClientAdmin] ERROR CRÍTICO: El cliente guardado no corresponde al token usado', {
+                            guardado: parsedClient.id,
+                            esperado: clientData.id
+                        });
+                        // Usar el cliente correcto de la base de datos
+                        const correctClient = mapSupabaseClientToToken(clientData);
+                        sessionStorage.setItem('clientAuth', JSON.stringify(correctClient));
+                        setClientSession(correctClient);
+                    } else {
+                        setClientSession(parsedClient);
+                    }
+                    
+                    setAuthed(true);
+                    return true;
+                } catch (err) {
+                    console.error('[useClientAdmin] Error parseando cliente después del login:', err);
+                    return false;
+                }
             }
         }
         return false;

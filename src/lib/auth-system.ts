@@ -742,6 +742,12 @@ export async function extendClientAccess(token: string, additionalDays: number):
 // Función para autenticar cliente en Supabase Auth
 export async function authenticateClientWithToken(token: string): Promise<boolean> {
   try {
+    // ✅ CRÍTICO: Limpiar sesión anterior antes de hacer login
+    // Esto previene que se mezclen datos de diferentes usuarios
+    console.log('[authenticateClientWithToken] Limpiando sesión anterior...');
+    await supabase.auth.signOut();
+    sessionStorage.removeItem('clientAuth');
+
     // ✅ PASO 1: Buscar cliente por token EN SUPABASE (fuente de verdad)
     // Esto asegura que siempre tenemos el cliente actualizado
     const { data: clientData, error: fetchError } = await supabase
