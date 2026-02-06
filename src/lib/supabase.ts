@@ -19,7 +19,14 @@ function createSafeSupabase() {
     return createClient(supabaseUrl, supabaseAnonKey)
   }
 
-  // Aviso en consola para facilitar diagnóstico en producción
+  // ⚠️ CRÍTICO: Variables de entorno no configuradas
+  console.error('[Supabase] ⚠️ ERROR CRÍTICO: Variables de entorno no configuradas!');
+  console.error('[Supabase] VITE_SUPABASE_URL:', supabaseUrl ? '✅ OK' : '❌ FALTA');
+  console.error('[Supabase] VITE_SUPABASE_ANON_KEY:', supabaseAnonKey ? '✅ OK' : '❌ FALTA');
+  console.error('[Supabase] Verifica que tu archivo .env.local tenga:');
+  console.error('[Supabase]   VITE_SUPABASE_URL=https://tu-proyecto.supabase.co');
+  console.error('[Supabase]   VITE_SUPABASE_ANON_KEY=tu-clave-anon');
+  console.error('[Supabase] IMPORTANTE: Las variables deben tener el prefijo VITE_ para funcionar en Vite.');
 
   // Implementación mínima que devuelve errores en lugar de lanzar excepciones de inicialización
   type ErrorResponse = { data: null; error: { message: string } }
@@ -30,17 +37,39 @@ function createSafeSupabase() {
     from: () => {
       // thenable terminal para que "await ..." funcione en el final de la cadena
       const terminalThenable = {
-        then: (resolve: (v: unknown) => void) => resolve(errorResponse())
+        then: (resolve: (v: unknown) => void) => resolve(errorResponse('Supabase no está configurado. Verifica las variables de entorno VITE_SUPABASE_URL y VITE_SUPABASE_ANON_KEY.'))
       }
 
-      // builder intermedio que soporta .order(...) y termina en thenable
-      const selectBuilder = {
-        order: () => terminalThenable
+      // Builder que soporta encadenamiento de métodos: .eq(), .order(), .maybeSingle(), etc.
+      const createQueryBuilder = () => {
+        const builder = {
+          eq: () => builder,
+          neq: () => builder,
+          gt: () => builder,
+          gte: () => builder,
+          lt: () => builder,
+          lte: () => builder,
+          like: () => builder,
+          ilike: () => builder,
+          is: () => builder,
+          in: () => builder,
+          contains: () => builder,
+          order: () => builder,
+          limit: () => builder,
+          range: () => builder,
+          single: () => terminalThenable,
+          maybeSingle: () => terminalThenable,
+          // Permitir múltiples llamadas encadenadas
+        }
+        return builder
       }
 
       return {
         insert: () => terminalThenable,
-        select: () => selectBuilder
+        update: () => createQueryBuilder(),
+        delete: () => createQueryBuilder(),
+        upsert: () => terminalThenable,
+        select: () => createQueryBuilder()
       }
     },
     storage: {
