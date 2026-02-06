@@ -105,34 +105,41 @@ export const PLANS = {
 // Clientes por defecto (ELIMINADOS PARA EVITAR DATOS ESTÁTICOS)
 const DEFAULT_CLIENTS: ClientToken[] = [];
 
-// Función para cargar clientes desde localStorage
+/**
+ * ⚠️ CRÍTICO:
+ * `clientAuth` en sessionStorage representa la **sesión activa del cliente** (por pestaña).
+ * La lista/cache de clientes (CLIENT_TOKENS) NO debe escribir en `clientAuth`, porque eso
+ * "pisaría" la sesión del cliente actual y provocaría que todas las cuentas terminen
+ * mostrando el mismo panel (ej. Fernanda).
+ */
+const CLIENT_TOKENS_STORAGE_KEY = 'clientTokensCache';
+
+// Función para cargar lista de clientes desde sessionStorage (cache local)
 function loadClientsFromStorage(): ClientToken[] {
   try {
-    const stored = sessionStorage.getItem('clientAuth');
+    const stored = sessionStorage.getItem(CLIENT_TOKENS_STORAGE_KEY);
     if (stored) {
-      const client = JSON.parse(stored);
-      // Retornar solo el cliente actual mapeado correctamente
-      return [{
-        ...client,
-        createdAt: new Date(client.createdAt),
-        weddingDate: client.weddingDate ? new Date(client.weddingDate) : undefined,
-        accessUntil: client.accessUntil ? new Date(client.accessUntil) : undefined,
-        expiresAt: (client.expiresAt || client.accessUntil) ? new Date(client.expiresAt || client.accessUntil) : undefined,
-        lastUsed: client.lastUsed ? new Date(client.lastUsed) : undefined
-      }];
+      const clients = JSON.parse(stored);
+      const list = Array.isArray(clients) ? clients : [];
+      // Retornar la lista cacheada mapeada correctamente
+      return list.map((c: any) => ({
+        ...c,
+        createdAt: new Date(c.createdAt),
+        weddingDate: c.weddingDate ? new Date(c.weddingDate) : undefined,
+        accessUntil: c.accessUntil ? new Date(c.accessUntil) : undefined,
+        expiresAt: (c.expiresAt || c.accessUntil) ? new Date(c.expiresAt || c.accessUntil) : undefined,
+        lastUsed: c.lastUsed ? new Date(c.lastUsed) : undefined
+      })) as ClientToken[];
     }
   } catch (error) {
   }
   return [];
 }
 
-// Función para guardar clientes en sessionStorage
+// Función para guardar la lista/cache de clientes en sessionStorage
 function saveClientsToStorage(clients: ClientToken[]): void {
   try {
-    // Si tenemos clientes, guardamos el primero como sesión activa
-    if (clients.length > 0) {
-      sessionStorage.setItem('clientAuth', JSON.stringify(clients[0]));
-    }
+    sessionStorage.setItem(CLIENT_TOKENS_STORAGE_KEY, JSON.stringify(clients));
   } catch (error) {
   }
 }

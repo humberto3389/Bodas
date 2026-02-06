@@ -9,8 +9,15 @@ export default function ClientLoginPage() {
   return (
     <ClientLogin
       onLogin={(client) => {
-        console.log('[ClientLoginPage] onLogin recibida. Ejecutando login(client)...');
+        console.log('[ClientLoginPage] onLogin recibida:', {
+          clientId: client?.id,
+          subdomain: client?.subdomain,
+          clientName: client?.clientName
+        });
+        console.log('[ClientLoginPage] sessionStorage.clientAuth (antes login()):', sessionStorage.getItem('clientAuth'));
+        console.log('[ClientLoginPage] Ejecutando login(client)...');
         login(client);
+        console.log('[ClientLoginPage] sessionStorage.clientAuth (después login()):', sessionStorage.getItem('clientAuth'));
 
         // Verificar persistencia y dar un pequeño respiro al navegador
         setTimeout(() => {

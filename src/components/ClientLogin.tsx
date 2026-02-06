@@ -35,6 +35,11 @@ export default function ClientLogin({ onLogin }: ClientLoginProps) {
     setIsLoading(true);
 
     try {
+      console.log('[ClientLogin] Intentando login token', {
+        inputSubdomain: username?.toLowerCase?.(),
+        tokenPrefix: password ? `${password.substring(0, 12)}...` : '',
+        hostname: window.location.hostname
+      });
       // ✅ CRÍTICO: Limpiar sesión anterior antes de hacer login
       // Esto previene que se mezclen datos de diferentes usuarios
       console.log('[ClientLogin] Limpiando sesión anterior...');
@@ -72,7 +77,12 @@ export default function ClientLogin({ onLogin }: ClientLoginProps) {
         return;
       }
 
-      console.log('[ClientLogin] Cliente encontrado en Supabase:', clientData.subdomain);
+      console.log('[ClientLogin] ✅ Cliente encontrado en Supabase:', {
+        id: clientData.id,
+        subdomain: clientData.subdomain,
+        client_name: clientData.client_name,
+        email: clientData.email
+      });
 
       // Verificar que el cliente no haya expirado
       const now = new Date();
@@ -139,6 +149,7 @@ export default function ClientLogin({ onLogin }: ClientLoginProps) {
       const { storeClientSession, getTabId } = await import('../lib/tab-manager');
       const tabId = getTabId();
       storeClientSession(client, tabId);
+      console.log('[ClientLogin] sessionStorage.clientAuth (post storeClientSession):', sessionStorage.getItem('clientAuth'));
       
       onLogin(client);
     } catch (err) {
