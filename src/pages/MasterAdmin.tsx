@@ -107,7 +107,7 @@ const ClientCreateForm = ({
             className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all duration-300 text-slate-900 caret-indigo-600"
           />
           <p className="mt-2 text-xs text-slate-500">
-            Dominio completo: https://{newClient.subdomain || 'tu-subdominio'}-invitacion.vercel.app
+            Dominio completo: {newClient.subdomain ? getClientUrl(newClient.subdomain) : `${window.location.origin}/invitacion/tu-subdominio`}
           </p>
         </div>
 

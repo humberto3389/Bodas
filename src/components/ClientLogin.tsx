@@ -126,6 +126,12 @@ export default function ClientLogin({ onLogin }: ClientLoginProps) {
       };
 
       console.log('[ClientLogin] Llamando a onLogin...');
+      
+      // ✅ CRÍTICO: Usar el sistema de gestión de pestañas para evitar conflictos
+      const { storeClientSession, getTabId } = await import('../lib/tab-manager');
+      const tabId = getTabId();
+      storeClientSession(client, tabId);
+      
       onLogin(client);
     } catch (err) {
       console.error('[ClientLogin] Error inesperado:', err);

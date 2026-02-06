@@ -9,14 +9,18 @@ import { localToUTC, validateAndFormatTime } from '../lib/timezone-utils';
 export function useClientAdmin() {
     const navigate = useNavigate();
     const [authed, setAuthed] = useState(() => {
+        // ✅ CRÍTICO: Usar el sistema de gestión de pestañas
+        // Nota: En el estado inicial, usamos sessionStorage directamente
+        // El sistema de pestañas se inicializará en el useEffect
         const hasAuth = !!sessionStorage.getItem('clientAuth');
         console.log('[useClientAdmin] Estado inicial authed:', hasAuth);
         return hasAuth;
     });
     const [clientSession, setClientSession] = useState<ClientToken | null>(() => {
+        // Fallback: intentar obtener de sessionStorage directamente
         try {
             const s = sessionStorage.getItem('clientAuth');
-            console.log('[useClientAdmin] Sesión cargada:', s ? 'Sí' : 'No');
+            console.log('[useClientAdmin] Sesión cargada (inicial):', s ? 'Sí' : 'No');
             return s ? JSON.parse(s) : null;
         } catch (err) {
             console.error('[useClientAdmin] Error parseando sesión:', err);
@@ -78,48 +82,88 @@ export function useClientAdmin() {
 
     // Redirect if not authed
     useEffect(() => {
-        // Double check storage to prevent race conditions
-        const storedAuth = sessionStorage.getItem('clientAuth');
-        if (!authed && storedAuth) {
-            console.log('[useClientAdmin] Recuperando sesión perdida de storage...');
-            try {
-                const parsed = JSON.parse(storedAuth);
-                
-                // ✅ CRÍTICO: Verificar que la sesión de Supabase Auth corresponde al cliente guardado
-                const verifySession = async () => {
-                    const { data: { session } } = await supabase.auth.getSession();
-                    if (session?.user) {
-                        const sessionClientId = session.user.user_metadata?.client_id || session.user.user_metadata?.clientId;
-                        if (sessionClientId && sessionClientId !== parsed.id) {
-                            console.error('[useClientAdmin] ERROR CRÍTICO: La sesión de Supabase no corresponde al cliente guardado', {
-                                sessionClientId,
-                                storedClientId: parsed.id
-                            });
-                            // Limpiar sesión incorrecta
-                            sessionStorage.removeItem('clientAuth');
-                            await supabase.auth.signOut();
-                            navigate('/login', { replace: true });
-                            return;
-                        }
+        // ✅ CRÍTICO: Verificar conflictos de sesión entre pestañas
+        import('../lib/tab-manager').then((tabManager) => {
+            const tabId = tabManager.getTabId();
+            
+            // Verificar si hay un conflicto de sesión
+            if (tabManager.checkSessionConflict()) {
+                console.warn('[useClientAdmin] Conflicto de sesión detectado. Limpiando y redirigiendo...');
+                tabManager.clearClientSession();
+                setAuthed(false);
+                setClientSession(null);
+                navigate('/login', { replace: true });
+                return;
+            }
+            
+            // Double check storage to prevent race conditions
+            const session = tabManager.getClientSession();
+            const storedAuth = session ? JSON.stringify(session.client) : sessionStorage.getItem('clientAuth');
+            
+            if (!authed && storedAuth) {
+                console.log('[useClientAdmin] Recuperando sesión perdida de storage...');
+                try {
+                    const parsed = session ? session.client : JSON.parse(storedAuth);
+                    
+                    // ✅ CRÍTICO: Verificar que la sesión corresponde a esta pestaña
+                    if (session && session.tabId !== tabId) {
+                        console.warn('[useClientAdmin] La sesión no corresponde a esta pestaña. Limpiando...');
+                        tabManager.clearClientSession();
+                        navigate('/login', { replace: true });
+                        return;
                     }
                     
+                    // ✅ CRÍTICO: Verificar que la sesión de Supabase Auth corresponde al cliente guardado
+                    const verifySession = async () => {
+                        const { data: { session: supabaseSession } } = await supabase.auth.getSession();
+                        if (supabaseSession?.user) {
+                            const sessionClientId = supabaseSession.user.user_metadata?.client_id || supabaseSession.user.user_metadata?.clientId;
+                            if (sessionClientId && sessionClientId !== parsed.id) {
+                                console.error('[useClientAdmin] ERROR CRÍTICO: La sesión de Supabase no corresponde al cliente guardado', {
+                                    sessionClientId,
+                                    storedClientId: parsed.id
+                                });
+                                // Limpiar sesión incorrecta
+                                tabManager.clearClientSession();
+                                await supabase.auth.signOut();
+                                navigate('/login', { replace: true });
+                                return;
+                            }
+                        }
+                        
+                        setClientSession(parsed);
+                        setAuthed(true);
+                    };
+                    
+                    verifySession();
+                    return; // Stop redirect
+                } catch (e) {
+                    console.error('[useClientAdmin] Error recuperando sesión:', e);
+                }
+            }
+
+            if (!authed && !storedAuth) {
+                console.warn('[useClientAdmin] No authed, redirigiendo a /login...');
+                navigate('/login', { replace: true });
+            } else {
+                console.log('[useClientAdmin] Usuario autenticado, permaneciendo en Admin.');
+            }
+        }).catch((err) => {
+            // Fallback si el módulo no está disponible
+            console.warn('[useClientAdmin] No se pudo cargar tab-manager, usando fallback:', err);
+            const storedAuth = sessionStorage.getItem('clientAuth');
+            if (!authed && storedAuth) {
+                try {
+                    const parsed = JSON.parse(storedAuth);
                     setClientSession(parsed);
                     setAuthed(true);
-                };
-                
-                verifySession();
-                return; // Stop redirect
-            } catch (e) {
-                console.error('[useClientAdmin] Error recuperando sesión:', e);
+                } catch (e) {
+                    console.error('[useClientAdmin] Error recuperando sesión (fallback):', e);
+                }
+            } else if (!authed && !storedAuth) {
+                navigate('/login', { replace: true });
             }
-        }
-
-        if (!authed && !storedAuth) {
-            console.warn('[useClientAdmin] No authed, redirigiendo a /login...');
-            navigate('/login', { replace: true });
-        } else {
-            console.log('[useClientAdmin] Usuario autenticado, permaneciendo en Admin.');
-        }
+        });
     }, [authed, navigate]);
 
     // Maintain Supabase session

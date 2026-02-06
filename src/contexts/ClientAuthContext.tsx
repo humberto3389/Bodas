@@ -90,8 +90,13 @@ export function ClientAuthProvider({ children }: ClientAuthProviderProps) {
     setClient(clientData);
     setIsAuthenticated(true);
     const dataStr = JSON.stringify(clientData);
-    sessionStorage.setItem('clientAuth', dataStr);
-    window.dispatchEvent(new CustomEvent('clientAuthUpdated', { detail: { clientAuth: dataStr } }));
+    
+    // ✅ CRÍTICO: Usar el sistema de gestión de pestañas para evitar conflictos
+    import('../lib/tab-manager').then(({ storeClientSession, getTabId }) => {
+      const tabId = getTabId();
+      storeClientSession(clientData, tabId);
+      window.dispatchEvent(new CustomEvent('clientAuthUpdated', { detail: { clientAuth: dataStr } }));
+    });
   }, []);
 
   const logout = useCallback(() => {
@@ -102,10 +107,45 @@ export function ClientAuthProvider({ children }: ClientAuthProviderProps) {
 
   // Verificar si hay un cliente autenticado en sessionStorage y cargar desde Supabase
   useEffect(() => {
-    const savedClient = sessionStorage.getItem('clientAuth');
-    if (savedClient) {
-      loadClientData(savedClient);
-    }
+    // ✅ CRÍTICO: Verificar conflictos de sesión entre pestañas
+    import('../lib/tab-manager').then((tabManager) => {
+      const tabId = tabManager.getTabId();
+      
+      // Verificar si hay un conflicto de sesión
+      if (tabManager.checkSessionConflict()) {
+        console.warn('[ClientAuthContext] Conflicto de sesión detectado. Limpiando sesión de esta pestaña...');
+        tabManager.clearClientSession();
+        setClient(null);
+        setIsAuthenticated(false);
+        return;
+      }
+      
+      // Intentar obtener la sesión usando el sistema de gestión de pestañas
+      const session = tabManager.getClientSession();
+      if (session && session.tabId === tabId) {
+        loadClientData(JSON.stringify(session.client));
+      } else {
+        // Fallback: intentar obtener de sessionStorage directamente
+        const savedClient = sessionStorage.getItem('clientAuth');
+        if (savedClient) {
+          // Verificar que la sesión corresponde a esta pestaña
+          const storedTabId = sessionStorage.getItem('_currentTabId');
+          if (storedTabId === tabId || !storedTabId) {
+            loadClientData(savedClient);
+          } else {
+            console.warn('[ClientAuthContext] La sesión no corresponde a esta pestaña. Limpiando...');
+            tabManager.clearClientSession();
+          }
+        }
+      }
+    }).catch((err) => {
+      // Fallback si el módulo no está disponible
+      console.warn('[ClientAuthContext] No se pudo cargar tab-manager, usando fallback:', err);
+      const savedClient = sessionStorage.getItem('clientAuth');
+      if (savedClient) {
+        loadClientData(savedClient);
+      }
+    });
 
     // Escuchar el evento custom que se dispara cuando localStorage cambia en la misma pestaña (desde Admin)
     const handleClientAuthChange = (e: Event) => {

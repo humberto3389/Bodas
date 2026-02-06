@@ -870,7 +870,10 @@ export async function authenticateClientWithToken(token: string): Promise<boolea
       }
 
       // ✅ PASO 5: Guardar sesión localmente para el Administrador
-      sessionStorage.setItem('clientAuth', JSON.stringify(client));
+      // Usar el sistema de gestión de pestañas para evitar conflictos
+      const { storeClientSession, getTabId } = await import('./tab-manager');
+      const tabId = getTabId();
+      storeClientSession(client, tabId);
       window.dispatchEvent(new CustomEvent('clientAuthUpdated', { detail: { clientAuth: JSON.stringify(client) } }));
 
       return true;
