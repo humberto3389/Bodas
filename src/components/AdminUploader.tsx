@@ -87,8 +87,8 @@ export default function AdminUploader({
       return
     }
 
-    // Validación de tamaño (Max 50MB)
-    const MAX_SIZE_MB = 50;
+    // Validación de tamaño (Max 50MB para fotos, 350MB para videos)
+    const MAX_SIZE_MB = bucket === 'videos' ? 350 : 50;
     const MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024;
     const oversizedFiles = selectedFiles.filter(f => f.size > MAX_SIZE_BYTES);
 
