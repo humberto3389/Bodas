@@ -72,8 +72,6 @@ export function VideoSection({ clientData, videos: propVideos }: { clientData: a
         if (videos.length > 0 && audioEnabled && isInView) {
             requestFocus('cinema');
         } else {
-            // Sólo soltamos si nosotros lo teníamos o si no estamos en vista, 
-            // pero releaseFocus suele ser seguro de llamar.
             releaseFocus('cinema');
         }
     }, [videos.length, audioEnabled, isInView, requestFocus, releaseFocus]);

@@ -59,18 +59,17 @@ export function HeroSection({ clientData }: HeroSectionProps) {
         // Manage Video Playback/Mute
         if (videoRef.current) {
             if (heroVideoAudioEnabled) {
-                // If audio is enabled, we only want to hear it when in view.
-                // When out of view, we should mute it OR pause it. 
-                // User requested: "video se pausa, se reanuda solo cuando vuelve a tener el foco"
+                // Si el audio está habilitado, comportamiento de foco estricto
                 if (isInView) {
-                    videoRef.current.muted = false;
+                    videoRef.current.muted = false; // Desmutear
                     videoRef.current.play().catch(() => { });
+                    requestFocus('hero'); // Asegurar foco
                 } else {
                     videoRef.current.pause();
+                    releaseFocus('hero'); // Soltar foco
                 }
             } else {
-                // Determine behavior if audio is NOT enabled. 
-                // Usually just plays in background muted.
+                // Si el audio está deshabilitado, reproducir muteado como fondo
                 videoRef.current.muted = true;
                 if (videoRef.current.paused) videoRef.current.play().catch(() => { });
             }

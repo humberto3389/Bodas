@@ -61,10 +61,20 @@ export function BackgroundMusic({ src, shouldPlay = true }: { src: string; shoul
         if (effectivelyPlaying) {
             const playPromise = audioRef.current.play();
             if (playPromise !== undefined) {
-                playPromise.catch(() => setNeedsUnlock(true));
+                playPromise
+                    .then(() => {
+                        // Reproducción exitosa
+                        setIsPlaying(true);
+                    })
+                    .catch((error) => {
+                        console.warn("Autoplay prevented:", error);
+                        setNeedsUnlock(true);
+                        setIsPlaying(false);
+                    });
             }
         } else {
             audioRef.current.pause();
+            setIsPlaying(false);
         }
     }, [effectivelyPlaying]);
 
