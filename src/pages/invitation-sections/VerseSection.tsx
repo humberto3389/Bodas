@@ -11,7 +11,7 @@ export function VerseSection({ clientData }: VerseSectionProps) {
     if (!bibleVerse && !invitationText) return null;
 
     return (
-        <section className="relative py-6 sm:py-20 overflow-hidden bg-white">
+        <section className="relative py-10 sm:py-20 overflow-hidden bg-white">
             <div className="section-container relative z-10">
                 <div className="max-w-4xl mx-auto flex flex-col items-center">
 

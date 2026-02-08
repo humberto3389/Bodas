@@ -28,7 +28,7 @@ export function GuestbookSection({ messages, onSendMessage }: GuestbookSectionPr
     };
 
     return (
-        <section id="muro" className="py-0 sm:py-16 bg-transparent px-4 relative overflow-hidden">
+        <section id="muro" className="py-10 sm:py-16 bg-transparent px-4 relative overflow-hidden">
             <div className="section-container">
                 <SectionTitle subtitle="Libro de Visitas">
                     Dedicatorias

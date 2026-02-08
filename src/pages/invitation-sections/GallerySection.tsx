@@ -30,18 +30,20 @@ export function GallerySection({ clientData, images: propImages }: GallerySectio
 
     const [currentIndex, setCurrentIndex] = useState(0);
 
-    useEffect(() => {
-        if (images.length === 0) return;
-        const interval = setInterval(() => {
-            setCurrentIndex((prev) => (prev + 1) % images.length);
-        }, 5000);
-        return () => clearInterval(interval);
-    }, [images.length]);
+    /* Auto-slide removed for manual control */
+
+    const nextSlide = () => {
+        setCurrentIndex((prev) => (prev + 1) % images.length);
+    };
+
+    const prevSlide = () => {
+        setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
+    };
 
     if (loading || images.length === 0) return null;
 
     return (
-        <section id="galeria" className="py-0 sm:py-16 relative overflow-hidden bg-transparent">
+        <section id="galeria" className="py-10 sm:py-16 relative overflow-hidden bg-transparent">
             <div className="section-container">
 
                 <SectionTitle subtitle="Galería">
@@ -101,16 +103,37 @@ export function GallerySection({ clientData, images: propImages }: GallerySectio
                         </div>
                     </AnimatePresence>
 
-                    {/* Navigation - Minimal Dots */}
-                    <div className="absolute -bottom-12 left-1/2 -translate-x-1/2 flex items-center gap-4">
-                        {images.slice(0, 8).map((_, idx) => (
+                    {/* Manual Navigation Controls */}
+                    {images.length > 1 && (
+                        <div className="absolute -bottom-12 left-1/2 -translate-x-1/2 flex items-center gap-8 w-full max-w-xs justify-center z-40">
                             <button
-                                key={idx}
-                                onClick={() => setCurrentIndex(idx)}
-                                className={`transition-all duration-500 h-1 rounded-full ${currentIndex === idx ? 'w-8 bg-rose-500' : 'w-2 bg-rose-500/20'}`}
-                            />
-                        ))}
-                    </div>
+                                onClick={prevSlide}
+                                className="p-3 rounded-full bg-white/80 hover:bg-rose-50 text-slate-400 hover:text-rose-600 transition-all shadow-sm backdrop-blur-sm"
+                                aria-label="Anterior"
+                            >
+                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15 19l-7-7 7-7" /></svg>
+                            </button>
+
+                            <div className="flex gap-2">
+                                {images.map((_, idx) => (
+                                    <button
+                                        key={idx}
+                                        onClick={() => setCurrentIndex(idx)}
+                                        className={`transition-all duration-500 h-1 rounded-full ${currentIndex === idx ? 'w-6 bg-rose-500' : 'w-1.5 bg-rose-200'}`}
+                                        aria-label={`Ir a imagen ${idx + 1}`}
+                                    />
+                                ))}
+                            </div>
+
+                            <button
+                                onClick={nextSlide}
+                                className="p-3 rounded-full bg-white/80 hover:bg-slate-100 text-slate-400 hover:text-slate-800 transition-all shadow-sm backdrop-blur-sm"
+                                aria-label="Siguiente"
+                            >
+                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 5l7 7-7 7" /></svg>
+                            </button>
+                        </div>
+                    )}
                 </div>
             </div>
 
@@ -127,6 +150,7 @@ export function GallerySection({ clientData, images: propImages }: GallerySectio
                             initial={{ scale: 0.95, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
                             className="relative max-w-5xl w-full max-h-[90vh] flex flex-col items-center"
+                            onClick={(e) => e.stopPropagation()}
                         >
                             <img
                                 src={images[selectedImage].url}
@@ -136,9 +160,14 @@ export function GallerySection({ clientData, images: propImages }: GallerySectio
                                 width={1200}
                                 height={1500}
                             />
-                            <button className="mt-8 text-slate-800 hover:text-rose-500 transition-colors flex items-center gap-2 text-xs font-bold tracking-[0.3em] uppercase">
-                                Cerrar
-                            </button>
+                            <div className="mt-8 flex gap-4">
+                                <button
+                                    onClick={() => setSelectedImage(null)}
+                                    className="text-slate-800 hover:text-rose-500 transition-colors flex items-center gap-2 text-xs font-bold tracking-[0.3em] uppercase bg-transparent border-none cursor-pointer"
+                                >
+                                    Cerrar
+                                </button>
+                            </div>
                         </motion.div>
                     </motion.div>
                 )}
@@ -146,3 +175,4 @@ export function GallerySection({ clientData, images: propImages }: GallerySectio
         </section>
     );
 }
+
