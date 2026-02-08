@@ -79,7 +79,7 @@ export function VideoSection({ clientData, videos: propVideos }: { clientData: a
     if (videos.length === 0 || clientData.planType !== 'deluxe') return null;
 
     return (
-        <section ref={ref} id="videos" className="py-10 relative overflow-hidden bg-transparent">
+        <section ref={ref} id="videos" className="py-6 sm:py-16 relative overflow-hidden bg-transparent">
             <div className="section-container">
                 <SectionTitle subtitle="Cinema">
                     Nuestra Historia

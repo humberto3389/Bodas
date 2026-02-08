@@ -41,7 +41,7 @@ export function GallerySection({ clientData, images: propImages }: GallerySectio
     if (loading || images.length === 0) return null;
 
     return (
-        <section id="galeria" className="py-8 relative overflow-hidden bg-transparent">
+        <section id="galeria" className="py-6 sm:py-16 relative overflow-hidden bg-transparent">
             <div className="section-container">
 
                 <SectionTitle subtitle="Galería">

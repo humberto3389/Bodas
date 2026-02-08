@@ -27,7 +27,7 @@ export function HeroSection({ clientData }: HeroSectionProps) {
     const couple = clientData?.clientName;
     const planType = clientData?.planType || 'basic';
     const heroBg = clientData?.heroBackgroundUrl || '/boda.avif';
-    const heroVideo = clientData?.heroBackgroundVideoUrl || '/hero.webm';
+    const heroVideo = clientData?.heroBackgroundVideoUrl || '/hero.mp4';
     const heroDisplayMode = clientData?.heroDisplayMode || 'image';
     const heroVideoAudioEnabled = clientData?.heroVideoAudioEnabled || false;
     const advancedAnimations = clientData?.advancedAnimations;
@@ -77,7 +77,7 @@ export function HeroSection({ clientData }: HeroSectionProps) {
     }, [showVideo, heroVideoAudioEnabled, isInView, requestFocus, releaseFocus]);
 
     return (
-        <section ref={ref} className="relative min-h-[100svh] w-full overflow-visible flex items-center justify-center bg-black py-12 sm:py-16 md:py-20">
+        <section ref={ref} className="relative min-h-[100svh] w-full overflow-visible flex items-center justify-center bg-black py-6 sm:py-16 md:py-20">
             {/* Media Background */}
             <div className="absolute inset-0 z-0 overflow-hidden">
                 <motion.div
@@ -94,7 +94,7 @@ export function HeroSection({ clientData }: HeroSectionProps) {
                             poster={heroBg}
                             className="h-full w-full object-cover brightness-[0.7] contrast-[1.1]"
                         >
-                            <source src={heroVideo} type="video/webm" />
+                            <source src={heroVideo} type="video/mp4" />
                             <img
                                 src={heroBg}
                                 className="h-full w-full object-cover"
