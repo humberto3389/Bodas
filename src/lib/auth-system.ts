@@ -302,6 +302,39 @@ async function loadClientsFromSupabase(): Promise<ClientToken[]> {
 }
 
 /**
+ * Helper para corregir URLs de Supabase antiguas o incorrectas.
+ * Reemplaza el ID de proyecto antiguo 'kzvzqlzxjvyxzjyjqvjy' con el actual configurado en el entorno.
+ */
+function fixSupabaseUrl(url: string | undefined | null): string | undefined {
+  if (!url) return undefined;
+
+  // ID del proyecto antiguo que causa errores
+  const OLD_PROJECT_ID = 'kzvzqlzxjvyxzjyjqvjy';
+
+  // Obtener URL actual del entorno
+  const currentUrl = import.meta.env.VITE_SUPABASE_URL || '';
+  let currentProjectId = 'jsbfqegplgsivxohhuxd'; // Fallback por defecto conocido
+
+  try {
+    if (currentUrl) {
+      const urlObj = new URL(currentUrl);
+      const parts = urlObj.hostname.split('.');
+      if (parts.length > 0) {
+        currentProjectId = parts[0];
+      }
+    }
+  } catch (e) {
+    // Si falla el parsing, usar el fallback
+  }
+
+  if (url.includes(OLD_PROJECT_ID)) {
+    return url.replace(OLD_PROJECT_ID, currentProjectId);
+  }
+
+  return url;
+}
+
+/**
  * Mapea una fila de Supabase al formato ClientToken de forma centralizada.
  * Esta es la ÚNICA fuente de verdad para el mapeo de datos del cliente.
  */
@@ -331,10 +364,10 @@ export function mapSupabaseClientToToken(row: any): ClientToken {
     invitationText: row.invitation_text,
     wedding_datetime_utc: row.wedding_datetime_utc,
     timezone: row.timezone,
-    verseImageUrl: row.verse_image_url || null,
-    backgroundAudioUrl: row.background_audio_url || undefined,
-    heroBackgroundUrl: row.hero_background_url || undefined,
-    heroBackgroundVideoUrl: row.hero_background_video_url || undefined,
+    verseImageUrl: fixSupabaseUrl(row.verse_image_url) || undefined,
+    backgroundAudioUrl: fixSupabaseUrl(row.background_audio_url) || undefined,
+    heroBackgroundUrl: fixSupabaseUrl(row.hero_background_url) || undefined,
+    heroBackgroundVideoUrl: fixSupabaseUrl(row.hero_background_video_url) || undefined,
     heroDisplayMode: row.hero_display_mode || 'image',
     heroVideoAudioEnabled: row.hero_video_audio_enabled || false,
     advancedAnimations: row.advanced_animations || {
