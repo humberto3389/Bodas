@@ -15,6 +15,7 @@ import { ContentEditor } from './admin-sections/ContentEditor'
 import { RSVPManager } from './admin-sections/RSVPManager'
 import { MessageManager } from './admin-sections/MessageManager'
 import { MediaManager } from './admin-sections/MediaManager'
+import { SYSTEM_CONFIG } from '../lib/config'
 
 export default function Admin() {
   const { toasts, removeToast } = useToast()
@@ -130,7 +131,7 @@ export default function Admin() {
 
   const getPublicUrl = (bucket: string, path: string) => {
     // Basic helper to avoid breaking child components
-    return `https://kzvzqlzxjvyxzjyjqvjy.supabase.co/storage/v1/object/public/${bucket}/${path}`;
+    return `${SYSTEM_CONFIG.DATABASE.SUPABASE_URL}/storage/v1/object/public/${bucket}/${path}`;
   }
 
   //--- RENDER ---//
