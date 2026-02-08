@@ -34,7 +34,7 @@ export function GuestbookSection({ messages, onSendMessage }: GuestbookSectionPr
                     Dedicatorias
                 </SectionTitle>
 
-                <p className="text-lg text-slate-800/60 font-light tracking-wide max-w-lg mx-auto leading-relaxed text-center mb-16">
+                <p className="text-lg text-slate-800/60 font-light tracking-wide max-w-lg mx-auto leading-relaxed text-center mb-8">
                     Palabras que guardaremos en el corazón por siempre.
                 </p>
 

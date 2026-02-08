@@ -41,7 +41,7 @@ export function RSVPSection({ onSubmit }: RSVPSectionProps) {
                 <SectionTitle subtitle="Confirmación">
                     Confirma tu Asistencia
                 </SectionTitle>
-                <p className="text-lg text-slate-800/60 font-light tracking-wide max-w-lg mx-auto leading-relaxed text-center mb-16">
+                <p className="text-lg text-slate-800/60 font-light tracking-wide max-w-lg mx-auto leading-relaxed text-center mb-8">
                     Será un honor para nosotros contar con tu presencia en este día tan especial.
                 </p>
 
