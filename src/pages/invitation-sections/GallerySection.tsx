@@ -41,14 +41,14 @@ export function GallerySection({ clientData, images: propImages }: GallerySectio
     if (loading || images.length === 0) return null;
 
     return (
-        <section id="galeria" className="py-6 sm:py-16 relative overflow-hidden bg-transparent">
+        <section id="galeria" className="py-0 sm:py-16 relative overflow-hidden bg-transparent">
             <div className="section-container">
 
                 <SectionTitle subtitle="Galería">
                     Momentos
                 </SectionTitle>
 
-                <div className="relative h-[550px] sm:h-[650px] mt-12 perspective-2000">
+                <div className="relative h-[400px] sm:h-[650px] mt-8 sm:mt-12 perspective-2000">
                     <AnimatePresence initial={false} mode="popLayout">
                         <div className="relative w-full h-full flex items-center justify-center">
                             {images.map((img, idx) => {

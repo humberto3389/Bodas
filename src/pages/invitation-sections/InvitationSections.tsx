@@ -79,13 +79,13 @@ export function VideoSection({ clientData, videos: propVideos }: { clientData: a
     if (videos.length === 0 || clientData.planType !== 'deluxe') return null;
 
     return (
-        <section ref={ref} id="videos" className="py-6 sm:py-16 relative overflow-hidden bg-transparent">
+        <section ref={ref} id="videos" className="py-0 sm:py-16 relative overflow-hidden bg-transparent">
             <div className="section-container">
                 <SectionTitle subtitle="Cinema">
                     Nuestra Historia
                 </SectionTitle>
 
-                <div className="relative mt-12 h-[400px] sm:h-[600px] perspective-2000">
+                <div className="relative mt-8 sm:mt-12 h-[220px] sm:h-[600px] perspective-2000">
                     <AnimatePresence initial={false} mode="popLayout">
                         <div className="relative w-full h-full flex items-center justify-center">
                             {videos.map((video, idx) => {

@@ -92,7 +92,7 @@ export function VerseSection({ clientData }: VerseSectionProps) {
                                 transition={{ duration: 1, delay: 0.3 }}
                                 className="relative py-4"
                             >
-                                <p className="font-elegant text-2xl sm:text-4xl leading-relaxed sm:leading-[1.8] text-slate-800 whitespace-pre-wrap drop-shadow-sm">
+                                <p className="text-xl sm:text-2xl font-elegant leading-relaxed text-slate-600 italic tracking-wide">
                                     {invitationText}
                                 </p>
 
