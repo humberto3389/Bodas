@@ -42,7 +42,7 @@ export function VideoSection({ clientData, videos: propVideos }: { clientData: a
                 className="w-full h-full object-cover"
                 poster={poster}
                 playsInline
-                preload="metadata"
+                preload="auto"
             />
         );
     };

@@ -11,6 +11,13 @@ export function BackgroundMusic({ src, shouldPlay = true }: { src: string; shoul
     // Only play if global shouldPlay is true AND no other section has audio focus AND user hasn't paused
     const effectivelyPlaying = shouldPlay && activeSource === null && !userPaused;
 
+    // Ref para acceder al estado actual dentro del event listener sin stale closures
+    const stateRef = useRef({ effectivelyPlaying, userPaused, activeSource });
+
+    useEffect(() => {
+        stateRef.current = { effectivelyPlaying, userPaused, activeSource };
+    }, [effectivelyPlaying, userPaused, activeSource]);
+
     useEffect(() => {
         if (!src) return;
 
@@ -35,15 +42,32 @@ export function BackgroundMusic({ src, shouldPlay = true }: { src: string; shoul
             });
         }
 
+        const events = ['click', 'keydown', 'pointerdown', 'touchstart'];
+
+        // Función de desbloqueo que siempre lee el estado MÁS RECIENTE
         const unlock = () => {
-            if (audioRef.current && audioRef.current.paused && effectivelyPlaying && !userPaused) {
-                audioRef.current.play().catch(() => { });
-                setNeedsUnlock(false);
+            const { effectivelyPlaying: shouldBePlaying, userPaused: isUserPaused, activeSource: currentSource } = stateRef.current;
+
+            // CRÍTICO: Solo intentar reproducir si:
+            // 1. Debería estar sonando (effectivelyPlaying es true)
+            // 2. No está pausado por el usuario
+            // 3. NO hay otra fuente activa (activeSource es null)
+            if (audioRef.current && audioRef.current.paused && shouldBePlaying && !isUserPaused && currentSource === null) {
+                audioRef.current.play()
+                    .then(() => {
+                        setNeedsUnlock(false);
+                        // Remover listeners una vez desbloqueado para no seguir intentando
+                        events.forEach(e => document.removeEventListener(e, unlock));
+                    })
+                    .catch(() => {
+                        // Si falla de nuevo, mantener los listeners
+                    });
             }
         };
 
-        const events = ['click', 'keydown', 'pointerdown', 'touchstart'];
-        events.forEach(e => document.addEventListener(e, unlock));
+        if (needsUnlock) {
+            events.forEach(e => document.addEventListener(e, unlock));
+        }
 
         return () => {
             audio.pause();
@@ -52,7 +76,7 @@ export function BackgroundMusic({ src, shouldPlay = true }: { src: string; shoul
             audio.removeEventListener('pause', handlePause);
             events.forEach(e => document.removeEventListener(e, unlock));
         };
-    }, [src]); // Dependencia solo src para init
+    }, [src, needsUnlock]); // Dependencia needsUnlock para re-atar listeners si falla
 
     // Efecto para manejar play/pause basado en foco y estado global
     useEffect(() => {
