@@ -78,36 +78,42 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             .maybeSingle();
 
         // Template base (hardcoded como fallback seguro)
+        // Eliminamos el script fijo para evitar errores de MIME type si el fallback se activa
         let html = `<!doctype html>
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="description" content="{{DESCRIPTION}}" />
-    <meta name="theme-color" content="#ffffff" />
     <title>{{TITLE}}</title>
     <meta property="og:title" content="{{TITLE}}" />
     <meta property="og:description" content="{{DESCRIPTION}}" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Dancing+Script:wght@400;600&family=Alex+Brush&display=swap" />
-    <script type="module" src="/src/main.tsx"></script>
   </head>
   <body>
     <div id="root"></div>
+    <p style="text-align:center; padding: 2rem; font-family: sans-serif;">Cargando invitación...</p>
+    <script>window.location.reload();</script>
   </body>
 </html>`;
 
-        // Intentar leer index.html real si existe en el entorno
-        try {
-            const templatePath = path.join(process.cwd(), 'index.html');
-            if (fs.existsSync(templatePath)) {
-                html = fs.readFileSync(templatePath, 'utf8');
+        // Intentar leer index.html real desde múltiples ubicaciones posibles en Vercel
+        const possiblePaths = [
+            path.join(process.cwd(), 'dist', 'index.html'),
+            path.join(process.cwd(), 'index.html'),
+            // En Vercel Serverless, a veces los archivos estáticos están en .next o similares
+            // pero para Vite usualmente están en dist si se incluyeron.
+        ];
+
+        for (const templatePath of possiblePaths) {
+            try {
+                if (fs.existsSync(templatePath)) {
+                    html = fs.readFileSync(templatePath, 'utf8');
+                    console.log(`[BFF] Usando template desde: ${templatePath}`);
+                    break;
+                }
+            } catch (e) {
+                // Continuar buscando
             }
-        } catch (e) {
-            console.warn('[BFF] No se pudo leer index.html, usando template fallback');
         }
 
         let title = 'Invitación de Boda';
