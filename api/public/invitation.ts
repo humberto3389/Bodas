@@ -128,19 +128,37 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
             if (bride && groom) {
                 title = `${groom} & ${bride}`;
-                description = `${groom} & ${bride}`;
+                // description remains strict: "Te invitamos a celebrar nuestra boda."
             } else if (client.client_name) {
                 title = `${client.client_name}`;
-                description = `${client.client_name}`;
+                // description remains strict
             }
         }
 
-        // Reemplazo simple de meta tags y title
-        // Buscamos patrones específicos o placeholders
-        html = html.replace(/<title>.*?<\/title>/, `<title>${title}</title>`);
-        html = html.replace(/<meta name="description" content=".*?" \/>/, `<meta name="description" content="${description}" />`);
-        html = html.replace(/<meta property="og:title" content=".*?" \/>/, `<meta property="og:title" content="${title}" />`);
-        html = html.replace(/<meta property="og:description" content=".*?" \/>/, `<meta property="og:description" content="${description}" />`);
+        // Reemplazo ROBUSTO de meta tags y title
+        // Esta regex maneja variaciones de atributos y comillas, asegurando que se sobrescriba el contenido
+
+        // 1. Reemplazo de <title>
+        html = html.replace(/<title>.*?<\/title>/gi, `<title>${title}</title>`);
+
+        // 2. Reemplazo de <meta name="description" ...>
+        // Maneja: name antes o después de content, comillas simples o dobles
+        html = html.replace(/<meta[^>]*name=["']description["'][^>]*content=["'].*?["'][^>]*\/?>/gi,
+            `<meta name="description" content="${description}" />`);
+        html = html.replace(/<meta[^>]*content=["'].*?["'][^>]*name=["']description["'][^>]*\/?>/gi,
+            `<meta name="description" content="${description}" />`);
+
+        // 3. Reemplazo de <meta property="og:title" ...>
+        html = html.replace(/<meta[^>]*property=["']og:title["'][^>]*content=["'].*?["'][^>]*\/?>/gi,
+            `<meta property="og:title" content="${title}" />`);
+        html = html.replace(/<meta[^>]*content=["'].*?["'][^>]*property=["']og:title["'][^>]*\/?>/gi,
+            `<meta property="og:title" content="${title}" />`);
+
+        // 4. Reemplazo de <meta property="og:description" ...>
+        html = html.replace(/<meta[^>]*property=["']og:description["'][^>]*content=["'].*?["'][^>]*\/?>/gi,
+            `<meta property="og:description" content="${description}" />`);
+        html = html.replace(/<meta[^>]*content=["'].*?["'][^>]*property=["']og:description["'][^>]*\/?>/gi,
+            `<meta property="og:description" content="${description}" />`);
 
         // Si el template usa placeholders {{TITLE}} y {{DESCRIPTION}}
         html = html.replace(/{{TITLE}}/g, title);
