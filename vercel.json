@@ -4,8 +4,8 @@
   "framework": "vite",
   "rewrites": [
     {
-      "source": "/invitacion/(.*)",
-      "destination": "/index.html"
+      "source": "/invitacion/:subdomain",
+      "destination": "/api/public/invitation?subdomain=:subdomain"
     },
     {
       "source": "/admin/(.*)",

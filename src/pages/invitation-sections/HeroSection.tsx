@@ -34,7 +34,7 @@ export function HeroSection({ clientData }: HeroSectionProps) {
     const foilClass = (planType === 'deluxe' && advancedAnimations?.enabled && advancedAnimations?.floatingElements) ? 'deluxe-foil-text' : '';
 
     const showVideo = planType === 'deluxe' && heroVideo && heroDisplayMode === 'video';
-    const dateObj = clientData?.weddingDate ? getLocalDate(clientData.weddingDate) : new Date(2026, 0, 24);
+    const dateObj = clientData?.weddingDate ? getLocalDate(clientData.weddingDate) : new Date(2026, 1, 21);
 
     // Formatting parts for a more modular and elegant design
     const dayName = dateObj.toLocaleDateString('es-ES', { weekday: 'long' });
