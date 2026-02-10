@@ -1064,12 +1064,17 @@ export default function LandingPage() {
             transition={{ delay: 0.5 }}
             viewport={{ once: true }}
           >
-            <p>
+            <p className="mb-4">
               {content?.footerCopyright || `© ${new Date().getFullYear()} Suspiro Nupcial. Todos los derechos reservados.`}
               <span className="bg-gradient-to-r from-rose-400 to-amber-500 bg-clip-text text-transparent font-semibold ml-2">
                 {content?.footerCopyrightText || 'Hecho con 💕 para tu día especial'}
               </span>
             </p>
+            <div className="text-sm font-medium tracking-widest text-slate-500 uppercase pt-4 flex items-center justify-center gap-2">
+              <span className="w-8 h-[1px] bg-slate-800"></span>
+              Powered by <span className="text-rose-400/80 hover:text-rose-400 transition-colors cursor-default">Horizon Studio</span>
+              <span className="w-8 h-[1px] bg-slate-800"></span>
+            </div>
           </motion.div>
         </div>
       </footer>
