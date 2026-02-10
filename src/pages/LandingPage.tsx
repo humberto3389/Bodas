@@ -1070,25 +1070,33 @@ export default function LandingPage() {
                 {content?.footerCopyrightText || 'Hecho con 💕 para tu día especial'}
               </span>
             </p>
-            <span className="text-[10px] text-slate-500 uppercase tracking-[0.3em] font-semibold">
-              Powered by
-            </span>
-            <a
-              href="https://horizonstudio.site"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 hover:opacity-90 transition-opacity hover:scale-105 transform duration-300"
-            >
-              <img
-                src="/Logo1.png"
-                alt="Horizon Studio"
-                className="h-12 w-auto object-contain rounded-lg shadow-sm"
-              />
-            </a>
-            <div className="w-24 h-px bg-gradient-to-r from-transparent via-slate-800 to-transparent mt-2"></div>
+            <div className="pt-8 flex flex-col items-center justify-center gap-4">
+              <span className="text-[10px] text-slate-500 uppercase tracking-[0.3em] font-semibold">
+                Powered by
+              </span>
+              <a
+                href="https://horizonstudio.site"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 hover:opacity-90 transition-opacity hover:scale-105 transform duration-300"
+              >
+                <img
+                  src="/Logo1.png"
+                  alt="Horizon Studio"
+                  className="h-12 w-auto object-contain rounded-lg shadow-sm"
+                />
+              </a>
+              <div className="w-24 h-px bg-gradient-to-r from-transparent via-slate-800 to-transparent mt-2"></div>
+            </div>
+          </motion.div>
         </div>
-      </motion.div>
+      </footer>
     </div>
+  );
+}
+        </div >
+      </motion.div >
+    </div >
           </footer >
         </div >
         );
