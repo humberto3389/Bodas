@@ -26,14 +26,37 @@ function getSupabaseClient() {
     return createClient(supabaseUrl, supabaseAnonKey);
 }
 
-function formatDateSpanish(dateStr: string) {
-    if (!dateStr) return '';
+function formatDateSpanish(dateInput: any) {
+    if (!dateInput) return '';
     const months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
     try {
-        const [y, m, d] = dateStr.split('-').map(Number);
-        return `${d} de ${months[m - 1]} ${y}`;
-    } catch (e) {
+        // Si ya es un objeto Date
+        if (dateInput instanceof Date) {
+            return `${dateInput.getDate()} de ${months[dateInput.getMonth()]} ${dateInput.getFullYear()}`;
+        }
+
+        const dateStr = String(dateInput);
+        // Extraer solo la parte de la fecha (YYYY-MM-DD) si viene con tiempo
+        const cleanDate = dateStr.includes('T') ? dateStr.split('T')[0] : dateStr.split(' ')[0];
+        const parts = cleanDate.split('-').map(Number);
+
+        if (parts.length === 3 && !parts.some(isNaN)) {
+            const [y, m, d] = parts;
+            return `${d} de ${months[m - 1]} ${y}`;
+        }
+
+        // Fallback a parsing nativo si el formato es distinto
+        const parsedDate = new Date(dateStr);
+        if (!isNaN(parsedDate.getTime())) {
+            // Nota: Para evitar desfases de zona horaria con parsing nativo
+            // es mejor usar los métodos UTC si la cadena original no tenía zona horaria,
+            // pero para una invitación una aproximación visual suele ser suficiente.
+            return `${parsedDate.getUTCDate()} de ${months[parsedDate.getUTCMonth()]} ${parsedDate.getUTCFullYear()}`;
+        }
+
         return dateStr;
+    } catch (e) {
+        return String(dateInput);
     }
 }
 

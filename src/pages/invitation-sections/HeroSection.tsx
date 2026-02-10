@@ -11,14 +11,16 @@ interface HeroSectionProps {
 function getLocalDate(dateInput: string | Date | undefined): Date {
     if (!dateInput) return new Date();
     if (dateInput instanceof Date) {
-        // Si ya es un objeto Date, extraemos año/mes/día directamente
-        // Esto evita el desfase de zona horaria que ocurre con .toISOString()
         return new Date(dateInput.getFullYear(), dateInput.getMonth(), dateInput.getDate());
     }
-    const rawDate = typeof dateInput === 'string' ? (dateInput.includes('T') ? dateInput.split('T')[0] : dateInput) : '';
-    if (!rawDate) return new Date();
-    const [y, m, d] = rawDate.split('-').map(Number);
-    return new Date(y, m - 1, d);
+    const dateStr = String(dateInput);
+    const cleanDate = dateStr.includes('T') ? dateStr.split('T')[0] : dateStr.split(' ')[0];
+    const parts = cleanDate.split('-').map(Number);
+    if (parts.length === 3 && !parts.some(isNaN)) {
+        const [y, m, d] = parts;
+        return new Date(y, m - 1, d);
+    }
+    return new Date();
 }
 
 export function HeroSection({ clientData }: HeroSectionProps) {
