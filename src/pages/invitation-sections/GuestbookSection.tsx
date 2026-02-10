@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SectionTitle } from './SectionTitle';
+import { safeNewDate } from '../../lib/timezone-utils';
 
 interface GuestbookSectionProps {
     messages: any[];
@@ -115,7 +116,7 @@ export function GuestbookSection({ messages, onSendMessage }: GuestbookSectionPr
                                             {m.name}
                                         </h4>
                                         <span className="text-[9px] font-bold text-slate-300 uppercase tracking-widest">
-                                            {m.created_at ? new Date(m.created_at).toLocaleDateString() : '—'}
+                                            {m.created_at ? safeNewDate(m.created_at).toLocaleDateString() : '—'}
                                         </span>
                                     </div>
                                 </motion.div>

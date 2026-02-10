@@ -3,24 +3,16 @@ import { useRef, useEffect } from 'react';
 import { useAudioContext } from '../../contexts/AudioContext';
 import type { ClientToken } from '../../lib/auth-system';
 
+import { safeNewDate } from '../../lib/timezone-utils';
+
 interface HeroSectionProps {
     clientData: ClientToken;
 }
 
-// Helper para parsear fecha evitando problemas de zona horaria
+// Helper para parsear fecha evitando problemas de zona horaria y NaN en móviles
 function getLocalDate(dateInput: string | Date | undefined): Date {
-    if (!dateInput) return new Date();
-    if (dateInput instanceof Date) {
-        return new Date(dateInput.getFullYear(), dateInput.getMonth(), dateInput.getDate());
-    }
-    const dateStr = String(dateInput);
-    const cleanDate = dateStr.includes('T') ? dateStr.split('T')[0] : dateStr.split(' ')[0];
-    const parts = cleanDate.split('-').map(Number);
-    if (parts.length === 3 && !parts.some(isNaN)) {
-        const [y, m, d] = parts;
-        return new Date(y, m - 1, d);
-    }
-    return new Date();
+    const d = safeNewDate(dateInput);
+    return new Date(d.getFullYear(), d.getMonth(), d.getDate());
 }
 
 export function HeroSection({ clientData }: HeroSectionProps) {

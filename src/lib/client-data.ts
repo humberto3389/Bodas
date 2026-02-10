@@ -1,4 +1,5 @@
 // Sistema de base de datos multi-cliente
+import { safeNewDate } from './timezone-utils';
 export interface ClientData {
   id: string;
   clientName: string;
@@ -62,7 +63,7 @@ export function getCurrentClientData(): ClientData | null {
         id: clientToken.id,
         clientName: clientToken.clientName,
         subdomain: clientToken.subdomain,
-        weddingDate: new Date(clientToken.weddingDate),
+        weddingDate: safeNewDate(clientToken.weddingDate),
         groomName: clientToken.groomName || 'Novio',
         brideName: clientToken.brideName || 'Novia',
         weddingLocation: clientToken.weddingLocation || 'Iglesia San José',
@@ -78,9 +79,9 @@ export function getCurrentClientData(): ClientData | null {
         weddingType: clientToken.weddingType || undefined,
         religiousSymbol: clientToken.religiousSymbol || undefined,
         isActive: clientToken.isActive,
-        createdAt: new Date(clientToken.createdAt),
-        accessUntil: new Date(clientToken.accessUntil),
-        expiresAt: new Date(clientToken.expiresAt || clientToken.accessUntil),
+        createdAt: safeNewDate(clientToken.createdAt),
+        accessUntil: safeNewDate(clientToken.accessUntil),
+        expiresAt: safeNewDate(clientToken.expiresAt || clientToken.accessUntil),
         planType: clientToken.planType || 'basic',
         features: clientToken.features || [],
         wedding_datetime_utc: clientToken.wedding_datetime_utc,

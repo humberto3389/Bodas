@@ -125,14 +125,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         if (client) {
             const bride = client.bride_name || '';
             const groom = client.groom_name || '';
-            const date = formatDateSpanish(client.wedding_date);
 
             if (bride && groom) {
                 title = `Invitación de Boda · ${groom} & ${bride}`;
-                description = `Te invitamos a celebrar nuestra boda. ${groom} & ${bride} - ${date}`;
+                description = `Te invitamos a celebrar nuestra boda. ${groom} & ${bride}`;
             } else if (client.client_name) {
                 title = `Invitación de Boda · ${client.client_name}`;
-                description = `Te invitamos a celebrar nuestra boda. ${client.client_name} - ${date}`;
+                description = `Te invitamos a celebrar nuestra boda. ${client.client_name}`;
             }
         }
 

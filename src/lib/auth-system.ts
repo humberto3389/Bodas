@@ -1,5 +1,6 @@
 // Sistema de autenticación para alquiler de sitios de bodas
 import { supabase } from './supabase';
+import { safeNewDate } from './timezone-utils';
 // El sistema ahora usa utilidades simplificadas
 
 // Debounce para evitar sincronizaciones repetidas
@@ -345,13 +346,13 @@ export function mapSupabaseClientToToken(row: any): ClientToken {
     subdomain: row.subdomain,
     token: row.token,
     isActive: row.is_active,
-    createdAt: new Date(row.created_at),
-    lastUsed: row.last_used ? new Date(row.last_used) : undefined,
-    weddingDate: new Date(row.wedding_date),
-    accessUntil: new Date(row.access_until),
+    createdAt: safeNewDate(row.created_at),
+    lastUsed: row.last_used ? safeNewDate(row.last_used) : undefined,
+    weddingDate: safeNewDate(row.wedding_date),
+    accessUntil: safeNewDate(row.access_until),
     planType: row.plan_type,
     maxGuests: row.max_guests,
-    expiresAt: new Date(row.expires_at || row.access_until),
+    expiresAt: safeNewDate(row.expires_at || row.access_until),
     features: row.features || [],
     groomName: row.groom_name,
     brideName: row.bride_name,

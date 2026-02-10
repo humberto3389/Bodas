@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SectionTitle } from '../pages/invitation-sections/SectionTitle';
-import { getEventTimestampUTC } from '../lib/timezone-utils';
+import { safeNewDate } from '../lib/timezone-utils';
 
 interface CountdownProps {
     date: string | Date;
@@ -11,12 +11,9 @@ interface CountdownProps {
 
 export function Countdown({ date, time, clientData }: CountdownProps) {
     const targetTimestamp = useMemo(() => {
+        // PRIORIDAD 1: Usar el UTC calculado por el servidor/admin si existe
         if (clientData?.wedding_datetime_utc) {
-            // ✅ FIX PARA MÓVIL (SAFARI): Safari es estricto con el formato ISO.
-            // Si la cadena viene con espacio (ej: "2025-05-24 18:00:00"), fallará con NaN.
-            const sanitized = String(clientData.wedding_datetime_utc).replace(' ', 'T');
-            const d = new Date(sanitized);
-            return isNaN(d.getTime()) ? 0 : d.getTime();
+            return safeNewDate(clientData.wedding_datetime_utc).getTime();
         }
 
         // PRIORIDAD 2: Recurso de emergencia si falla el UTC (cálculo local)

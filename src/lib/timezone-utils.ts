@@ -230,11 +230,46 @@ export function UTCToLocal24h(utcTime: string | undefined | null): string {
 }
 
 /**
- * Utilidad para el Countdown: Calcula el timestamp UTC real para una fecha y hora de Lima.
+ * Utilidad crucial para el Countdown y componentes visuales: 
+ * Parsea una fecha de forma segura para evitar NaN en navegadores móviles (Android/WhatsApp/iOS).
+ * Sanitiza formatos con espacios ("YYYY-MM-DD HH:mm:ss") convirtiéndolos a ISO ("YYYY-MM-DDTHH:mm:ss").
  */
-export function getEventTimestampUTC(dateStr: string, timeStr: string): number {
-    const iso = localToUTC(dateStr, timeStr);
-    return iso ? new Date(iso).getTime() : 0;
+export function safeNewDate(dateInput: any): Date {
+    if (!dateInput) return new Date();
+
+    // Si ya es un objeto Date
+    if (dateInput instanceof Date) {
+        return isNaN(dateInput.getTime()) ? new Date() : dateInput;
+    }
+
+    try {
+        const dateStr = String(dateInput).trim();
+
+        // 1. Intentar limpiar formato común de DB: "YYYY-MM-DD HH:mm:ss" -> "YYYY-MM-DDTHH:mm:ss"
+        // Reemplazar el espacio por T si detectamos patrón de fecha ISO-like
+        let sanitized = dateStr;
+        if (/^\d{4}-\d{2}-\d{2}\s/.test(dateStr)) {
+            sanitized = dateStr.replace(' ', 'T');
+        }
+
+        const d = new Date(sanitized);
+
+        // 2. Si falló el parsing nativo (Invalid Date)
+        if (isNaN(d.getTime())) {
+            // Intento desesperado: Extraer solo la fecha YYYY-MM-DD
+            const match = dateStr.match(/^(\d{4})-(\d{2})-(\d{2})/);
+            if (match) {
+                const [_, y, m, day] = match;
+                const fallback = new Date(parseInt(y), parseInt(m) - 1, parseInt(day));
+                return isNaN(fallback.getTime()) ? new Date() : fallback;
+            }
+            return new Date(); // Fallback final
+        }
+
+        return d;
+    } catch (e) {
+        return new Date();
+    }
 }
 
 // Alias de retrocompatibilidad
