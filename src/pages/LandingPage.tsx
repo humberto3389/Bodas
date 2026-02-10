@@ -1070,10 +1070,31 @@ export default function LandingPage() {
                 {content?.footerCopyrightText || 'Hecho con 💕 para tu día especial'}
               </span>
             </p>
-            <div className="text-sm font-medium tracking-widest text-slate-500 uppercase pt-4 flex items-center justify-center gap-2">
-              <span className="w-8 h-[1px] bg-slate-800"></span>
-              Powered by <span className="text-rose-400/80 hover:text-rose-400 transition-colors cursor-default">Horizon Studio</span>
-              <span className="w-8 h-[1px] bg-slate-800"></span>
+            <div className="text-sm font-medium tracking-widest text-slate-500 uppercase pt-4 flex flex-col items-center justify-center gap-4">
+              <div className="flex items-center justify-center gap-4 w-full">
+                <span className="flex-1 h-[1px] bg-slate-800 hidden sm:block"></span>
+                <div className="flex items-center gap-3 bg-slate-800/30 px-6 py-2 rounded-full border border-slate-800/50 hover:bg-slate-800/50 transition-all cursor-default group">
+                  <span className="text-xs text-slate-500 font-light tracking-[0.3em]">Powered by</span>
+                  <div className="flex items-center gap-2">
+                    <div className="w-6 h-6 bg-gradient-to-br from-rose-500 to-amber-500 rounded-lg flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                      <svg
+                        className="w-4 h-4 text-white"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" />
+                        <line x1="4" y1="22" x2="4" y2="15" />
+                      </svg>
+                    </div>
+                    <span className="text-rose-400 font-bold tracking-normal normal-case text-base">Horizon Studio</span>
+                  </div>
+                </div>
+                <span className="flex-1 h-[1px] bg-slate-800 hidden sm:block"></span>
+              </div>
             </div>
           </motion.div>
         </div>
