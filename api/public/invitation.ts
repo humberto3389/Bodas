@@ -46,17 +46,20 @@ function formatDateSpanish(dateInput: any) {
         }
 
         // Fallback a parsing nativo si el formato es distinto
-        const parsedDate = new Date(dateStr);
+        // Sanear para Safari/Mobile incluso en el BFF (por consistencia)
+        const sanitized = dateStr.replace(' ', 'T');
+        const parsedDate = new Date(sanitized);
         if (!isNaN(parsedDate.getTime())) {
-            // Nota: Para evitar desfases de zona horaria con parsing nativo
-            // es mejor usar los métodos UTC si la cadena original no tenía zona horaria,
-            // pero para una invitación una aproximación visual suele ser suficiente.
             return `${parsedDate.getUTCDate()} de ${months[parsedDate.getUTCMonth()]} ${parsedDate.getUTCFullYear()}`;
         }
 
+        // Si falló el parsing y el resultado es una cadena inválida
+        if (dateStr.toLowerCase().includes('nan')) return '';
+
         return dateStr;
     } catch (e) {
-        return String(dateInput);
+        const fallback = String(dateInput);
+        return fallback.toLowerCase().includes('nan') ? '' : fallback;
     }
 }
 
