@@ -229,7 +229,7 @@ export function InvitationFooter({ clientData }: { clientData: any }) {
                     </a>
 
                     {/* Developer: Horizon Studio */}
-                    <div className="flex flex-col items-center md:items-end gap-2">
+                    <div className="flex flex-col items-center md:items-end gap-3">
                         <span className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">
                             Powered by
                         </span>
@@ -237,15 +237,15 @@ export function InvitationFooter({ clientData }: { clientData: any }) {
                             href="https://horizonstudio.site"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+                            className="flex items-center gap-2 hover:opacity-90 transition-opacity hover:scale-105 transform duration-300"
                         >
                             <img
-                                src="/Logo.png"
+                                src="/Logo1.png"
                                 alt="Horizon Studio"
-                                className="h-8 w-auto object-contain"
+                                className="h-14 w-auto object-contain rounded-lg shadow-sm"
                             />
                         </a>
-                        <span className="text-[10px] text-slate-300">
+                        <span className="text-[11px] text-slate-500 font-medium tracking-wide">
                             © 2026 Todos los derechos reservados
                         </span>
                     </div>
