@@ -186,7 +186,7 @@ export function InvitationFooter({ clientData }: { clientData: any }) {
         <footer className="py-16 bg-transparent relative overflow-hidden">
             <div className="max-w-7xl mx-auto px-6 relative z-10">
 
-                {/* Main Content */}
+                {/* Main Content: Couple */}
                 <div className="text-center mb-16 max-w-2xl mx-auto">
                     <motion.h2
                         initial={{ opacity: 0, y: 15 }}
@@ -208,28 +208,46 @@ export function InvitationFooter({ clientData }: { clientData: any }) {
                 </div>
 
                 {/* Divider */}
-                <div className="w-full h-px bg-gradient-to-r from-transparent via-rose-200 to-transparent mb-12" />
+                <div className="w-full h-px bg-gradient-to-r from-transparent via-rose-200 to-transparent mb-12 opacity-50" />
 
-                {/* Footer Bottom */}
+                {/* Footer Bottom: Branding */}
                 <motion.div
                     initial={{ opacity: 0 }}
                     whileInView={{ opacity: 1 }}
                     viewport={{ once: true }}
                     transition={{ delay: 0.3 }}
-                    className="flex flex-col sm:flex-row justify-between items-center gap-6 text-xs"
+                    className="flex flex-col md:flex-row justify-between items-center gap-8 text-sm"
                 >
-                    <span className="text-slate-400 tracking-wide">
-                        © 2026 · Todos los derechos reservados
-                    </span>
+                    {/* Brand: Suspiro Nupcial */}
+                    <a href="/" className="flex flex-col items-center md:items-start group cursor-pointer hover:opacity-90 transition-opacity">
+                        <span className="font-elegant text-2xl text-slate-800 group-hover:text-rose-600 transition-colors duration-300">
+                            Suspiro Nupcial
+                        </span>
+                        <span className="text-xs text-rose-500 tracking-[0.2em] font-medium uppercase mt-1">
+                            Creando momentos que perduran
+                        </span>
+                    </a>
 
-                    <div className="flex items-center gap-3">
-                        <span className="text-slate-400">Creado con</span>
-                        <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-rose-50 to-amber-50 border border-rose-100">
-                            <svg className="w-4 h-4 text-rose-600" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-                            </svg>
-                            <span className="font-semibold text-slate-800 tracking-wide">Horizon Studio</span>
-                        </div>
+                    {/* Developer: Horizon Studio */}
+                    <div className="flex flex-col items-center md:items-end gap-2">
+                        <span className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">
+                            Powered by
+                        </span>
+                        <a
+                            href="https://horizonstudio.site"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+                        >
+                            <img
+                                src="/Logo.png"
+                                alt="Horizon Studio"
+                                className="h-8 w-auto object-contain"
+                            />
+                        </a>
+                        <span className="text-[10px] text-slate-300">
+                            © 2026 Todos los derechos reservados
+                        </span>
                     </div>
                 </motion.div>
             </div>
