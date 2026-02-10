@@ -86,9 +86,9 @@ export default function Admin() {
       r.created_at ? new Date(r.created_at).toLocaleDateString() : ''
     ])
 
-    const csvContent = "\uFEFF" + [
-      headers.join(','),
-      ...rows.map(line => line.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))
+    const csvContent = "sep=;\n\uFEFF" + [
+      headers.join(';'),
+      ...rows.map(line => line.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(';'))
     ].join('\n')
 
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8' })
@@ -114,9 +114,9 @@ export default function Admin() {
       m.created_at ? new Date(m.created_at).toLocaleDateString() : ''
     ])
 
-    const csvContent = "\uFEFF" + [
-      headers.join(','),
-      ...rows.map(line => line.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))
+    const csvContent = "sep=;\n\uFEFF" + [
+      headers.join(';'),
+      ...rows.map(line => line.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(';'))
     ].join('\n')
 
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8' })
