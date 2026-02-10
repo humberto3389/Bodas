@@ -36,6 +36,10 @@ export function HeroSection({ clientData }: HeroSectionProps) {
     const monthName = dateObj.toLocaleDateString('es-ES', { month: 'long' });
     const yearNum = dateObj.getFullYear();
 
+    // Safety check for NaN to prevent UI issues
+    const isDateValid = !isNaN(dateObj.getTime());
+    const displayYear = isDateValid ? yearNum : '';
+
     // Audio Coordination
     const ref = useRef(null);
     const videoRef = useRef<HTMLVideoElement>(null);
@@ -247,7 +251,7 @@ export function HeroSection({ clientData }: HeroSectionProps) {
                                 transition={{ delay: 2.6, duration: 1 }}
                                 className="text-sm sm:text-lg md:text-xl tracking-[0.3em] font-light text-white/90 uppercase"
                             >
-                                {monthName} <span className="opacity-30 mx-3">|</span> {yearNum}
+                                {monthName} <span className="opacity-30 mx-3">|</span> {displayYear}
                             </motion.span>
                         </div>
 

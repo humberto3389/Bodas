@@ -245,6 +245,11 @@ export function safeNewDate(dateInput: any): Date {
     try {
         const dateStr = String(dateInput).trim();
 
+        // 0. Si el string contiene "NaN", retornar fecha actual (o una muy lejana si es para countdown)
+        if (dateStr.toLowerCase().includes('nan')) {
+            return new Date();
+        }
+
         // 1. Intentar limpiar formato común de DB: "YYYY-MM-DD HH:mm:ss" -> "YYYY-MM-DDTHH:mm:ss"
         // Reemplazar el espacio por T si detectamos patrón de fecha ISO-like
         let sanitized = dateStr;
@@ -272,6 +277,16 @@ export function safeNewDate(dateInput: any): Date {
     }
 }
 
-// Alias de retrocompatibilidad
 export function formatTimeDisplay(t: string | undefined | null) { return formatTimeForDisplay(t); }
 export function UTCToLocal(utc: string | undefined | null) { return formatTimeForDisplay(UTCToLocal24h(utc)); }
+
+/**
+ * Helper para compatibilidad con Countdown antiguo.
+ * Convierte fecha y hora local a timestamp UTC.
+ */
+export function getEventTimestampUTC(date: string, time: string): number {
+    const iso = localToUTC(date, time);
+    if (!iso) return 0;
+    const d = new Date(iso);
+    return isNaN(d.getTime()) ? 0 : d.getTime();
+}

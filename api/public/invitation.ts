@@ -127,11 +127,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             const groom = client.groom_name || '';
 
             if (bride && groom) {
-                title = `Invitación de Boda · ${groom} & ${bride}`;
-                description = `Te invitamos a celebrar nuestra boda. ${groom} & ${bride}`;
+                title = `${groom} & ${bride}`;
+                description = `${groom} & ${bride}`;
             } else if (client.client_name) {
-                title = `Invitación de Boda · ${client.client_name}`;
-                description = `Te invitamos a celebrar nuestra boda. ${client.client_name}`;
+                title = `${client.client_name}`;
+                description = `${client.client_name}`;
             }
         }
 

@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SectionTitle } from '../pages/invitation-sections/SectionTitle';
-import { safeNewDate } from '../lib/timezone-utils';
+import { safeNewDate, getEventTimestampUTC } from '../lib/timezone-utils';
 
 interface CountdownProps {
     date: string | Date;
@@ -19,7 +19,8 @@ export function Countdown({ date, time, clientData }: CountdownProps) {
         // PRIORIDAD 2: Recurso de emergencia si falla el UTC (cálculo local)
         if (!date) return 0;
         let dateStr = typeof date === 'string' ? date.split('T')[0] : date.toISOString().split('T')[0];
-        return getEventTimestampUTC(dateStr, time || '00:00');
+        const ts = getEventTimestampUTC(dateStr, time || '00:00');
+        return isNaN(ts) ? 0 : ts;
     }, [clientData?.wedding_datetime_utc, date, time]);
 
 
