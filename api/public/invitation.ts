@@ -26,42 +26,8 @@ function getSupabaseClient() {
     return createClient(supabaseUrl, supabaseAnonKey);
 }
 
-function formatDateSpanish(dateInput: any) {
-    if (!dateInput) return '';
-    const months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-    try {
-        // Si ya es un objeto Date
-        if (dateInput instanceof Date) {
-            return `${dateInput.getDate()} de ${months[dateInput.getMonth()]} ${dateInput.getFullYear()}`;
-        }
-
-        const dateStr = String(dateInput);
-        // Extraer solo la parte de la fecha (YYYY-MM-DD) si viene con tiempo
-        const cleanDate = dateStr.includes('T') ? dateStr.split('T')[0] : dateStr.split(' ')[0];
-        const parts = cleanDate.split('-').map(Number);
-
-        if (parts.length === 3 && !parts.some(isNaN)) {
-            const [y, m, d] = parts;
-            return `${d} de ${months[m - 1]} ${y}`;
-        }
-
-        // Fallback a parsing nativo si el formato es distinto
-        // Sanear para Safari/Mobile incluso en el BFF (por consistencia)
-        const sanitized = dateStr.replace(' ', 'T');
-        const parsedDate = new Date(sanitized);
-        if (!isNaN(parsedDate.getTime())) {
-            return `${parsedDate.getUTCDate()} de ${months[parsedDate.getUTCMonth()]} ${parsedDate.getUTCFullYear()}`;
-        }
-
-        // Si falló el parsing y el resultado es una cadena inválida
-        if (dateStr.toLowerCase().includes('nan')) return '';
-
-        return dateStr;
-    } catch (e) {
-        const fallback = String(dateInput);
-        return fallback.toLowerCase().includes('nan') ? '' : fallback;
-    }
-}
+// ✅ ELIMINADO: formatDateSpanish. No se usa en los meta tags.
+// La descripción NO incluye fecha para evitar errores con parsing de fechas.
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
     const subdomain = req.query?.subdomain as string | undefined;
@@ -120,6 +86,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         }
 
         let title = 'Invitación de Boda';
+        // ✅ La descripción NO incluye la fecha del evento para evitar errores de parsing en móviles (NaN).
+        // WhatsApp usa esta descripción para la vista previa del enlace compartido.
         let description = 'Te invitamos a celebrar nuestra boda.';
 
         if (client) {
@@ -128,7 +96,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
             if (bride && groom) {
                 title = `${groom} & ${bride}`;
-                // description remains strict: "Te invitamos a celebrar nuestra boda."
+                // IMPORTANTE: La descripción se mantiene sin fecha intencionalmente
+                // No agregar: ${formattedDate} ni fecha en ningún formato
             } else if (client.client_name) {
                 title = `${client.client_name}`;
                 // description remains strict
