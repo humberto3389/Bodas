@@ -394,14 +394,13 @@ export function useClientAdmin() {
         return success;
     };
 
-    const deleteRSVP = async (rsvpName: string): Promise<boolean> => {
+    const deleteRSVP = async (rsvpId: string): Promise<boolean> => {
         if (!clientId) return false;
         try {
             const { error } = await supabase
                 .from('rsvps')
                 .delete()
-                .eq('client_id', clientId)
-                .eq('name', rsvpName);
+                .eq('id', rsvpId);
             
             if (error) throw error;
             await fetchData(); // Reload the list

@@ -8,7 +8,7 @@ interface RSVPManagerProps {
     totalGuests: number;
     totalNotAttending: number;
     onDownloadCSV: (filterStatus?: boolean) => void;
-    onDeleteRSVP: (rsvpName: string) => Promise<boolean>;
+    onDeleteRSVP: (rsvpId: string) => Promise<boolean>;
     client?: any;
 }
 
@@ -109,13 +109,13 @@ export function RSVPManager({ rsvps, totalGuests, totalNotAttending, onDownloadC
                                             key={`attending-${idx}`} 
                                             rsvp={rsvp} 
                                             idx={idx} 
-                                            onDelete={async (name) => {
-                                                setDeletingName(name);
-                                                const success = await onDeleteRSVP(name);
+                                            onDelete={async (id) => {
+                                                setDeletingName(id);
+                                                const success = await onDeleteRSVP(id);
                                                 setDeletingName(null);
                                                 return success;
                                             }}
-                                            isDeleting={deletingName === rsvp.name}
+                                            isDeleting={deletingName === rsvp.id}
                                         />
                                     ))
                                 )}
@@ -130,13 +130,13 @@ export function RSVPManager({ rsvps, totalGuests, totalNotAttending, onDownloadC
                                 key={`attending-mob-${idx}`} 
                                 rsvp={rsvp} 
                                 idx={idx} 
-                                onDelete={async (name) => {
-                                    setDeletingName(name);
-                                    const success = await onDeleteRSVP(name);
+                                onDelete={async (id) => {
+                                    setDeletingName(id);
+                                    const success = await onDeleteRSVP(id);
                                     setDeletingName(null);
                                     return success;
                                 }}
-                                isDeleting={deletingName === rsvp.name}
+                                isDeleting={deletingName === rsvp.id}
                             />
                         ))}
                     </div>
@@ -181,13 +181,13 @@ export function RSVPManager({ rsvps, totalGuests, totalNotAttending, onDownloadC
                                             key={`no-attending-${idx}`} 
                                             rsvp={rsvp} 
                                             idx={idx} 
-                                            onDelete={async (name) => {
-                                                setDeletingName(name);
-                                                const success = await onDeleteRSVP(name);
+                                            onDelete={async (id) => {
+                                                setDeletingName(id);
+                                                const success = await onDeleteRSVP(id);
                                                 setDeletingName(null);
                                                 return success;
                                             }}
-                                            isDeleting={deletingName === rsvp.name}
+                                            isDeleting={deletingName === rsvp.id}
                                         />
                                     ))
                                 )}
@@ -202,13 +202,13 @@ export function RSVPManager({ rsvps, totalGuests, totalNotAttending, onDownloadC
                                 key={`no-attending-mob-${idx}`} 
                                 rsvp={rsvp} 
                                 idx={idx} 
-                                onDelete={async (name) => {
-                                    setDeletingName(name);
-                                    const success = await onDeleteRSVP(name);
+                                onDelete={async (id) => {
+                                    setDeletingName(id);
+                                    const success = await onDeleteRSVP(id);
                                     setDeletingName(null);
                                     return success;
                                 }}
-                                isDeleting={deletingName === rsvp.name}
+                                isDeleting={deletingName === rsvp.id}
                             />
                         ))}
                     </div>
@@ -219,7 +219,7 @@ export function RSVPManager({ rsvps, totalGuests, totalNotAttending, onDownloadC
 }
 
 // Sub-componente para filas de tabla
-function RSVPRow({ rsvp, idx, onDelete, isDeleting }: { rsvp: RSVP, idx: number, onDelete: (name: string) => Promise<boolean>, isDeleting: boolean }) {
+function RSVPRow({ rsvp, idx, onDelete, isDeleting }: { rsvp: RSVP, idx: number, onDelete: (id: string) => Promise<boolean>, isDeleting: boolean }) {
     const detailNames = rsvp.is_attending !== false ? rsvp.attending_names : rsvp.not_attending_names;
     const totalCount = rsvp.is_attending !== false ? ((Number(rsvp.guests) || 0) + 1) : 1;
 
@@ -264,12 +264,12 @@ function RSVPRow({ rsvp, idx, onDelete, isDeleting }: { rsvp: RSVP, idx: number,
             </td>
             <td className="px-6 py-5 text-center rounded-r-2xl border-y border-r border-transparent group-hover:border-rose-100">
                 <motion.button
-                    onClick={() => onDelete(rsvp.name)}
-                    disabled={isDeleting}
+                    onClick={() => rsvp.id && onDelete(rsvp.id)}
+                    disabled={isDeleting || !rsvp.id}
                     whileHover={{ scale: isDeleting ? 1 : 1.1 }}
                     whileTap={{ scale: isDeleting ? 1 : 0.95 }}
                     className="p-2 bg-rose-50 text-rose-600 rounded-lg border border-rose-100 hover:bg-rose-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                    title="Eliminar invitado"
+                    title="Eliminar solo este registro"
                 >
                     {isDeleting ? (
                         <svg className="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -288,7 +288,7 @@ function RSVPRow({ rsvp, idx, onDelete, isDeleting }: { rsvp: RSVP, idx: number,
 }
 
 // Sub-componente para tarjetas móviles
-function RSVPCard({ rsvp, idx, onDelete, isDeleting }: { rsvp: RSVP, idx: number, onDelete: (name: string) => Promise<boolean>, isDeleting: boolean }) {
+function RSVPCard({ rsvp, idx, onDelete, isDeleting }: { rsvp: RSVP, idx: number, onDelete: (id: string) => Promise<boolean>, isDeleting: boolean }) {
     const detailNames = rsvp.is_attending !== false ? rsvp.attending_names : rsvp.not_attending_names;
     const totalCount = rsvp.is_attending !== false ? ((Number(rsvp.guests) || 0) + 1) : 1;
 
@@ -340,11 +340,12 @@ function RSVPCard({ rsvp, idx, onDelete, isDeleting }: { rsvp: RSVP, idx: number
             </div>
 
             <motion.button
-                onClick={() => onDelete(rsvp.name)}
-                disabled={isDeleting}
+                onClick={() => rsvp.id && onDelete(rsvp.id)}
+                disabled={isDeleting || !rsvp.id}
                 whileHover={{ scale: isDeleting ? 1 : 1.05 }}
                 whileTap={{ scale: isDeleting ? 1 : 0.95 }}
                 className="w-full mt-3 p-2.5 bg-rose-50 text-rose-600 rounded-lg border border-rose-100 hover:bg-rose-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-semibold text-xs uppercase tracking-wider flex items-center justify-center gap-2"
+                title="Eliminar solo este registro"
             >
                 {isDeleting ? (
                     <>

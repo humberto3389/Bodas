@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import { supabase } from '../lib/supabase';
 
 export type RSVP = {
+    id?: string;
     name: string;
     email: string;
     phone?: string;
