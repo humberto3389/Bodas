@@ -211,7 +211,7 @@ export function RSVPManager({ rsvps, totalGuests, totalNotAttending, onDownloadC
                                             getTotal={getTotal}
                                         />
                                     ))
-                                )}}
+                                )}
                             </tbody>
                         </table>
                     </div>
