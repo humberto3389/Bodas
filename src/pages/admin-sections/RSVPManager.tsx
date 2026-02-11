@@ -9,13 +9,31 @@ interface RSVPManagerProps {
     totalNotAttending: number;
     onDownloadCSV: (filterStatus?: boolean) => void;
     onDeleteRSVP: (rsvpId: string) => Promise<boolean>;
+    getTotalGuests?: (rsvp: RSVP) => number;
     client?: any;
 }
 
-export function RSVPManager({ rsvps, totalGuests, totalNotAttending, onDownloadCSV, onDeleteRSVP, client }: RSVPManagerProps) {
+export function RSVPManager({ rsvps, totalGuests, totalNotAttending, onDownloadCSV, onDeleteRSVP, getTotalGuests, client }: RSVPManagerProps) {
     const attending = rsvps.filter(r => r.is_attending !== false);
     const notAttending = rsvps.filter(r => r.is_attending === false);
     const [deletingName, setDeletingName] = useState<string | null>(null);
+
+    // Fallback si no se proporciona getTotalGuests
+    const countValidNames = (text: string): number => {
+        return text
+            .split('\n')
+            .map(line => line.trim())
+            .filter(line => line.length > 0)
+            .length;
+    };
+
+    const getTotal = getTotalGuests || ((rsvp: RSVP) => {
+        if (rsvp.is_attending === false) return 1;
+        const declaredGuests = Number(rsvp.guests) || 0;
+        const actualNamesCount = countValidNames(rsvp.attending_names || '');
+        const guestsCount = Math.max(declaredGuests, actualNamesCount);
+        return guestsCount + 1;
+    });
 
     return (
         <motion.div
@@ -116,6 +134,7 @@ export function RSVPManager({ rsvps, totalGuests, totalNotAttending, onDownloadC
                                                 return success;
                                             }}
                                             isDeleting={deletingName === rsvp.id}
+                                            getTotal={getTotal}
                                         />
                                     ))
                                 )}
@@ -137,6 +156,7 @@ export function RSVPManager({ rsvps, totalGuests, totalNotAttending, onDownloadC
                                     return success;
                                 }}
                                 isDeleting={deletingName === rsvp.id}
+                                getTotal={getTotal}
                             />
                         ))}
                     </div>
@@ -188,9 +208,10 @@ export function RSVPManager({ rsvps, totalGuests, totalNotAttending, onDownloadC
                                                 return success;
                                             }}
                                             isDeleting={deletingName === rsvp.id}
+                                            getTotal={getTotal}
                                         />
                                     ))
-                                )}
+                                )}}
                             </tbody>
                         </table>
                     </div>
@@ -209,6 +230,7 @@ export function RSVPManager({ rsvps, totalGuests, totalNotAttending, onDownloadC
                                     return success;
                                 }}
                                 isDeleting={deletingName === rsvp.id}
+                                getTotal={getTotal}
                             />
                         ))}
                     </div>
@@ -219,9 +241,9 @@ export function RSVPManager({ rsvps, totalGuests, totalNotAttending, onDownloadC
 }
 
 // Sub-componente para filas de tabla
-function RSVPRow({ rsvp, idx, onDelete, isDeleting }: { rsvp: RSVP, idx: number, onDelete: (id: string) => Promise<boolean>, isDeleting: boolean }) {
+function RSVPRow({ rsvp, idx, onDelete, isDeleting, getTotal }: { rsvp: RSVP, idx: number, onDelete: (id: string) => Promise<boolean>, isDeleting: boolean, getTotal: (rsvp: RSVP) => number }) {
     const detailNames = rsvp.is_attending !== false ? rsvp.attending_names : rsvp.not_attending_names;
-    const totalCount = rsvp.is_attending !== false ? ((Number(rsvp.guests) || 0) + 1) : 1;
+    const totalCount = getTotal(rsvp);
 
     return (
         <motion.tr
@@ -288,9 +310,9 @@ function RSVPRow({ rsvp, idx, onDelete, isDeleting }: { rsvp: RSVP, idx: number,
 }
 
 // Sub-componente para tarjetas móviles
-function RSVPCard({ rsvp, idx, onDelete, isDeleting }: { rsvp: RSVP, idx: number, onDelete: (id: string) => Promise<boolean>, isDeleting: boolean }) {
+function RSVPCard({ rsvp, idx, onDelete, isDeleting, getTotal }: { rsvp: RSVP, idx: number, onDelete: (id: string) => Promise<boolean>, isDeleting: boolean, getTotal: (rsvp: RSVP) => number }) {
     const detailNames = rsvp.is_attending !== false ? rsvp.attending_names : rsvp.not_attending_names;
-    const totalCount = rsvp.is_attending !== false ? ((Number(rsvp.guests) || 0) + 1) : 1;
+    const totalCount = getTotal(rsvp);
 
     return (
         <motion.div

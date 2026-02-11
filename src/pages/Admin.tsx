@@ -46,9 +46,31 @@ export default function Admin() {
   const [activeTab, setActiveTab] = useState<'content' | 'rsvps' | 'messages' | 'media'>('content')
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
+  // Función para contar nombres válidos
+  const countValidNames = (text: string): number => {
+    return text
+      .split('\n')
+      .map(line => line.trim())
+      .filter(line => line.length > 0)
+      .length;
+  };
+
+  // Función para obtener el total real de personas
+  const getTotalGuests = (rsvp: any): number => {
+    if (rsvp.is_attending === false) return 1; // Solo la persona que no asistirá
+    
+    const declaredGuests = Number(rsvp.guests) || 0;
+    const actualNamesCount = countValidNames(rsvp.attending_names || '');
+    
+    // Usar el mayor entre lo declarado y lo que realmente escribió
+    const guestsCount = Math.max(declaredGuests, actualNamesCount);
+    
+    return guestsCount + 1; // +1 por la persona principal
+  };
+
   const totalGuests = rsvps.reduce((a, r) => {
     if (r.is_attending === false) return a;
-    return a + (Number(r.guests) || 0) + 1;
+    return a + getTotalGuests(r);
   }, 0)
 
   const totalNotAttending = rsvps.reduce((a, r) => {
@@ -78,12 +100,13 @@ export default function Admin() {
 
     const headers = ['Nombre Principal', 'Email', 'Celular', 'Acompañantes', 'Total por Invitado', 'Asiste', 'Nombres Reportados', 'Fecha']
     const rows = filtered.map(r => {
-      const totalCount = r.is_attending !== false ? ((Number(r.guests) || 0) + 1) : 1
+      const totalCount = getTotalGuests(r);
+      const declaredGuests = r.is_attending !== false ? (Number(r.guests) || 0) : 0;
       return [
         r.name,
         r.email,
         r.phone || '',
-        r.is_attending !== false ? (Number(r.guests) || 0) : 0,
+        declaredGuests,
         totalCount,
         r.is_attending !== false ? 'SI' : 'NO',
         r.is_attending !== false ? (r.attending_names || '') : (r.not_attending_names || ''),
@@ -213,7 +236,7 @@ export default function Admin() {
             )}
             {activeTab === 'rsvps' && (
               <motion.div key="rsvps" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                <RSVPManager rsvps={rsvps} totalGuests={totalGuests} totalNotAttending={totalNotAttending} onDownloadCSV={downloadRSVPs} onDeleteRSVP={deleteRSVP} client={clientSession} />
+                <RSVPManager rsvps={rsvps} totalGuests={totalGuests} totalNotAttending={totalNotAttending} onDownloadCSV={downloadRSVPs} onDeleteRSVP={deleteRSVP} getTotalGuests={getTotalGuests} client={clientSession} />
               </motion.div>
             )}
             {activeTab === 'messages' && (

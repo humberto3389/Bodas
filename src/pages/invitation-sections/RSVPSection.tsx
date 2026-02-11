@@ -22,6 +22,78 @@ export function RSVPSection({ onSubmit }: RSVPSectionProps) {
     const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
     const [errorMessage, setErrorMessage] = useState('');
 
+    // Contar nombres válidos en el textarea
+    const countValidNames = (text: string): number => {
+        return text
+            .split('\n')
+            .map(line => line.trim())
+            .filter(line => line.length > 0)
+            .length;
+    };
+
+    // Validar que un nombre sea realista (no palabras vagas)
+    const isValidName = (name: string): boolean => {
+        const trimmed = name.trim().toLowerCase();
+        
+        // Palabras sospechosas que NO son nombres
+        const suspiciousWords = [
+            'no', 'no sé', 'no se', 'nosé', 'nose',
+            'nadie', 'no creo', 'no hay', 'ninguno', 'ninguna',
+            'pendiente', 'por definir', 'por confirmar',
+            'amigo', 'amiga', 'persona', 'alguien', 'otro',
+            'acompañante', 'familiar', 'tbd', 'undefined', 'null',
+            '?', '...', 'x', 'xx', 'xxx',
+            'test', 'prueba', 'demo', 'ejemplo'
+        ];
+        
+        // Si es exactamente una palabra sospechosa, no es válido
+        if (suspiciousWords.includes(trimmed)) {
+            return false;
+        }
+        
+        // Validar longitud mínima (nombre debe tener 3+ caracteres)
+        if (trimmed.length < 3) {
+            return false;
+        }
+        
+        // Idealmente un nombre debe tener al menos una letra seguida de espacio seguida de otra letra
+        // O al menos de 5 caracteres
+        const hasSpace = trimmed.includes(' ');
+        if (hasSpace) {
+            const parts = trimmed.split(' ').filter(p => p.length > 0);
+            // Debe tener al menos 2 partes, cada una con 2+ caracteres
+            if (parts.length >= 2 && parts.every(p => p.length >= 2)) {
+                return true;
+            }
+        }
+        
+        // Si no tiene espacio pero tiene suficiente longitud, puede ser válido
+        if (trimmed.length >= 5 && /^[a-záéíóúñ\s'-]+$/i.test(trimmed)) {
+            return true;
+        }
+        
+        return false;
+    };
+
+    // Detectar nombres sospechosos en el textarea
+    const checkSuspiciousNames = (text: string): string | null => {
+        const names = text
+            .split('\n')
+            .map(line => line.trim())
+            .filter(line => line.length > 0);
+        
+        const invalidNames = names.filter(name => !isValidName(name));
+        
+        if (invalidNames.length > 0) {
+            return `⚠️ Estos nombres no parecen válidos: "${invalidNames.join('", "')}". Verifica que sean nombres reales.`;
+        }
+        
+        return null;
+    };
+
+    const validNamesCount = countValidNames(formValues.attendingNames);
+    const suspiciousError = formValues.attendingNames?.trim() ? checkSuspiciousNames(formValues.attendingNames) : null;
+
     const handleFormSubmit = async (data: any) => {
         try {
             await onSubmit(data);
@@ -127,10 +199,13 @@ export function RSVPSection({ onSubmit }: RSVPSectionProps) {
                                     Nombres de Acompañantes {formValues.guests > 0 && <span className="text-rose-600 text-sm">*</span>}
                                 </label>
                                 <p className="text-[9px] text-slate-600 uppercase tracking-wider mb-2 bg-slate-50 p-3 rounded-lg border border-slate-100">
-                                    📝 <strong>Si vienes con acompañantes (</strong>familia o amigos<strong>):</strong> Escribe sus nombres completos en el campo de abajo, uno por línea.
+                                    📝 <strong>Si vienes con acompañantes (</strong>familia o amigos<strong>):</strong> Escribe sus nombres COMPLETOS y REALES (ej: Juan Pérez, María García), uno por línea.
                                 </p>
                                 <p className="text-[9px] text-slate-600 uppercase tracking-wider mb-3 bg-blue-50 p-3 rounded-lg border border-blue-100">
-                                    ✓ <strong>Si vienes solo (sin acompañantes):</strong> Deja este campo vacío.
+                                    ✓ <strong>Si todavía no sabes quién te acomp:</strong> Cambia a "0 acompañantes" y confirma. Luego puedes editar tu respuesta cuando lo sepas.
+                                </p>
+                                <p className="text-[9px] text-orange-600 uppercase tracking-wider mb-3 bg-orange-50 p-3 rounded-lg border border-orange-200">
+                                    ⚠️ <strong>Nombres NO válidos:</strong> "No sé", "Nadie", "Pendiente", "Amigo", iniciales, puntos suspensivos (...)
                                 </p>
                                 <textarea
                                     {...register('attendingNames', {
@@ -140,6 +215,24 @@ export function RSVPSection({ onSubmit }: RSVPSectionProps) {
                                                     return 'Debes ingresar los nombres de tus acompañantes';
                                                 }
                                                 return true;
+                                            },
+                                            matching: (value) => {
+                                                if (formValues.guests > 0 && value?.trim()) {
+                                                    const count = countValidNames(value);
+                                                    if (count !== formValues.guests) {
+                                                        return `Escribiste ${count} nombre(s), pero dijiste ${formValues.guests} acompañante(s). Deben coincidir.`;
+                                                    }
+                                                }
+                                                return true;
+                                            },
+                                            validNames: (value) => {
+                                                if (formValues.guests > 0 && value?.trim()) {
+                                                    const suspicious = checkSuspiciousNames(value);
+                                                    if (suspicious) {
+                                                        return suspicious;
+                                                    }
+                                                }
+                                                return true;
                                             }
                                         }
                                     })}
@@ -147,6 +240,16 @@ export function RSVPSection({ onSubmit }: RSVPSectionProps) {
                                     placeholder="Ejemplo: Rosa Pérez&#10;Juan Pérez&#10;María Pérez"
                                 />
                                 {errors.attendingNames && <p className="text-rose-500 text-[10px] font-bold mt-1 uppercase tracking-widest">{errors.attendingNames.message as string}</p>}
+                                {!errors.attendingNames && suspiciousError && (
+                                    <p className="text-amber-600 text-[10px] font-bold mt-1 uppercase tracking-widest bg-amber-50 p-2 rounded border border-amber-200">
+                                        {suspiciousError}
+                                    </p>
+                                )}
+                                {formValues.guests > 0 && formValues.attendingNames?.trim() && !errors.attendingNames && !suspiciousError && (
+                                    <p className="text-emerald-600 text-[9px] font-semibold mt-1 uppercase tracking-widest">
+                                        ✓ Detectados {validNamesCount} nombre(s) válido(s) de {formValues.guests} acompañante(s)
+                                    </p>
+                                )}
                             </motion.div>
                         )}
 
