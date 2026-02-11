@@ -37,7 +37,8 @@ export default function Admin() {
     audioFiles,
     videoFiles,
     handleUpload,
-    handleDelete
+    handleDelete,
+    deleteRSVP
   } = useClientAdmin()
 
   const [tokenInput, setTokenInput] = useState('')
@@ -75,16 +76,20 @@ export default function Admin() {
       })
     }
 
-    const headers = ['Nombre Principal', 'Email', 'Celular', 'Acompañantes', 'Asiste', 'Nombres Reportados', 'Fecha']
-    const rows = filtered.map(r => [
-      r.name,
-      r.email,
-      r.phone || '',
-      r.is_attending !== false ? (Number(r.guests) || 0) : 0,
-      r.is_attending !== false ? 'SI' : 'NO',
-      r.is_attending !== false ? (r.attending_names || '') : (r.not_attending_names || ''),
-      r.created_at ? new Date(r.created_at).toLocaleDateString() : ''
-    ])
+    const headers = ['Nombre Principal', 'Email', 'Celular', 'Acompañantes', 'Total por Invitado', 'Asiste', 'Nombres Reportados', 'Fecha']
+    const rows = filtered.map(r => {
+      const totalCount = r.is_attending !== false ? ((Number(r.guests) || 0) + 1) : 1
+      return [
+        r.name,
+        r.email,
+        r.phone || '',
+        r.is_attending !== false ? (Number(r.guests) || 0) : 0,
+        totalCount,
+        r.is_attending !== false ? 'SI' : 'NO',
+        r.is_attending !== false ? (r.attending_names || '') : (r.not_attending_names || ''),
+        r.created_at ? new Date(r.created_at).toLocaleDateString() : ''
+      ]
+    })
 
     const csvContent = "sep=;\n\uFEFF" + [
       headers.join(';'),
@@ -208,7 +213,7 @@ export default function Admin() {
             )}
             {activeTab === 'rsvps' && (
               <motion.div key="rsvps" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                <RSVPManager rsvps={rsvps} totalGuests={totalGuests} totalNotAttending={totalNotAttending} onDownloadCSV={downloadRSVPs} client={clientSession} />
+                <RSVPManager rsvps={rsvps} totalGuests={totalGuests} totalNotAttending={totalNotAttending} onDownloadCSV={downloadRSVPs} onDeleteRSVP={deleteRSVP} client={clientSession} />
               </motion.div>
             )}
             {activeTab === 'messages' && (

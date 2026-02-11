@@ -78,7 +78,9 @@ export function RSVPSection({ onSubmit }: RSVPSectionProps) {
 
                         {/* Nombre */}
                         <div className="space-y-2">
-                            <label className="block text-[10px] font-bold text-slate-900 uppercase tracking-[0.2em]">Nombre Completo</label>
+                            <label className="block text-[10px] font-bold text-slate-900 uppercase tracking-[0.2em]">
+                                Nombre Completo <span className="text-rose-600 text-sm">*</span>
+                            </label>
                             <input
                                 {...register('name', { required: 'Por favor ingresa tu nombre' })}
                                 className="input-luxe"
@@ -90,7 +92,7 @@ export function RSVPSection({ onSubmit }: RSVPSectionProps) {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                             {/* Email */}
                             <div className="space-y-2">
-                                <label className="block text-[10px] font-bold text-slate-900 uppercase tracking-[0.2em]">Correo Electrónico (Opcional)</label>
+                                <label className="block text-[10px] font-bold text-slate-900 uppercase tracking-[0.2em]">Correo Electrónico <span className="text-slate-400 text-xs">(opcional)</span></label>
                                 <input
                                     {...register('email', { pattern: { value: /^\S+@\S+$/i, message: 'Email inválido' } })}
                                     className="input-luxe"
@@ -121,13 +123,30 @@ export function RSVPSection({ onSubmit }: RSVPSectionProps) {
                                 animate={{ opacity: 1, height: 'auto' }}
                                 className="space-y-2"
                             >
-                                <label className="block text-[10px] font-bold text-slate-900 uppercase tracking-[0.2em]">Nombres de Invitados</label>
-                                <p className="text-[9px] text-slate-500 uppercase tracking-wider mb-2">Por favor, escribe los nombres de todos tus familiares o acompañantes que vendrán contigo.</p>
+                                <label className="block text-[10px] font-bold text-slate-900 uppercase tracking-[0.2em]">
+                                    Nombres de Acompañantes {formValues.guests > 0 && <span className="text-rose-600 text-sm">*</span>}
+                                </label>
+                                <p className="text-[9px] text-slate-600 uppercase tracking-wider mb-2 bg-slate-50 p-3 rounded-lg border border-slate-100">
+                                    📝 <strong>Si vienes con acompañantes (</strong>familia o amigos<strong>):</strong> Escribe sus nombres completos en el campo de abajo, uno por línea.
+                                </p>
+                                <p className="text-[9px] text-slate-600 uppercase tracking-wider mb-3 bg-blue-50 p-3 rounded-lg border border-blue-100">
+                                    ✓ <strong>Si vienes solo (sin acompañantes):</strong> Deja este campo vacío.
+                                </p>
                                 <textarea
-                                    {...register('attendingNames')}
+                                    {...register('attendingNames', {
+                                        validate: {
+                                            required: (value) => {
+                                                if (formValues.guests > 0 && !value?.trim()) {
+                                                    return 'Debes ingresar los nombres de tus acompañantes';
+                                                }
+                                                return true;
+                                            }
+                                        }
+                                    })}
                                     className="input-luxe min-h-[100px] py-4 resize-none"
-                                    placeholder="Ejemplo: Rosa Perez, Juan Perez, Maria Perez..."
+                                    placeholder="Ejemplo: Rosa Pérez&#10;Juan Pérez&#10;María Pérez"
                                 />
+                                {errors.attendingNames && <p className="text-rose-500 text-[10px] font-bold mt-1 uppercase tracking-widest">{errors.attendingNames.message as string}</p>}
                             </motion.div>
                         )}
 

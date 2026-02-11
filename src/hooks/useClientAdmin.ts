@@ -394,6 +394,24 @@ export function useClientAdmin() {
         return success;
     };
 
+    const deleteRSVP = async (rsvpName: string): Promise<boolean> => {
+        if (!clientId) return false;
+        try {
+            const { error } = await supabase
+                .from('rsvps')
+                .delete()
+                .eq('client_id', clientId)
+                .eq('name', rsvpName);
+            
+            if (error) throw error;
+            await fetchData(); // Reload the list
+            return true;
+        } catch (err) {
+            console.error('Error deleting RSVP:', err);
+            return false;
+        }
+    };
+
     return {
         authed,
         clientSession,
@@ -413,6 +431,7 @@ export function useClientAdmin() {
         videoFiles,
         handleUpload,
         handleDelete,
-        fetchData
+        fetchData,
+        deleteRSVP
     };
 }
