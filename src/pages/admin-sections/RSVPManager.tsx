@@ -39,14 +39,14 @@ export function RSVPManager({ rsvps, totalGuests, totalNotAttending, onDownloadC
         <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="bg-white/90 backdrop-blur-sm rounded-3xl p-6 sm:p-8 shadow-xl border border-white/40"
+            className="bg-white/90 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-3 sm:p-6 md:p-8 shadow-xl border border-white/40"
         >
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 mb-6 sm:mb-8">
                 <div>
-                    <h2 className="text-xl sm:text-2xl font-brush bg-gradient-to-r from-rose-600 to-amber-600 bg-clip-text text-transparent">
+                    <h2 className="text-lg sm:text-2xl font-brush bg-gradient-to-r from-rose-600 to-amber-600 bg-clip-text text-transparent">
                         Gestión de Respuestas
                     </h2>
-                    <p className="text-neutral-500 text-xs sm:text-sm mt-1">Gestiona quiénes vienen y quiénes no.</p>
+                    <p className="text-neutral-500 text-[10px] sm:text-sm mt-1">Gestiona quiénes vienen y quiénes no.</p>
                     {(() => {
                         if (!client) return null;
                         const plan = getEffectivePlan(client);

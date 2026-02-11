@@ -196,17 +196,17 @@ export default function Admin() {
           onUpgradeClick={() => window.open('https://wa.me/51958315579?text=Deseo%20mejorar%20mi%20plan', '_blank')}
         />
 
-        <div className="w-full px-4 sm:px-6 py-6 sm:py-8">
+        <div className="w-full px-3 sm:px-6 py-4 sm:py-8 max-w-7xl mx-auto">
           <ShareLink subdomain={clientSession?.subdomain} />
 
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="flex flex-wrap gap-2 mb-6 sm:mb-8 overflow-x-auto pb-2 sm:pb-0">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="flex flex-nowrap gap-1.5 sm:gap-2 mb-4 sm:mb-8 overflow-x-auto pb-2 sm:pb-0 -mx-3 sm:mx-0 px-3 sm:px-0">
             {[
               { id: 'content', label: '📝 Contenido' },
               { id: 'rsvps', label: '👥 RSVPs' },
               { id: 'messages', label: '💌 Mensajes' },
               { id: 'media', label: '🖼️ Media' },
             ].map((tab) => (
-              <button key={tab.id} onClick={() => setActiveTab(tab.id as any)} className={`px-3 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all ${activeTab === tab.id ? 'bg-gradient-to-r from-rose-500 to-amber-500 text-white shadow-lg' : 'bg-white/80 text-neutral-700'}`}>
+              <button key={tab.id} onClick={() => setActiveTab(tab.id as any)} className={`px-2 sm:px-6 py-2 sm:py-3 rounded-lg sm:rounded-xl font-semibold transition-all text-xs sm:text-sm whitespace-nowrap flex-shrink-0 min-h-[40px] min-w-max ${activeTab === tab.id ? 'bg-gradient-to-r from-rose-500 to-amber-500 text-white shadow-lg' : 'bg-white/80 text-neutral-700'}`}>
                 {tab.label}
               </button>
             ))}

@@ -51,58 +51,58 @@ export function ContentEditor({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
-            className="space-y-8 pb-24"
+            className="space-y-4 sm:space-y-6 md:space-y-8 pb-24"
         >
             {/* Header Section */}
-            <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-3xl p-8 shadow-2xl">
+            <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-3xl p-3 sm:p-6 lg:p-8 shadow-2xl">
                 <div className="max-w-3xl">
-                    <h1 className="text-3xl font-semibold text-white mb-3">Configuración de la invitación</h1>
-                    <p className="text-slate-300">Personaliza cada detalle de tu invitación digital</p>
+                    <h1 className="text-xl sm:text-2xl lg:text-3xl font-semibold text-white mb-2 sm:mb-3">Configuración de la invitación</h1>
+                    <p className="text-slate-300 text-xs sm:text-sm">Personaliza cada detalle de tu invitación digital</p>
                 </div>
             </div>
 
             {/* Main Content Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4 md:gap-6">
 
                 {/* Novios Section */}
-                <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-[0_4px_20px_rgba(0,0,0,0.03)]">
-                    <div className="flex items-center gap-3 mb-6">
-                        <div className="w-2 h-8 bg-gradient-to-b from-blue-500 to-blue-600 rounded-full"></div>
-                        <h2 className="text-lg font-semibold text-slate-900">Novios</h2>
+                <div className="bg-white rounded-2xl p-3 sm:p-4 md:p-6 border border-slate-200 shadow-[0_4px_20px_rgba(0,0,0,0.03)]">
+                    <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+                        <div className="w-2 h-6 sm:h-8 bg-gradient-to-b from-blue-500 to-blue-600 rounded-full"></div>
+                        <h2 className="text-base sm:text-lg font-semibold text-slate-900">Novios</h2>
                     </div>
 
-                    <div className="space-y-5">
+                    <div className="space-y-3 sm:space-y-5">
                         <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-2">Nombre del evento</label>
+                            <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5 sm:mb-2">Nombre del evento</label>
                             <input
                                 type="text"
                                 name="clientName"
                                 value={editForm.clientName}
                                 onChange={handleChange}
-                                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+                                className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm"
                                 placeholder="Ej: Boda de Ana y Carlos"
                             />
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-2 gap-2 sm:gap-4">
                             <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-2">Novio</label>
+                                <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5 sm:mb-2">Novio</label>
                                 <input
                                     type="text"
                                     name="groomName"
                                     value={editForm.groomName}
                                     onChange={handleChange}
-                                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+                                    className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm"
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-2">Novia</label>
+                                <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5 sm:mb-2">Novia</label>
                                 <input
                                     type="text"
                                     name="brideName"
                                     value={editForm.brideName}
                                     onChange={handleChange}
-                                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+                                    className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm"
                                 />
                             </div>
                         </div>
@@ -110,57 +110,57 @@ export function ContentEditor({
                 </div>
 
                 {/* Fecha y Hora Section */}
-                <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-[0_4px_20px_rgba(0,0,0,0.03)]">
-                    <div className="flex items-center gap-3 mb-6">
-                        <div className="w-2 h-8 bg-gradient-to-b from-emerald-500 to-emerald-600 rounded-full"></div>
-                        <h2 className="text-lg font-semibold text-slate-900">Fecha y hora</h2>
+                <div className="bg-white rounded-2xl p-3 sm:p-4 md:p-6 border border-slate-200 shadow-[0_4px_20px_rgba(0,0,0,0.03)]">
+                    <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+                        <div className="w-2 h-6 sm:h-8 bg-gradient-to-b from-emerald-500 to-emerald-600 rounded-full"></div>
+                        <h2 className="text-base sm:text-lg font-semibold text-slate-900">Fecha y hora</h2>
                     </div>
 
-                    <div className="space-y-5">
-                        <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-3 sm:space-y-5">
+                        <div className="grid grid-cols-2 gap-2 sm:gap-4">
                             <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-2">Fecha</label>
+                                <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5 sm:mb-2">Fecha</label>
                                 <input
                                     type="date"
                                     name="weddingDate"
                                     value={editForm.weddingDate}
                                     onChange={handleChange}
-                                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
+                                    className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all text-sm"
                                 />
                             </div>
                             {/* Removed redundant generic TimePicker */}
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-2">Tipo de ceremonia</label>
+                            <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5 sm:mb-2">Tipo de ceremonia</label>
                             <input
                                 type="text"
                                 name="weddingType"
                                 value={editForm.weddingType}
                                 onChange={handleChange}
                                 placeholder="Ej: Ceremonia religiosa"
-                                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
+                                className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all text-sm"
                             />
                         </div>
                     </div>
                 </div>
 
                 {/* Ubicación Ceremonia */}
-                <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-[0_4px_20px_rgba(0,0,0,0.03)]">
-                    <div className="flex items-center gap-3 mb-6">
-                        <div className="w-2 h-8 bg-gradient-to-b from-violet-500 to-violet-600 rounded-full"></div>
-                        <h2 className="text-lg font-semibold text-slate-900">Ceremonia</h2>
+                <div className="bg-white rounded-2xl p-3 sm:p-4 md:p-6 border border-slate-200 shadow-[0_4px_20px_rgba(0,0,0,0.03)]">
+                    <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+                        <div className="w-2 h-6 sm:h-8 bg-gradient-to-b from-violet-500 to-violet-600 rounded-full"></div>
+                        <h2 className="text-base sm:text-lg font-semibold text-slate-900">Ceremonia</h2>
                     </div>
 
-                    <div className="space-y-5">
+                    <div className="space-y-3 sm:space-y-5">
                         <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-2">Lugar</label>
+                            <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5 sm:mb-2">Lugar</label>
                             <input
                                 type="text"
                                 name="churchName"
                                 value={editForm.churchName}
                                 onChange={handleChange}
-                                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 transition-all"
+                                className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 transition-all text-sm"
                             />
                         </div>
 
@@ -173,50 +173,50 @@ export function ContentEditor({
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-2">Dirección</label>
+                            <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5 sm:mb-2">Dirección</label>
                             <input
                                 type="text"
                                 name="ceremonyAddress"
                                 value={editForm.ceremonyAddress}
                                 onChange={handleChange}
-                                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 transition-all"
+                                className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 transition-all text-sm"
                             />
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-2">Referencia</label>
+                            <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5 sm:mb-2">Referencia</label>
                             <input
                                 type="text"
                                 name="ceremonyReference"
                                 value={editForm.ceremonyReference}
                                 onChange={handleChange}
                                 placeholder="Ej: Frente al parque central"
-                                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 transition-all"
+                                className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 transition-all text-sm"
                             />
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-2">Enlace de Google Maps</label>
-                            <div className="flex gap-2">
+                            <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5 sm:mb-2">Enlace de Google Maps</label>
+                            <div className="flex flex-col sm:flex-row gap-2">
                                 <input
                                     type="text"
                                     name="ceremonyMapUrl"
                                     value={editForm.ceremonyMapUrl}
                                     onChange={handleChange}
-                                    className="flex-1 px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 transition-all"
+                                    className="flex-1 px-3 sm:px-4 py-2 sm:py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 transition-all text-sm"
                                 />
                                 {editForm.ceremonyMapUrl && (
                                     <a
                                         href={editForm.ceremonyMapUrl}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="px-4 py-3 bg-violet-500 text-white rounded-xl hover:bg-violet-600 transition-colors flex items-center gap-2 whitespace-nowrap"
+                                        className="px-2 sm:px-4 py-2 sm:py-3 bg-violet-500 text-white rounded-xl hover:bg-violet-600 transition-colors flex items-center justify-center gap-2 min-h-[40px] sm:min-h-auto text-xs sm:text-sm whitespace-nowrap"
                                     >
                                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                                         </svg>
-                                        Ver en mapa
+                                        <span className="hidden sm:inline">Ver en mapa</span>
                                     </a>
                                 )}
                             </div>
@@ -225,11 +225,13 @@ export function ContentEditor({
                 </div>
 
                 {/* Ubicación Recepción */}
-                <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-[0_4px_20px_rgba(0,0,0,0.03)]">
-                    <div className="flex items-center gap-3 mb-6">
-                        <div className="w-2 h-8 bg-gradient-to-b from-amber-500 to-amber-600 rounded-full"></div>
-                        <h2 className="text-lg font-semibold text-slate-900">Recepción</h2>
-                        <label className="ml-auto flex items-center gap-2 cursor-pointer">
+                <div className="bg-white rounded-2xl p-3 sm:p-4 md:p-6 border border-slate-200 shadow-[0_4px_20px_rgba(0,0,0,0.03)]">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+                        <div className="flex items-center gap-2 sm:gap-3 flex-1">
+                            <div className="w-2 h-6 sm:h-8 bg-gradient-to-b from-amber-500 to-amber-600 rounded-full"></div>
+                            <h2 className="text-base sm:text-lg font-semibold text-slate-900">Recepción</h2>
+                        </div>
+                        <label className="flex items-center gap-2 cursor-pointer">
                             <input
                                 type="checkbox"
                                 name="isReceptionSameAsCeremony"
@@ -237,20 +239,20 @@ export function ContentEditor({
                                 onChange={handleChange}
                                 className="w-4 h-4 rounded border-slate-300 text-amber-500 focus:ring-2 focus:ring-amber-500/20"
                             />
-                            <span className="text-sm text-slate-600">Misma ubicación</span>
+                            <span className="text-xs sm:text-sm text-slate-600">Misma ubicación</span>
                         </label>
                     </div>
 
                     {!editForm.isReceptionSameAsCeremony ? (
-                        <div className="space-y-5">
+                        <div className="space-y-3 sm:space-y-5">
                             <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-2">Lugar</label>
+                                <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5 sm:mb-2">Lugar</label>
                                 <input
                                     type="text"
                                     name="receptionLocationName"
                                     value={editForm.receptionLocationName}
                                     onChange={handleChange}
-                                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all"
+                                    className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all text-sm"
                                 />
                             </div>
 
@@ -263,50 +265,50 @@ export function ContentEditor({
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-2">Dirección</label>
+                                <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5 sm:mb-2">Dirección</label>
                                 <input
                                     type="text"
                                     name="receptionAddress"
                                     value={editForm.receptionAddress}
                                     onChange={handleChange}
-                                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all"
+                                    className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all text-sm"
                                 />
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-2">Referencia</label>
+                                <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5 sm:mb-2">Referencia</label>
                                 <input
                                     type="text"
                                     name="receptionReference"
                                     value={editForm.receptionReference}
                                     onChange={handleChange}
                                     placeholder="Ej: Al lado del centro comercial"
-                                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all"
+                                    className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all text-sm"
                                 />
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-2">Enlace de Google Maps</label>
-                                <div className="flex gap-2">
+                                <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5 sm:mb-2">Enlace de Google Maps</label>
+                                <div className="flex flex-col sm:flex-row gap-2">
                                     <input
                                         type="text"
                                         name="receptionMapUrl"
                                         value={editForm.receptionMapUrl}
                                         onChange={handleChange}
-                                        className="flex-1 px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all"
+                                        className="flex-1 px-3 sm:px-4 py-2 sm:py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all text-sm"
                                     />
                                     {editForm.receptionMapUrl && (
                                         <a
                                             href={editForm.receptionMapUrl}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="px-4 py-3 bg-amber-500 text-white rounded-xl hover:bg-amber-600 transition-colors flex items-center gap-2 whitespace-nowrap"
+                                            className="px-2 sm:px-4 py-2 sm:py-3 bg-amber-500 text-white rounded-xl hover:bg-amber-600 transition-colors flex items-center justify-center gap-2 min-h-[40px] sm:min-h-auto text-xs sm:text-sm whitespace-nowrap"
                                         >
                                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                                             </svg>
-                                            Ver en mapa
+                                            <span className="hidden sm:inline">Ver en mapa</span>
                                         </a>
                                     )}
                                 </div>
@@ -325,58 +327,58 @@ export function ContentEditor({
                 </div>
 
                 {/* Textos Personalizados */}
-                <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-[0_4px_20px_rgba(0,0,0,0.03)] lg:col-span-2">
-                    <div className="flex items-center gap-3 mb-6">
-                        <div className="w-2 h-8 bg-gradient-to-b from-rose-500 to-rose-600 rounded-full"></div>
-                        <h2 className="text-lg font-semibold text-slate-900">Textos personalizados</h2>
+                <div className="bg-white rounded-2xl p-3 sm:p-4 md:p-6 border border-slate-200 shadow-[0_4px_20px_rgba(0,0,0,0.03)] lg:col-span-2">
+                    <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+                        <div className="w-2 h-6 sm:h-8 bg-gradient-to-b from-rose-500 to-rose-600 rounded-full"></div>
+                        <h2 className="text-base sm:text-lg font-semibold text-slate-900">Textos personalizados</h2>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6 lg:gap-8">
                         {/* Text Col */}
-                        <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div className="space-y-5">
+                        <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 md:gap-6">
+                            <div className="space-y-3 sm:space-y-5">
                                 <div>
-                                    <label className="block text-sm font-medium text-slate-700 mb-2">Versículo o poema</label>
+                                    <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5 sm:mb-2">Versículo o poema</label>
                                     <textarea
                                         name="bibleVerse"
                                         value={editForm.bibleVerse}
                                         onChange={handleChange}
                                         rows={3}
-                                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all resize-none font-elegant text-lg"
+                                        className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all resize-none font-elegant text-sm sm:text-lg"
                                     />
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-medium text-slate-700 mb-2">Referencia</label>
+                                    <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5 sm:mb-2">Referencia</label>
                                     <input
                                         type="text"
                                         name="bibleVerseBook"
                                         value={editForm.bibleVerseBook}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all"
+                                        className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all text-sm"
                                     />
                                 </div>
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-2">Mensaje de invitación</label>
+                                <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5 sm:mb-2">Mensaje de invitación</label>
                                 <textarea
                                     name="invitationText"
                                     value={editForm.invitationText}
                                     onChange={handleChange}
                                     rows={6}
-                                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all resize-none leading-relaxed"
+                                    className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all resize-none leading-relaxed text-sm"
                                     placeholder="Escribe un mensaje especial para tus invitados..."
                                 />
                             </div>
                         </div>
 
                         {/* Decoration Image Col */}
-                        <div className="lg:col-span-1 space-y-4">
+                        <div className="lg:col-span-1 space-y-3 sm:space-y-4">
                             <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-2">Imagen de decoración</label>
-                                <p className="text-[10px] text-slate-500 uppercase tracking-widest mb-3 font-semibold">Anillos, flores o ilustración</p>
-                                <div className="bg-slate-50 rounded-xl border-2 border-dashed border-slate-200 p-4">
+                                <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5 sm:mb-2">Imagen de decoración</label>
+                                <p className="text-[9px] sm:text-[10px] text-slate-500 uppercase tracking-widest mb-2 sm:mb-3 font-semibold">Anillos, flores o ilustración</p>
+                                <div className="bg-slate-50 rounded-xl border-2 border-dashed border-slate-200 p-3 sm:p-4">
                                     <AdminUploader
                                         title=""
                                         bucket="gallery"
@@ -649,7 +651,7 @@ export function ContentEditor({
             </div>
 
             {/* Fixed Save Button */}
-            <div className="fixed bottom-6 right-6 z-50">
+            <div className="fixed bottom-3 sm:bottom-6 right-3 sm:right-6 z-50">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -660,7 +662,7 @@ export function ContentEditor({
                         whileTap={{ scale: 0.98 }}
                         onClick={onSave}
                         disabled={saveStatus === 'saving'}
-                        className={`px-8 py-4 font-bold text-[10px] uppercase tracking-[0.2em] text-white transition-all flex items-center gap-3 ${saveStatus === 'saving' ? 'bg-slate-600' :
+                        className={`px-4 sm:px-8 py-2.5 sm:py-4 font-bold text-[9px] sm:text-[10px] uppercase tracking-[0.15em] sm:tracking-[0.2em] text-white transition-all flex items-center justify-center gap-2 sm:gap-3 min-h-[40px] sm:min-h-auto ${saveStatus === 'saving' ? 'bg-slate-600' :
                             saveStatus === 'success' ? 'bg-emerald-500' :
                                 saveStatus === 'error' ? 'bg-rose-500' :
                                     'bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 shadow-[0_10px_20px_-5px_rgba(0,0,0,0.3)] hover:shadow-[0_15px_30px_-5px_rgba(0,0,0,0.4)]'

@@ -62,7 +62,7 @@ export function AdminStats({ totalRsvps, totalGuests, totalNotAttending, totalMe
     ];
 
     return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4 mb-6 sm:mb-8">
             {stats.map((stat, idx) => (
                 <motion.div
                     key={stat.label}
@@ -70,23 +70,23 @@ export function AdminStats({ totalRsvps, totalGuests, totalNotAttending, totalMe
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: idx * 0.1, duration: 0.4 }}
                     whileHover={{ y: -4, transition: { duration: 0.2 } }}
-                    className={`${stat.bg} rounded-2xl p-6 border border-white shadow-[0_4px_20px_rgba(0,0,0,0.03)] group cursor-default`}
+                    className={`${stat.bg} rounded-lg sm:rounded-2xl p-3 sm:p-6 border border-white shadow-[0_4px_20px_rgba(0,0,0,0.03)] group cursor-default`}
                 >
-                    <div className="flex items-start justify-between mb-4">
-                        <div className={`p-3 rounded-xl bg-gradient-to-br ${stat.color} text-white shadow-lg`}>
-                            {stat.icon}
+                    <div className="flex items-start justify-between mb-2 sm:mb-4">
+                        <div className={`p-2 sm:p-3 rounded-lg sm:rounded-xl bg-gradient-to-br ${stat.color} text-white shadow-lg`}>
+                            <svg className="w-4 sm:w-6 h-4 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">{stat.icon.props.children}</svg>
                         </div>
-                        <div className={`text-xs font-medium ${stat.text} px-3 py-1 rounded-full bg-white/50`}>
+                        <div className={`text-[9px] sm:text-xs font-medium ${stat.text} px-2 sm:px-3 py-0.5 sm:py-1 rounded-full bg-white/50 whitespace-nowrap`}>
                             Hoy
                         </div>
                     </div>
 
                     <div>
-                        <p className="text-3xl font-semibold text-slate-900 mb-1">{stat.value}</p>
-                        <p className={`text-sm font-medium ${stat.text}`}>{stat.label}</p>
+                        <p className="text-2xl sm:text-3xl font-semibold text-slate-900 mb-1">{stat.value}</p>
+                        <p className={`text-xs sm:text-sm font-medium ${stat.text} truncate`}>{stat.label}</p>
                     </div>
 
-                    <div className="mt-4 pt-4 border-t border-white/50">
+                    <div className="mt-2 sm:mt-4 pt-2 sm:pt-4 border-t border-white/50 hidden sm:block">
                         <div className="flex items-center gap-2">
                             <div className="flex-1 h-1.5 bg-white/50 rounded-full overflow-hidden">
                                 <motion.div

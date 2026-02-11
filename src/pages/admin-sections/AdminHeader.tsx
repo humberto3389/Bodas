@@ -1,4 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useEffect } from 'react';
 
 interface AdminHeaderProps {
     clientName: string;
@@ -10,6 +11,13 @@ interface AdminHeaderProps {
 }
 
 export function AdminHeader({ clientName, planType, mobileMenuOpen, setMobileMenuOpen, logout, onUpgradeClick }: AdminHeaderProps) {
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+    useEffect(() => {
+        const handleResize = () => setIsMobile(window.innerWidth < 768);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
     return (
         <motion.header
             initial={{ y: -100, opacity: 0 }}
@@ -17,62 +25,64 @@ export function AdminHeader({ clientName, planType, mobileMenuOpen, setMobileMen
             transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
             className="bg-white/95 backdrop-blur-xl border-b border-slate-100 sticky top-0 z-50 shadow-[0_1px_20px_rgba(0,0,0,0.03)]"
         >
-            <div className="w-full px-6 py-4">
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
+            <div className="w-full px-3 sm:px-6 py-3 sm:py-4">
+                <div className="flex items-center justify-between gap-2 sm:gap-4">
+                    <div className="flex items-center gap-2 sm:gap-3 min-w-0">
                         <motion.div
                             whileHover={{ rotate: -5, scale: 1.05 }}
                             transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                            className="w-10 h-10 bg-gradient-to-br from-slate-900 to-slate-700 rounded-xl flex items-center justify-center text-white shadow-lg shadow-slate-900/10 border border-slate-900/10"
+                            className="w-8 sm:w-10 h-8 sm:h-10 bg-gradient-to-br from-slate-900 to-slate-700 rounded-xl flex items-center justify-center text-white shadow-lg shadow-slate-900/10 border border-slate-900/10 flex-shrink-0"
                         >
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-4 sm:w-5 h-4 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                             </svg>
                         </motion.div>
                         <div className="min-w-0">
-                            <h1 className="text-lg font-semibold text-slate-900 tracking-tight">
-                                {window.innerWidth < 640 ? 'Admin' : 'Panel de Control'}
+                            <h1 className="text-sm sm:text-lg font-semibold text-slate-900 tracking-tight">
+                                {isMobile ? 'Admin' : 'Panel de Control'}
                             </h1>
-                            <p className="text-[10px] text-slate-400 font-medium tracking-[0.2em] mt-0.5">
-                                EDICIÓN PREMIUM
+                            <p className="text-[8px] sm:text-[10px] text-slate-400 font-medium tracking-[0.2em] mt-0.5">
+                                PREMIUM
                             </p>
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-3">
-                        <div className="hidden md:block text-right mr-4">
-                            <p className="font-medium text-slate-700 text-sm">{clientName}</p>
-                            <div className="flex items-center gap-2 mt-1">
-                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                                <p className="text-[10px] text-slate-500 font-medium tracking-wide">
-                                    Plan {planType || 'Personalizado'}
-                                </p>
+                    <div className="flex items-center gap-2 sm:gap-3">
+                        {!isMobile && (
+                            <div className="text-right mr-2 sm:mr-4">
+                                <p className="font-medium text-slate-700 text-xs sm:text-sm">{clientName}</p>
+                                <div className="flex items-center gap-2 mt-1">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                                    <p className="text-[9px] sm:text-[10px] text-slate-500 font-medium tracking-wide">
+                                        {planType || 'Personalizado'}
+                                    </p>
+                                </div>
+                                {planType !== 'deluxe' && (
+                                    <motion.button
+                                        whileHover={{ scale: 1.05 }}
+                                        whileTap={{ scale: 0.95 }}
+                                        onClick={onUpgradeClick}
+                                        className="mt-2 text-[9px] font-bold text-rose-500 bg-rose-50 border border-rose-100 px-2 py-0.5 rounded-md hover:bg-rose-100 transition-colors uppercase tracking-wider"
+                                    >
+                                        Mejorar
+                                    </motion.button>
+                                )}
                             </div>
-                            {planType !== 'deluxe' && (
-                                <motion.button
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.95 }}
-                                    onClick={onUpgradeClick}
-                                    className="mt-2 text-[10px] font-bold text-rose-500 bg-rose-50 border border-rose-100 px-2 py-0.5 rounded-md hover:bg-rose-100 transition-colors uppercase tracking-wider"
-                                >
-                                    Mejorar Plan
-                                </motion.button>
-                            )}
-                        </div>
+                        )}
                     </div>
 
-                    <div className="hidden md:flex items-center gap-1">
+                    <div className="hidden sm:flex items-center gap-1">
                         <div className="w-px h-6 bg-slate-200"></div>
                         <motion.button
                             whileHover={{ x: 2 }}
                             whileTap={{ scale: 0.98 }}
                             onClick={logout}
-                            className="flex items-center gap-2 px-4 py-2 text-slate-600 hover:text-slate-900 transition-colors group"
+                            className="flex items-center gap-2 px-3 sm:px-4 py-2 text-slate-600 hover:text-slate-900 transition-colors group min-h-[44px] min-w-[44px]"
                         >
                             <svg className="w-4 h-4 transition-transform group-hover:-translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                             </svg>
-                            <span className="text-sm font-medium">Salir</span>
+                            <span className="text-xs sm:text-sm font-medium">Salir</span>
                         </motion.button>
                     </div>
 
