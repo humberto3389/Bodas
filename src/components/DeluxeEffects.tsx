@@ -208,8 +208,8 @@ const LiquidAurora = () => {
 };
 
 /* ==================================
-   🔦 4. GOLDEN SPOTLIGHT (Nuevo)
-   Luz seguidora del cursor
+   🔦 4. GOLDEN SPOTLIGHT (Luz Ambiental)
+   Luz seguidora del cursor con efecto de iluminación ambiental realista
 ================================== */
 const GoldenSpotlight = () => {
     const mouseX = useMotionValue(0);
@@ -230,13 +230,32 @@ const GoldenSpotlight = () => {
         };
     }, []);
 
+    // Crear múltiples capas de luz para efecto más realista
+    const spotlightCore = useMotionTemplate`radial-gradient(400px circle at ${mouseX}px ${mouseY}px, rgba(255, 248, 220, 0.15), transparent 60%)`;
+    const spotlightGlow = useMotionTemplate`radial-gradient(800px circle at ${mouseX}px ${mouseY}px, rgba(251, 191, 36, 0.08), transparent 70%)`;
+    const ambientLight = useMotionTemplate`radial-gradient(1200px circle at ${mouseX}px ${mouseY}px, rgba(255, 237, 213, 0.04), transparent 80%)`;
+
     return (
-        <motion.div
-            className="fixed inset-0 pointer-events-none z-[10]"
-            style={{
-                background: useMotionTemplate`radial-gradient(600px circle at ${mouseX}px ${mouseY}px, rgba(251, 191, 36, 0.08), transparent 80%)` // Opacidad muy sutil para no lavar el contenido
-            }}
-        />
+        <>
+            {/* Luz ambiental exterior */}
+            <motion.div
+                className="fixed inset-0 pointer-events-none"
+                style={{ background: ambientLight }}
+            />
+            {/* Resplandor medio */}
+            <motion.div
+                className="fixed inset-0 pointer-events-none"
+                style={{ background: spotlightGlow }}
+            />
+            {/* Núcleo brillante */}
+            <motion.div
+                className="fixed inset-0 pointer-events-none"
+                style={{
+                    background: spotlightCore,
+                    mixBlendMode: 'soft-light'
+                }}
+            />
+        </>
     );
 };
 
