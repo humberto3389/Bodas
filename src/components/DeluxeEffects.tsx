@@ -274,33 +274,44 @@ const CrystalParallax = () => {
 interface DeluxeEffectsProps {
     config: any;
     eventDate?: string | Date;
+    layer?: 'background' | 'foreground';
 }
 
-export const DeluxeEffects = ({ config }: DeluxeEffectsProps) => {
+export const DeluxeEffects = ({ config, layer = 'foreground' }: DeluxeEffectsProps) => {
     if (!config?.enabled) return null;
 
-    return (
-        <>
-            {/* Lluvia y Destellos */}
-            {config.particleEffects && (
-                <>
-                    <SwayingPetals />
-                    <SparklerTrail />
-                </>
-            )}
+    // Renderizar solo efectos de fondo
+    if (layer === 'background') {
+        return (
+            <>
+                {/* Fondo Vivo (Aurora) */}
+                {config.floatingElements && <LiquidAurora />}
+            </>
+        );
+    }
 
-            {/* Parallax Geométrico */}
-            {config.parallaxScrolling && (
-                <CrystalParallax />
-            )}
+    // Renderizar solo efectos de primer plano
+    if (layer === 'foreground') {
+        return (
+            <>
+                {/* Lluvia y Destellos */}
+                {config.particleEffects && (
+                    <>
+                        <SwayingPetals />
+                        <SparklerTrail />
+                    </>
+                )}
 
-            {/* Fondo Vivo, Foil y Spotlight */}
-            {config.floatingElements && (
-                <>
-                    <LiquidAurora />
-                    <GoldenSpotlight />
-                </>
-            )}
-        </>
-    );
+                {/* Parallax Geométrico */}
+                {config.parallaxScrolling && (
+                    <CrystalParallax />
+                )}
+
+                {/* Spotlight */}
+                {config.floatingElements && <GoldenSpotlight />}
+            </>
+        );
+    }
+
+    return null;
 };

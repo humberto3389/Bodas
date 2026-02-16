@@ -123,16 +123,31 @@ export default function App({ clientData: propData }: AppProps) {
   return (
     <AudioProvider>
       <div className={`relative min-h-screen bg-white selection:bg-amber-100 selection:text-amber-900 overflow-x-hidden ${hasPremiumVisuals ? 'premium-visuals-active' : ''} transition-colors duration-500`}>
-        {/* Deluxe Visual Animations - Properly layered behind content */}
+        {/* Deluxe Visual Animations - Split into background and foreground layers */}
         {planType === 'deluxe' && (
-          <div className="fixed inset-0 z-[1] pointer-events-none">
-            <Suspense fallback={null}>
-              <DeluxeEffects
-                config={client.advancedAnimations}
-                eventDate={client.weddingDate}
-              />
-            </Suspense>
-          </div>
+          <>
+            {/* Background Layer - Aurora effects behind content */}
+            <div className="fixed inset-0 z-[0] pointer-events-none">
+              <Suspense fallback={null}>
+                <DeluxeEffects
+                  config={client.advancedAnimations}
+                  eventDate={client.weddingDate}
+                  layer="background"
+                />
+              </Suspense>
+            </div>
+
+            {/* Foreground Layer - Petals and particles on top of content */}
+            <div className="fixed inset-0 z-[50] pointer-events-none">
+              <Suspense fallback={null}>
+                <DeluxeEffects
+                  config={client.advancedAnimations}
+                  eventDate={client.weddingDate}
+                  layer="foreground"
+                />
+              </Suspense>
+            </div>
+          </>
         )}
 
         {/* Partículas básicas para otros planes si se activan (fallback) - Lazy loaded */}
