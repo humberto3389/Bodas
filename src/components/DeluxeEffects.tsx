@@ -214,6 +214,7 @@ const LiquidAurora = () => {
 const GoldenSpotlight = () => {
     const mouseX = useMotionValue(0);
     const mouseY = useMotionValue(0);
+    const [sparkles, setSparkles] = useState<{ id: number; x: number; y: number; size: number; delay: number }[]>([]);
 
     useEffect(() => {
         const handleMove = (e: MouseEvent | TouchEvent) => {
@@ -221,6 +222,24 @@ const GoldenSpotlight = () => {
             const y = 'touches' in e ? e.touches[0].clientY : (e as MouseEvent).clientY;
             mouseX.set(x);
             mouseY.set(y);
+
+            // Crear destellos elegantes en la trayectoria
+            setSparkles(prev => {
+                const last = prev[prev.length - 1];
+                // Solo crear destello si el cursor se movió lo suficiente
+                if (last && Math.hypot(last.x - x, last.y - y) < 40) return prev;
+
+                // Crear 2-3 destellos por posición para efecto más rico
+                const newSparkles = Array.from({ length: Math.floor(Math.random() * 2) + 2 }).map(() => ({
+                    id: Date.now() + Math.random(),
+                    x: x + (Math.random() - 0.5) * 30, // Dispersión alrededor del cursor
+                    y: y + (Math.random() - 0.5) * 30,
+                    size: 3 + Math.random() * 5, // Tamaños variados
+                    delay: Math.random() * 0.2 // Delays aleatorios para efecto escalonado
+                }));
+
+                return [...prev.slice(-20), ...newSparkles]; // Mantener últimos 20 destellos
+            });
         };
         window.addEventListener('mousemove', handleMove);
         window.addEventListener('touchmove', handleMove);
@@ -228,6 +247,14 @@ const GoldenSpotlight = () => {
             window.removeEventListener('mousemove', handleMove);
             window.removeEventListener('touchmove', handleMove);
         };
+    }, []);
+
+    // Limpiar destellos antiguos
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setSparkles(prev => prev.slice(-15));
+        }, 100);
+        return () => clearInterval(timer);
     }, []);
 
     // Crear múltiples capas de luz para efecto más realista
@@ -255,6 +282,68 @@ const GoldenSpotlight = () => {
                     mixBlendMode: 'soft-light'
                 }}
             />
+
+            {/* Destellos de luz elegantes */}
+            <div className="fixed inset-0 pointer-events-none">
+                <AnimatePresence>
+                    {sparkles.map((sparkle) => (
+                        <motion.div
+                            key={sparkle.id}
+                            initial={{ scale: 0, opacity: 0 }}
+                            animate={{
+                                scale: [0, 1.2, 1],
+                                opacity: [0, 1, 0],
+                                rotate: [0, 180]
+                            }}
+                            exit={{ scale: 0, opacity: 0 }}
+                            transition={{
+                                duration: 1.2,
+                                delay: sparkle.delay,
+                                ease: "easeOut"
+                            }}
+                            className="absolute"
+                            style={{
+                                left: sparkle.x,
+                                top: sparkle.y,
+                                width: sparkle.size,
+                                height: sparkle.size,
+                            }}
+                        >
+                            {/* Destello tipo estrella con múltiples rayos */}
+                            <div className="relative w-full h-full">
+                                {/* Centro brillante */}
+                                <div
+                                    className="absolute inset-0 rounded-full"
+                                    style={{
+                                        background: 'radial-gradient(circle, rgba(255, 248, 220, 0.9) 0%, rgba(251, 191, 36, 0.6) 50%, transparent 100%)',
+                                        boxShadow: '0 0 8px rgba(251, 191, 36, 0.8), 0 0 12px rgba(255, 248, 220, 0.4)'
+                                    }}
+                                />
+                                {/* Rayos horizontales */}
+                                <div
+                                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+                                    style={{
+                                        width: sparkle.size * 3,
+                                        height: '1px',
+                                        background: 'linear-gradient(90deg, transparent, rgba(255, 248, 220, 0.8), transparent)',
+                                        boxShadow: '0 0 4px rgba(251, 191, 36, 0.6)'
+                                    }}
+                                />
+                                {/* Rayos verticales */}
+                                <div
+                                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+                                    style={{
+                                        width: '1px',
+                                        height: sparkle.size * 3,
+                                        background: 'linear-gradient(180deg, transparent, rgba(255, 248, 220, 0.8), transparent)',
+                                        boxShadow: '0 0 4px rgba(251, 191, 36, 0.6)'
+                                    }}
+                                />
+                            </div>
+                        </motion.div>
+                    ))}
+                </AnimatePresence>
+            </div>
         </>
     );
 };
