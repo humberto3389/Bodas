@@ -24,6 +24,7 @@ const BackgroundMusic = lazy(() => import('./pages/invitation-sections/Backgroun
 const VideoSection = lazy(() => import('./pages/invitation-sections/InvitationSections').then(m => ({ default: m.VideoSection })));
 const InvitationFooter = lazy(() => import('./pages/invitation-sections/InvitationSections').then(m => ({ default: m.InvitationFooter })));
 const PadrinosSection = lazy(() => import('./pages/invitation-sections/PadrinosSection').then(m => ({ default: m.PadrinosSection })));
+const PremiumEffects = lazy(() => import('./components/PremiumEffects').then(m => ({ default: m.PremiumEffects })));
 
 import type { ClientToken } from './lib/auth-system';
 
@@ -161,6 +162,11 @@ export default function App({ clientData: propData }: AppProps) {
 
         {/* Design System Overlays */}
         <div className="bg-noise opacity-[0.03] fixed inset-0 pointer-events-none z-[2]" />
+
+        {/* 🎨 EFECTOS PREMIUM ULTRA-VISIBLES - SIEMPRE ACTIVOS */}
+        <Suspense fallback={null}>
+          <PremiumEffects />
+        </Suspense>
 
         <HeroSection clientData={client} />
 
