@@ -24,7 +24,10 @@ const BackgroundMusic = lazy(() => import('./pages/invitation-sections/Backgroun
 const VideoSection = lazy(() => import('./pages/invitation-sections/InvitationSections').then(m => ({ default: m.VideoSection })));
 const InvitationFooter = lazy(() => import('./pages/invitation-sections/InvitationSections').then(m => ({ default: m.InvitationFooter })));
 const PadrinosSection = lazy(() => import('./pages/invitation-sections/PadrinosSection').then(m => ({ default: m.PadrinosSection })));
-const PremiumEffects = lazy(() => import('./components/PremiumEffects').then(m => ({ default: m.PremiumEffects })));
+
+// Premium Effects
+import { ScrollProgress } from './components/ScrollProgress';
+import { SmoothReveal } from './components/SmoothReveal';
 
 import type { ClientToken } from './lib/auth-system';
 
@@ -124,6 +127,9 @@ export default function App({ clientData: propData }: AppProps) {
   return (
     <AudioProvider>
       <div className={`relative min-h-screen bg-white selection:bg-amber-100 selection:text-amber-900 overflow-x-hidden ${hasPremiumVisuals ? 'premium-visuals-active' : ''} transition-colors duration-500`}>
+        {/* 📊 Scroll Progress Bar - Premium */}
+        <ScrollProgress />
+
         {/* Deluxe Visual Animations - Split into background and foreground layers */}
         {planType === 'deluxe' && (
           <>
@@ -163,16 +169,13 @@ export default function App({ clientData: propData }: AppProps) {
         {/* Design System Overlays */}
         <div className="bg-noise opacity-[0.03] fixed inset-0 pointer-events-none z-[2]" />
 
-        {/* 🎨 EFECTOS PREMIUM ULTRA-VISIBLES - SIEMPRE ACTIVOS */}
-        <Suspense fallback={null}>
-          <PremiumEffects />
-        </Suspense>
-
         <HeroSection clientData={client} />
 
         <main className="relative z-10 pb-10">
           {/* Versículo e Invitación (Todos los planes) */}
-          <VerseSection clientData={client} />
+          <SmoothReveal delay={0.2}>
+            <VerseSection clientData={client} />
+          </SmoothReveal>
 
           {/* Cuenta Regresiva (Premium+) - Lazy loaded */}
           {(planType === 'premium' || planType === 'deluxe') && (
@@ -186,7 +189,9 @@ export default function App({ clientData: propData }: AppProps) {
           )}
 
           <Suspense fallback={<div className="h-[550px]" />}>
-            <GallerySection clientData={client} images={galleryImages} />
+            <SmoothReveal delay={0.3}>
+              <GallerySection clientData={client} images={galleryImages} />
+            </SmoothReveal>
           </Suspense>
 
           <Suspense fallback={null}>
@@ -201,7 +206,9 @@ export default function App({ clientData: propData }: AppProps) {
           )}
 
           <Suspense fallback={<div className="h-96" />}>
-            <LocationSection clientData={client} />
+            <SmoothReveal delay={0.4}>
+              <LocationSection clientData={client} />
+            </SmoothReveal>
           </Suspense>
 
           <Suspense fallback={<div className="h-96" />}>

@@ -76,227 +76,235 @@ export function HeroSection({ clientData }: HeroSectionProps) {
 
     return (
         <section ref={ref} className="relative min-h-[100svh] w-full overflow-visible flex items-center justify-center bg-black py-6 sm:py-16 md:py-20">
-            {/* Media Background */}
+            {/* Media Background con Parallax Sutil */}
             <div className="absolute inset-0 z-0 overflow-hidden">
                 <motion.div
                     initial={{ scale: 1.2, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ duration: 3, ease: "easeOut" }}
                     className="h-full w-full"
+                    style={{
+                        // Parallax sutil solo en desktop
+                        y: typeof window !== 'undefined' \u0026\u0026 window.innerWidth \u003e= 1024
+                ? useTransform(useScroll().scrollY, [0, 500], [0, 150])
+                : 0
+                    }}
                 >
-                    {showVideo ? (
-                        <video
-                            ref={videoRef}
-                            autoPlay loop muted={!heroVideoAudioEnabled} playsInline
-                            preload="metadata"
-                            poster={heroBg}
-                            className="h-full w-full object-cover brightness-[0.7] contrast-[1.1]"
-                        >
-                            <source src={heroVideo} type="video/mp4" />
-                            <img
-                                src={heroBg}
-                                className="h-full w-full object-cover"
-                                alt="Boda"
-                                loading="eager"
-                                fetchPriority="high"
-                            />
-                        </video>
-                    ) : (
-                        <div
-                            className="h-full w-full bg-cover bg-center brightness-[0.7] transition-transform duration-[20s] hover:scale-110"
-                            style={{ backgroundImage: `url(${heroBg})` }}
-                        >
-                            <img
-                                src={heroBg}
-                                alt="Boda"
-                                className="hidden"
-                                loading="eager"
-                                fetchPriority="high"
-                            />
-                        </div>
-                    )}
-                </motion.div>
-                {/* Dynamic Overlays */}
-                <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/80" />
-                <div className="absolute inset-0 bg-rose-900/05 mix-blend-overlay" />
-            </div>
-
-            {/* Deluxe Animations */}
-            {planType === 'deluxe' && advancedAnimations?.enabled && (
-                <div className="absolute inset-0 z-[1] pointer-events-none">
-                    {advancedAnimations.particleEffects && (
-                        <div className="absolute inset-0">
-                            {Array.from({ length: typeof window !== 'undefined' && window.innerWidth < 640 ? 10 : 30 }).map((_, i) => (
-                                <motion.div
-                                    key={`p-${i}`}
-                                    className="absolute w-1 h-1 bg-white/40 rounded-full blur-[1px]"
-                                    style={{ left: `${Math.random() * 100}%`, top: '-5%' }}
-                                    animate={{
-                                        y: ['0vh', '105vh'],
-                                        x: [(Math.random() - 0.5) * 50, (Math.random() - 0.5) * 150],
-                                        opacity: [0, 0.8, 0],
-                                        scale: [0.5, 1.5, 0.5]
-                                    }}
-                                    transition={{
-                                        duration: Math.random() * 10 + 10,
-                                        repeat: Infinity,
-                                        delay: Math.random() * 10,
-                                        ease: "linear"
-                                    }}
-                                />
-                            ))}
-                        </div>
-                    )}
-                </div>
-            )}
-
-            {/* Content */}
-            <div className="relative z-10 text-center text-white px-4 sm:px-6 max-w-5xl w-full">
-                <motion.div
-                    initial={{ opacity: 0, y: 40 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 1.5, ease: "easeOut" }}
-                >
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: 0.5, duration: 1 }}
-                        className="inline-block mb-6 sm:mb-10"
+                {showVideo ? (
+                    <video
+                        ref={videoRef}
+                        autoPlay loop muted={!heroVideoAudioEnabled} playsInline
+                        preload="metadata"
+                        poster={heroBg}
+                        className="h-full w-full object-cover brightness-[0.7] contrast-[1.1]"
                     >
-                        <span className="px-4 sm:px-6 py-2 rounded-full bg-white/5 backdrop-blur-xl border border-white/20 text-[9px] sm:text-xs tracking-[0.3em] sm:tracking-[0.5em] font-light uppercase text-rose-100 shadow-2xl break-words">
-                            Nuestra Historia Comienza
+                        <source src={heroVideo} type="video/mp4" />
+                        <img
+                            src={heroBg}
+                            className="h-full w-full object-cover"
+                            alt="Boda"
+                            loading="eager"
+                            fetchPriority="high"
+                        />
+                    </video>
+                ) : (
+                    <div
+                        className="h-full w-full bg-cover bg-center brightness-[0.7] transition-transform duration-[20s] hover:scale-110"
+                        style={{ backgroundImage: `url(${heroBg})` }}
+                    >
+                        <img
+                            src={heroBg}
+                            alt="Boda"
+                            className="hidden"
+                            loading="eager"
+                            fetchPriority="high"
+                        />
+                    </div>
+                )}
+            </motion.div>
+            {/* Dynamic Overlays */}
+            <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/80" />
+            <div className="absolute inset-0 bg-rose-900/05 mix-blend-overlay" />
+        </div>
+
+            {/* Deluxe Animations */ }
+    {
+        planType === 'deluxe' && advancedAnimations?.enabled && (
+            <div className="absolute inset-0 z-[1] pointer-events-none">
+                {advancedAnimations.particleEffects && (
+                    <div className="absolute inset-0">
+                        {Array.from({ length: typeof window !== 'undefined' && window.innerWidth < 640 ? 10 : 30 }).map((_, i) => (
+                            <motion.div
+                                key={`p-${i}`}
+                                className="absolute w-1 h-1 bg-white/40 rounded-full blur-[1px]"
+                                style={{ left: `${Math.random() * 100}%`, top: '-5%' }}
+                                animate={{
+                                    y: ['0vh', '105vh'],
+                                    x: [(Math.random() - 0.5) * 50, (Math.random() - 0.5) * 150],
+                                    opacity: [0, 0.8, 0],
+                                    scale: [0.5, 1.5, 0.5]
+                                }}
+                                transition={{
+                                    duration: Math.random() * 10 + 10,
+                                    repeat: Infinity,
+                                    delay: Math.random() * 10,
+                                    ease: "linear"
+                                }}
+                            />
+                        ))}
+                    </div>
+                )}
+            </div>
+        )
+    }
+
+    {/* Content */ }
+    <div className="relative z-10 text-center text-white px-4 sm:px-6 max-w-5xl w-full">
+        <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1.5, ease: "easeOut" }}
+        >
+            <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.5, duration: 1 }}
+                className="inline-block mb-6 sm:mb-10"
+            >
+                <span className="px-4 sm:px-6 py-2 rounded-full bg-white/5 backdrop-blur-xl border border-white/20 text-[9px] sm:text-xs tracking-[0.3em] sm:tracking-[0.5em] font-light uppercase text-rose-100 shadow-2xl break-words">
+                    Nuestra Historia Comienza
+                </span>
+            </motion.div>
+
+            <h1 className="flex flex-col items-center gap-1 sm:gap-2 mb-8 sm:mb-12">
+                {groom || bride ? (
+                    <>
+                        <motion.span
+                            initial={{ opacity: 0, x: -30 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 0.8, duration: 1 }}
+                            className={`font-elegant text-4xl sm:text-6xl md:text-8xl lg:text-9xl tracking-tighter text-hero-premium leading-[1.1] sm:leading-tight ${foilClass}`}
+                        >
+                            {groom}
+                        </motion.span>
+                        <motion.span
+                            initial={{ opacity: 0, rotate: -45, scale: 0 }}
+                            animate={{ opacity: 1, rotate: 0, scale: 1 }}
+                            transition={{ delay: 1.2, duration: 0.8, type: "spring" }}
+                            className="font-brush text-3xl sm:text-5xl md:text-6xl text-gold drop-shadow-lg my-1 sm:my-2 italic"
+                        >
+                            &
+                        </motion.span>
+                        <motion.span
+                            initial={{ opacity: 0, x: 30 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 1.5, duration: 1 }}
+                            className={`font-elegant text-4xl sm:text-6xl md:text-8xl lg:text-9xl tracking-tighter drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)] leading-[1.1] sm:leading-tight ${foilClass}`}
+                        >
+                            {bride}
+                        </motion.span>
+                    </>
+                ) : (
+                    <span className={`font-elegant text-4xl sm:text-6xl md:text-8xl lg:text-9xl tracking-tighter text-hero-premium leading-[1.1] sm:leading-tight ${foilClass}`}>{couple}</span>
+                )}
+            </h1>
+
+            <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 2, duration: 1.2 }}
+                className="relative inline-flex flex-col items-center mb-10 sm:mb-14 px-8 sm:px-12 py-6 sm:py-8"
+            >
+                {/* Warm Spotlight Background - Subtle amber/gold glow */}
+                <div className="absolute inset-0 bg-gradient-radial from-amber-400/[0.08] via-amber-500/[0.04] to-transparent blur-[80px] rounded-full pointer-events-none scale-150" />
+                <div className="absolute inset-0 bg-gradient-radial from-rose-400/[0.05] to-transparent blur-[60px] rounded-full pointer-events-none scale-125" />
+
+                <div className="relative z-10 flex flex-col items-center gap-2 sm:gap-3">
+                    {/* Day Name */}
+                    <motion.span
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 0.7, y: 0 }}
+                        transition={{ delay: 2.2, duration: 1 }}
+                        className="text-[10px] sm:text-xs tracking-[0.5em] uppercase font-light text-rose-100 mb-1 italic"
+                    >
+                        {dayName}
+                    </motion.span>
+
+                    {/* Day Number with Gold Diagonal Shimmer */}
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 2.4, duration: 1 }}
+                        className="relative"
+                    >
+                        <span
+                            className="font-elegant text-6xl sm:text-8xl md:text-9xl tracking-tighter text-white drop-shadow-2xl relative inline-block"
+                            style={{
+                                background: 'linear-gradient(135deg, white 0%, white 30%, #f59e0b 50%, white 70%, white 100%)',
+                                backgroundSize: '200% 200%',
+                                backgroundClip: 'text',
+                                WebkitBackgroundClip: 'text',
+                                WebkitTextFillColor: 'transparent',
+                                animation: 'shimmer-gold-diagonal 4s ease-in-out infinite'
+                            }}
+                        >
+                            {dayNum}
                         </span>
                     </motion.div>
 
-                    <h1 className="flex flex-col items-center gap-1 sm:gap-2 mb-8 sm:mb-12">
-                        {groom || bride ? (
-                            <>
-                                <motion.span
-                                    initial={{ opacity: 0, x: -30 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 0.8, duration: 1 }}
-                                    className={`font-elegant text-4xl sm:text-6xl md:text-8xl lg:text-9xl tracking-tighter text-hero-premium leading-[1.1] sm:leading-tight ${foilClass}`}
-                                >
-                                    {groom}
-                                </motion.span>
-                                <motion.span
-                                    initial={{ opacity: 0, rotate: -45, scale: 0 }}
-                                    animate={{ opacity: 1, rotate: 0, scale: 1 }}
-                                    transition={{ delay: 1.2, duration: 0.8, type: "spring" }}
-                                    className="font-brush text-3xl sm:text-5xl md:text-6xl text-gold drop-shadow-lg my-1 sm:my-2 italic"
-                                >
-                                    &
-                                </motion.span>
-                                <motion.span
-                                    initial={{ opacity: 0, x: 30 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 1.5, duration: 1 }}
-                                    className={`font-elegant text-4xl sm:text-6xl md:text-8xl lg:text-9xl tracking-tighter drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)] leading-[1.1] sm:leading-tight ${foilClass}`}
-                                >
-                                    {bride}
-                                </motion.span>
-                            </>
-                        ) : (
-                            <span className={`font-elegant text-4xl sm:text-6xl md:text-8xl lg:text-9xl tracking-tighter text-hero-premium leading-[1.1] sm:leading-tight ${foilClass}`}>{couple}</span>
-                        )}
-                    </h1>
-
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: 2, duration: 1.2 }}
-                        className="relative inline-flex flex-col items-center mb-10 sm:mb-14 px-8 sm:px-12 py-6 sm:py-8"
+                    {/* Month and Year */}
+                    <motion.span
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 0.9, y: 0 }}
+                        transition={{ delay: 2.6, duration: 1 }}
+                        className="text-sm sm:text-lg md:text-xl tracking-[0.3em] font-light text-white/90 uppercase"
                     >
-                        {/* Warm Spotlight Background - Subtle amber/gold glow */}
-                        <div className="absolute inset-0 bg-gradient-radial from-amber-400/[0.08] via-amber-500/[0.04] to-transparent blur-[80px] rounded-full pointer-events-none scale-150" />
-                        <div className="absolute inset-0 bg-gradient-radial from-rose-400/[0.05] to-transparent blur-[60px] rounded-full pointer-events-none scale-125" />
+                        {monthName} <span className="opacity-30 mx-3">|</span> {displayYear}
+                    </motion.span>
+                </div>
 
-                        <div className="relative z-10 flex flex-col items-center gap-2 sm:gap-3">
-                            {/* Day Name */}
-                            <motion.span
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 0.7, y: 0 }}
-                                transition={{ delay: 2.2, duration: 1 }}
-                                className="text-[10px] sm:text-xs tracking-[0.5em] uppercase font-light text-rose-100 mb-1 italic"
-                            >
-                                {dayName}
-                            </motion.span>
-
-                            {/* Day Number with Gold Diagonal Shimmer */}
-                            <motion.div
-                                initial={{ opacity: 0, scale: 0.9 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                transition={{ delay: 2.4, duration: 1 }}
-                                className="relative"
-                            >
-                                <span
-                                    className="font-elegant text-6xl sm:text-8xl md:text-9xl tracking-tighter text-white drop-shadow-2xl relative inline-block"
-                                    style={{
-                                        background: 'linear-gradient(135deg, white 0%, white 30%, #f59e0b 50%, white 70%, white 100%)',
-                                        backgroundSize: '200% 200%',
-                                        backgroundClip: 'text',
-                                        WebkitBackgroundClip: 'text',
-                                        WebkitTextFillColor: 'transparent',
-                                        animation: 'shimmer-gold-diagonal 4s ease-in-out infinite'
-                                    }}
-                                >
-                                    {dayNum}
-                                </span>
-                            </motion.div>
-
-                            {/* Month and Year */}
-                            <motion.span
-                                initial={{ opacity: 0, y: -10 }}
-                                animate={{ opacity: 0.9, y: 0 }}
-                                transition={{ delay: 2.6, duration: 1 }}
-                                className="text-sm sm:text-lg md:text-xl tracking-[0.3em] font-light text-white/90 uppercase"
-                            >
-                                {monthName} <span className="opacity-30 mx-3">|</span> {displayYear}
-                            </motion.span>
-                        </div>
-
-                        {/* Wedding Type Badge */}
-                        <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ delay: 2.8, duration: 1 }}
-                            className="mt-6 flex items-center gap-4 opacity-60"
-                        >
-                            <div className="w-10 h-[0.5px] bg-gradient-to-r from-transparent to-white/30" />
-                            <span className="text-[9px] sm:text-xs tracking-[0.4em] font-light text-rose-100 uppercase">
-                                {clientData.weddingType || 'Boda'}
-                            </span>
-                            <div className="w-10 h-[0.5px] bg-gradient-to-l from-transparent to-white/30" />
-                        </motion.div>
-                    </motion.div>
-
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 2.5, duration: 0.8 }}
-                        className="flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-6 w-full px-4 sm:px-0"
-                    >
-                        <motion.a
-                            whileHover={{ scale: 1.05, boxShadow: "0 0 25px rgba(251, 113, 133, 0.4)" }}
-                            whileTap={{ scale: 0.95 }}
-                            href="#rsvp"
-                            className="w-full sm:w-auto px-8 sm:px-10 py-3 sm:py-4 rounded-full bg-rose-600 border border-rose-500 text-white font-bold text-[10px] sm:text-xs tracking-wide sm:tracking-widest uppercase shadow-xl transition-all hover:bg-rose-700"
-                        >
-                            Confirmar Asistencia
-                        </motion.a>
-                        <motion.a
-                            whileHover={{ scale: 1.05, backgroundColor: "rgba(255,255,255,0.2)" }}
-                            whileTap={{ scale: 0.95 }}
-                            href="#galeria"
-                            className="w-full sm:w-auto px-8 sm:px-10 py-3 sm:py-4 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 text-white font-bold text-[10px] sm:text-xs tracking-wide sm:tracking-widest uppercase hover:shadow-lg transition-all"
-                        >
-                            Nuestra Galería
-                        </motion.a>
-                    </motion.div>
+                {/* Wedding Type Badge */}
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 2.8, duration: 1 }}
+                    className="mt-6 flex items-center gap-4 opacity-60"
+                >
+                    <div className="w-10 h-[0.5px] bg-gradient-to-r from-transparent to-white/30" />
+                    <span className="text-[9px] sm:text-xs tracking-[0.4em] font-light text-rose-100 uppercase">
+                        {clientData.weddingType || 'Boda'}
+                    </span>
+                    <div className="w-10 h-[0.5px] bg-gradient-to-l from-transparent to-white/30" />
                 </motion.div>
-            </div>
+            </motion.div>
+
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 2.5, duration: 0.8 }}
+                className="flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-6 w-full px-4 sm:px-0"
+            >
+                <motion.a
+                    whileHover={{ scale: 1.05, boxShadow: "0 0 25px rgba(251, 113, 133, 0.4)" }}
+                    whileTap={{ scale: 0.95 }}
+                    href="#rsvp"
+                    className="w-full sm:w-auto px-8 sm:px-10 py-3 sm:py-4 rounded-full bg-rose-600 border border-rose-500 text-white font-bold text-[10px] sm:text-xs tracking-wide sm:tracking-widest uppercase shadow-xl transition-all hover:bg-rose-700"
+                >
+                    Confirmar Asistencia
+                </motion.a>
+                <motion.a
+                    whileHover={{ scale: 1.05, backgroundColor: "rgba(255,255,255,0.2)" }}
+                    whileTap={{ scale: 0.95 }}
+                    href="#galeria"
+                    className="w-full sm:w-auto px-8 sm:px-10 py-3 sm:py-4 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 text-white font-bold text-[10px] sm:text-xs tracking-wide sm:tracking-widest uppercase hover:shadow-lg transition-all"
+                >
+                    Nuestra Galería
+                </motion.a>
+            </motion.div>
+        </motion.div>
+    </div>
 
 
-        </section>
+        </section >
     );
 }
