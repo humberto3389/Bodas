@@ -175,7 +175,7 @@ export function HeroSection({ clientData }: HeroSectionProps) {
                                     initial={{ opacity: 0, x: -30 }}
                                     animate={{ opacity: 1, x: 0 }}
                                     transition={{ delay: 0.8, duration: 1 }}
-                                    className={`font-elegant text-4xl sm:text-6xl md:text-8xl lg:text-9xl tracking-tighter drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)] leading-[1.1] sm:leading-tight ${foilClass}`}
+                                    className={`font-elegant text-4xl sm:text-6xl md:text-8xl lg:text-9xl tracking-tighter text-hero-premium leading-[1.1] sm:leading-tight ${foilClass}`}
                                 >
                                     {groom}
                                 </motion.span>
@@ -197,7 +197,7 @@ export function HeroSection({ clientData }: HeroSectionProps) {
                                 </motion.span>
                             </>
                         ) : (
-                            <span className={`font-elegant text-4xl sm:text-6xl md:text-8xl lg:text-9xl tracking-tighter drop-shadow-2xl leading-[1.1] sm:leading-tight ${foilClass}`}>{couple}</span>
+                            <span className={`font-elegant text-4xl sm:text-6xl md:text-8xl lg:text-9xl tracking-tighter text-hero-premium leading-[1.1] sm:leading-tight ${foilClass}`}>{couple}</span>
                         )}
                     </h1>
 

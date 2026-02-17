@@ -56,21 +56,38 @@ body {
   /* amber-500 */
 }
 
-/* Tarjeta Glassmorphism Refinada (Bordes finos, sombras de cristal) */
+/* Tarjeta Glassmorphism Premium - Ultra Refinada */
 .card-luxe {
-  background: rgba(255, 255, 255, 0.94);
-  border: 1px solid rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid;
+  border-image: linear-gradient(135deg, rgba(251, 113, 133, 0.3), rgba(245, 158, 11, 0.2)) 1;
   box-shadow:
-    0 10px 15px -3px rgba(190, 24, 93, 0.05),
-    0 30px 60px -12px rgba(190, 24, 93, 0.1);
+    0 8px 32px rgba(0, 0, 0, 0.08),
+    0 2px 8px rgba(190, 24, 93, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
   border-radius: 2.5rem;
+  position: relative;
+}
+
+.card-luxe::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 2.5rem;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(251, 113, 133, 0.4), rgba(245, 158, 11, 0.3));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
 }
 
 @media (min-width: 1024px) {
   .card-luxe {
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(30px);
-    -webkit-backdrop-filter: blur(30px);
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(40px) saturate(180%);
+    -webkit-backdrop-filter: blur(40px) saturate(180%);
   }
 }
 
@@ -83,7 +100,23 @@ body {
   @apply bg-clip-text text-transparent bg-gradient-to-br from-rose-500 via-rose-600 to-amber-600 font-bold;
 }
 
-/* Botón Minimalista Sofisticado y Vibrante */
+/* Tipografía Premium con Text Shadow */
+.text-premium-shadow {
+  text-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.1),
+    0 8px 16px rgba(0, 0, 0, 0.05),
+    0 1px 2px rgba(255, 255, 255, 0.3);
+}
+
+.text-hero-premium {
+  text-shadow:
+    0 4px 8px rgba(0, 0, 0, 0.15),
+    0 12px 24px rgba(0, 0, 0, 0.1),
+    0 2px 4px rgba(255, 255, 255, 0.2);
+  letter-spacing: clamp(-0.02em, 0.5vw, 0.02em);
+}
+
+/* Botón Premium con Efecto Magnético y Gradiente Animado */
 .btn-luxe {
   position: relative;
   padding: 1rem 2.5rem;
@@ -93,25 +126,32 @@ body {
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.3em;
-  transition: all 0.5s ease-in-out;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   border: 1px solid rgba(255, 255, 255, 0.3);
   overflow: hidden;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #fb7185 0%, #f43f5e 50%, #f59e0b 100%);
-  box-shadow: 0 15px 30px -5px rgba(244, 63, 94, 0.4);
+  background: linear-gradient(135deg, #fb7185 0%, #f43f5e 25%, #ec4899 50%, #f59e0b 75%, #fbbf24 100%);
+  background-size: 200% 200%;
+  box-shadow:
+    0 15px 30px -5px rgba(244, 63, 94, 0.4),
+    0 5px 15px -3px rgba(245, 158, 11, 0.3);
   cursor: pointer;
   z-index: 1;
+  animation: gradient-shift 8s ease infinite;
 }
 
 .btn-luxe:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 20px 40px -5px rgba(244, 63, 94, 0.6);
+  transform: translateY(-3px) scale(1.02);
+  box-shadow:
+    0 20px 40px -5px rgba(244, 63, 94, 0.6),
+    0 10px 25px -5px rgba(245, 158, 11, 0.4),
+    0 0 0 4px rgba(251, 113, 133, 0.1);
 }
 
 .btn-luxe:active {
-  transform: scale(0.98);
+  transform: translateY(-1px) scale(0.98);
 }
 
 .btn-luxe::after {
@@ -126,6 +166,18 @@ body {
 
 .btn-luxe:hover::after {
   transform: translateX(100%);
+}
+
+@keyframes gradient-shift {
+
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
 }
 
 /* Container de Sección Limpio */
