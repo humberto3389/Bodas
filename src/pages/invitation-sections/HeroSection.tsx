@@ -1,4 +1,4 @@
-import { motion, useInView } from 'framer-motion';
+import { motion, useInView, useScroll, useTransform } from 'framer-motion';
 import { useRef, useEffect } from 'react';
 import { useAudioContext } from '../../contexts/AudioContext';
 import type { ClientToken } from '../../lib/auth-system';
@@ -46,6 +46,13 @@ export function HeroSection({ clientData }: HeroSectionProps) {
     const isInView = useInView(ref, { amount: 0.5 }); // 50% visible triggers logic
     const { requestFocus, releaseFocus } = useAudioContext();
 
+    // Cinematic Parallax Implementation
+    const { scrollY } = useScroll();
+    const bgY = useTransform(scrollY, [0, 500], [0, 150]);
+    // Safety check for window to avoid SSR issues if necessary, 
+    // though Framer Motion hooks are safe in Next.js/Vite typically.
+    const isDesktop = typeof window !== 'undefined' && window.innerWidth >= 1024;
+
     useEffect(() => {
         // Manage Audio Token
         if (showVideo && heroVideoAudioEnabled && isInView) {
@@ -83,6 +90,10 @@ export function HeroSection({ clientData }: HeroSectionProps) {
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ duration: 3, ease: "easeOut" }}
                     className="h-full w-full"
+                    style={{
+                        // Parallax sutil solo en desktop
+                        y: isDesktop ? bgY : 0
+                    }}
                 >
                     {showVideo ? (
                         <video

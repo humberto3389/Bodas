@@ -1,9 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import { SYSTEM_CONFIG } from '../lib/config';
 import ContactForm from '../components/ContactForm';
+import { MagneticButton } from '../components/MagneticButton';
 import { loadLandingPageContent, type LandingPageContent } from '../lib/landing-page-content';
+import { supabase } from '../lib/supabase';
 
 const WHATSAPP_NUMBER = import.meta.env.VITE_WHATSAPP_NUMBER || '51960696131';
 const WHATSAPP_MESSAGE = 'Hola! Me interesa contratar un sitio web para mi boda. Podrian brindarme mas informacion sobre los planes disponibles?';
@@ -581,20 +583,18 @@ export default function LandingPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6 }}
             >
-              <motion.a
+              <MagneticButton
                 href="#planes"
-                whileHover={{ scale: 1.05, y: -2 }}
-                whileTap={{ scale: 0.98 }}
-                className="group bg-gradient-to-r from-rose-400 to-amber-500 text-white font-semibold px-8 py-4 rounded-2xl shadow-xl shadow-rose-500/20 hover:shadow-2xl hover:shadow-rose-500/30 transition-all duration-500 relative overflow-hidden"
+                strength={0.4}
+                className="group bg-gradient-to-r from-rose-400 to-amber-500 text-white font-semibold px-8 py-4 rounded-2xl shadow-xl shadow-rose-500/20 hover:shadow-2xl hover:shadow-rose-500/30 transition-all duration-500"
               >
-                <span className="relative z-10 flex items-center space-x-2">
+                <span className="flex items-center space-x-2">
                   <span>{content?.heroButton1Text || 'Descubrir Planes'}</span>
                   <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                   </svg>
                 </span>
-                <div className="absolute inset-0 bg-gradient-to-r from-amber-500 to-rose-400 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              </motion.a>
+              </MagneticButton>
 
               <motion.button
                 onClick={handleWhatsAppClick}
