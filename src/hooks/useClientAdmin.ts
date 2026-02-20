@@ -67,6 +67,7 @@ export function useClientAdmin() {
             receptionReference: s?.receptionReference || '',
             receptionMapUrl: s?.receptionMapUrl || '',
             isReceptionSameAsCeremony: s?.isReceptionSameAsCeremony || false,
+            isCeremonySameAsReception: s?.isCeremonySameAsReception || false,
             verseImageUrl: s?.verseImageUrl || ''
         };
     });
@@ -179,6 +180,7 @@ export function useClientAdmin() {
                         receptionReference: mappedClient.receptionReference || '',
                         receptionMapUrl: mappedClient.receptionMapUrl || '',
                         isReceptionSameAsCeremony: mappedClient.isReceptionSameAsCeremony || false,
+                        isCeremonySameAsReception: mappedClient.isCeremonySameAsReception || false,
                         verseImageUrl: mappedClient.verseImageUrl || ''
                     });
                 }
@@ -236,6 +238,7 @@ export function useClientAdmin() {
                     reception_reference: editForm.receptionReference,
                     reception_map_url: editForm.receptionMapUrl,
                     is_reception_same_as_ceremony: editForm.isReceptionSameAsCeremony,
+                    is_ceremony_same_as_reception: editForm.isCeremonySameAsReception,
                     invitation_text: editForm.invitationText,
                     background_audio_url: audioUrl || null,
                     hero_background_url: (editForm.heroBackgroundUrl && (editForm.heroBackgroundUrl.includes('supabase.co') || editForm.heroBackgroundUrl.startsWith('/'))) ? editForm.heroBackgroundUrl : null,
@@ -401,7 +404,7 @@ export function useClientAdmin() {
                 .from('rsvps')
                 .delete()
                 .eq('id', rsvpId);
-            
+
             if (error) throw error;
             await fetchData(); // Reload the list
             return true;

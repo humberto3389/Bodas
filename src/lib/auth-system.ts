@@ -74,6 +74,7 @@ export interface ClientToken {
   receptionMapUrl?: string;
   receptionReference?: string;
   isReceptionSameAsCeremony?: boolean;
+  isCeremonySameAsReception?: boolean;
   expiresAt: Date; // Fecha formal de expiración de la invitación
   wedding_datetime_utc?: string; // Nuevo campo para hora precisa
   timezone?: string; // Zona horaria del evento
@@ -387,6 +388,7 @@ export function mapSupabaseClientToToken(row: any): ClientToken {
     receptionMapUrl: row.reception_map_url,
     receptionReference: row.reception_reference,
     isReceptionSameAsCeremony: row.is_reception_same_as_ceremony,
+    isCeremonySameAsReception: row.is_ceremony_same_as_reception,
     weddingType: row.wedding_type || undefined,
   };
 }

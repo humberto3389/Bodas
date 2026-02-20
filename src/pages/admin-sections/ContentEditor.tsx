@@ -43,7 +43,16 @@ export function ContentEditor({
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value, type } = e.target as any;
         const val = type === 'checkbox' ? (e.target as any).checked : value;
-        setEditForm({ ...editForm, [name]: val });
+
+        // Prevent circular references between ceremony and reception same-location toggles
+        const update: any = { ...editForm, [name]: val };
+        if (name === 'isCeremonySameAsReception' && val === true) {
+            update.isReceptionSameAsCeremony = false;
+        } else if (name === 'isReceptionSameAsCeremony' && val === true) {
+            update.isCeremonySameAsReception = false;
+        }
+
+        setEditForm(update);
     };
 
     return (
@@ -147,81 +156,104 @@ export function ContentEditor({
 
                 {/* Ubicación Ceremonia */}
                 <div className="bg-white rounded-2xl p-3 sm:p-4 md:p-6 border border-slate-200 shadow-[0_4px_20px_rgba(0,0,0,0.03)]">
-                    <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
-                        <div className="w-2 h-6 sm:h-8 bg-gradient-to-b from-violet-500 to-violet-600 rounded-full"></div>
-                        <h2 className="text-base sm:text-lg font-semibold text-slate-900">Ceremonia</h2>
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+                        <div className="flex items-center gap-2 sm:gap-3 flex-1">
+                            <div className="w-2 h-6 sm:h-8 bg-gradient-to-b from-violet-500 to-violet-600 rounded-full"></div>
+                            <h2 className="text-base sm:text-lg font-semibold text-slate-900">Ceremonia</h2>
+                        </div>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                            <input
+                                type="checkbox"
+                                name="isCeremonySameAsReception"
+                                checked={editForm.isCeremonySameAsReception}
+                                onChange={handleChange}
+                                className="w-4 h-4 rounded border-slate-300 text-violet-500 focus:ring-2 focus:ring-violet-500/20"
+                            />
+                            <span className="text-xs sm:text-sm text-slate-600">Misma ubicación</span>
+                        </label>
                     </div>
 
-                    <div className="space-y-3 sm:space-y-5">
-                        <div>
-                            <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5 sm:mb-2">Lugar</label>
-                            <input
-                                type="text"
-                                name="churchName"
-                                value={editForm.churchName}
-                                onChange={handleChange}
-                                className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 transition-all text-sm"
-                            />
-                        </div>
-
-                        <div className="md:col-span-2">
-                            <TimePicker
-                                label="Hora de la ceremonia"
-                                value={editForm.weddingTime}
-                                onChange={(val) => setEditForm({ ...editForm, weddingTime: val })}
-                            />
-                        </div>
-
-                        <div>
-                            <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5 sm:mb-2">Dirección</label>
-                            <input
-                                type="text"
-                                name="ceremonyAddress"
-                                value={editForm.ceremonyAddress}
-                                onChange={handleChange}
-                                className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 transition-all text-sm"
-                            />
-                        </div>
-
-                        <div>
-                            <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5 sm:mb-2">Referencia</label>
-                            <input
-                                type="text"
-                                name="ceremonyReference"
-                                value={editForm.ceremonyReference}
-                                onChange={handleChange}
-                                placeholder="Ej: Frente al parque central"
-                                className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 transition-all text-sm"
-                            />
-                        </div>
-
-                        <div>
-                            <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5 sm:mb-2">Enlace de Google Maps</label>
-                            <div className="flex flex-col sm:flex-row gap-2">
+                    {!editForm.isCeremonySameAsReception ? (
+                        <div className="space-y-3 sm:space-y-5">
+                            <div>
+                                <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5 sm:mb-2">Lugar</label>
                                 <input
                                     type="text"
-                                    name="ceremonyMapUrl"
-                                    value={editForm.ceremonyMapUrl}
+                                    name="churchName"
+                                    value={editForm.churchName}
                                     onChange={handleChange}
-                                    className="flex-1 px-3 sm:px-4 py-2 sm:py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 transition-all text-sm"
+                                    className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 transition-all text-sm"
                                 />
-                                {editForm.ceremonyMapUrl && (
-                                    <a
-                                        href={editForm.ceremonyMapUrl}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="px-2 sm:px-4 py-2 sm:py-3 bg-violet-500 text-white rounded-xl hover:bg-violet-600 transition-colors flex items-center justify-center gap-2 min-h-[40px] sm:min-h-auto text-xs sm:text-sm whitespace-nowrap"
-                                    >
-                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                                        </svg>
-                                        <span className="hidden sm:inline">Ver en mapa</span>
-                                    </a>
-                                )}
+                            </div>
+
+                            <div className="md:col-span-2">
+                                <TimePicker
+                                    label="Hora de la ceremonia"
+                                    value={editForm.weddingTime}
+                                    onChange={(val) => setEditForm({ ...editForm, weddingTime: val })}
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5 sm:mb-2">Dirección</label>
+                                <input
+                                    type="text"
+                                    name="ceremonyAddress"
+                                    value={editForm.ceremonyAddress}
+                                    onChange={handleChange}
+                                    className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 transition-all text-sm"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5 sm:mb-2">Referencia</label>
+                                <input
+                                    type="text"
+                                    name="ceremonyReference"
+                                    value={editForm.ceremonyReference}
+                                    onChange={handleChange}
+                                    placeholder="Ej: Frente al parque central"
+                                    className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 transition-all text-sm"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5 sm:mb-2">Enlace de Google Maps</label>
+                                <div className="flex flex-col sm:flex-row gap-2">
+                                    <input
+                                        type="text"
+                                        name="ceremonyMapUrl"
+                                        value={editForm.ceremonyMapUrl}
+                                        onChange={handleChange}
+                                        className="flex-1 px-3 sm:px-4 py-2 sm:py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 transition-all text-sm"
+                                    />
+                                    {editForm.ceremonyMapUrl && (
+                                        <a
+                                            href={editForm.ceremonyMapUrl}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="px-2 sm:px-4 py-2 sm:py-3 bg-violet-500 text-white rounded-xl hover:bg-violet-600 transition-colors flex items-center justify-center gap-2 min-h-[40px] sm:min-h-auto text-xs sm:text-sm whitespace-nowrap"
+                                        >
+                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            </svg>
+                                            <span className="hidden sm:inline">Ver en mapa</span>
+                                        </a>
+                                    )}
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    ) : (
+                        <div className="py-8 text-center">
+                            <div className="w-16 h-16 mx-auto bg-violet-50 rounded-full flex items-center justify-center text-violet-500 mb-4">
+                                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 13l4 4L19 7" />
+                                </svg>
+                            </div>
+                            <p className="text-slate-600">Usando la misma ubicación que la recepción</p>
+                        </div>
+                    )}
                 </div>
 
                 {/* Ubicación Recepción */}

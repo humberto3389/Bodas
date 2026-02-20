@@ -31,6 +31,7 @@ export function LocationSection({ clientData }: LocationSectionProps) {
         }
     ].filter(loc => {
         if (loc.type === 'Recepción' && clientData.isReceptionSameAsCeremony) return false;
+        if (loc.type === 'Ceremonia' && clientData.isCeremonySameAsReception) return false;
         return true;
     });
 
@@ -151,7 +152,7 @@ export function LocationSection({ clientData }: LocationSectionProps) {
                 </div>
 
                 {/* Same location note */}
-                {clientData.isReceptionSameAsCeremony && (
+                {(clientData.isReceptionSameAsCeremony || clientData.isCeremonySameAsReception) && (
                     <motion.div
                         initial={{ opacity: 0 }}
                         whileInView={{ opacity: 1 }}
