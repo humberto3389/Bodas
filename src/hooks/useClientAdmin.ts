@@ -68,6 +68,7 @@ export function useClientAdmin() {
             receptionMapUrl: s?.receptionMapUrl || '',
             isReceptionSameAsCeremony: s?.isReceptionSameAsCeremony || false,
             isCeremonySameAsReception: s?.isCeremonySameAsReception || false,
+            changeExplanation: s?.changeExplanation || '',
             verseImageUrl: s?.verseImageUrl || ''
         };
     });
@@ -181,6 +182,7 @@ export function useClientAdmin() {
                         receptionMapUrl: mappedClient.receptionMapUrl || '',
                         isReceptionSameAsCeremony: mappedClient.isReceptionSameAsCeremony || false,
                         isCeremonySameAsReception: mappedClient.isCeremonySameAsReception || false,
+                        changeExplanation: mappedClient.changeExplanation || '',
                         verseImageUrl: mappedClient.verseImageUrl || ''
                     });
                 }
@@ -239,6 +241,7 @@ export function useClientAdmin() {
                     reception_map_url: editForm.receptionMapUrl,
                     is_reception_same_as_ceremony: editForm.isReceptionSameAsCeremony,
                     is_ceremony_same_as_reception: editForm.isCeremonySameAsReception,
+                    change_explanation: editForm.changeExplanation,
                     invitation_text: editForm.invitationText,
                     background_audio_url: audioUrl || null,
                     hero_background_url: (editForm.heroBackgroundUrl && (editForm.heroBackgroundUrl.includes('supabase.co') || editForm.heroBackgroundUrl.startsWith('/'))) ? editForm.heroBackgroundUrl : null,

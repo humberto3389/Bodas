@@ -393,15 +393,16 @@ export function ContentEditor({
                             </div>
 
                             <div>
-                                <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5 sm:mb-2">Mensaje de invitación</label>
+                                <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5 sm:mb-2 text-rose-600">Motivo del cambio (Aviso Urgente)</label>
                                 <textarea
-                                    name="invitationText"
-                                    value={editForm.invitationText}
+                                    name="changeExplanation"
+                                    value={editForm.changeExplanation}
                                     onChange={handleChange}
-                                    rows={6}
-                                    className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all resize-none leading-relaxed text-sm"
-                                    placeholder="Escribe un mensaje especial para tus invitados..."
+                                    rows={3}
+                                    className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-rose-50/30 border border-rose-100 rounded-xl focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all resize-none leading-relaxed text-sm"
+                                    placeholder="Ej: Cambio de horario por clima, nueva ubicación del brindis..."
                                 />
+                                <p className="text-[10px] text-slate-400 mt-1">Este texto aparecerá en la alerta de cambios urgentes para tus invitados.</p>
                             </div>
                         </div>
 

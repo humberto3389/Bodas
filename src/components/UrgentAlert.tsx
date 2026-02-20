@@ -229,6 +229,12 @@ export function UrgentAlert({ client }: UrgentAlertProps) {
                   Los novios han actualizado algunos detalles que debes tener en cuenta. Por favor, revisa los cambios:
                 </p>
 
+                {client.changeExplanation && (
+                  <div className="mb-8 p-4 bg-amber-50 rounded-2xl border border-amber-100 italic text-slate-700 text-sm text-center">
+                    "{client.changeExplanation}"
+                  </div>
+                )}
+
                 <div className="space-y-4 mb-10 text-left">
                   {changes.map((change) => (
                     <div key={change.id} className="bg-rose-50/50 rounded-2xl p-4 border border-rose-100/50">
