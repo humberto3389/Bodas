@@ -127,7 +127,7 @@ export default function ClientLogin({ onLogin }: ClientLoginProps) {
       const { storeClientSession, getTabId } = await import('../lib/tab-manager');
       const tabId = getTabId();
       storeClientSession(client, tabId);
-      
+
       onLogin(client);
     } catch (err) {
       setError('Error al iniciar sesión. Intenta nuevamente.');
@@ -391,7 +391,7 @@ export default function ClientLogin({ onLogin }: ClientLoginProps) {
                   </div>
                 </div>
                 <p className="text-xs text-rose-700 mt-2">
-                  URL: https://[tu-subdominio].vercel.app
+                  URL: {window.location.origin}/invitacion/[tu-subdominio]
                 </p>
               </div>
             )}

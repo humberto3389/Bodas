@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { PLAN_LIMITS } from '../../lib/plan-limits';
+import { getClientUrl } from '../../lib/config';
 
 interface AdminStatsProps {
     totalRsvps: number;
@@ -142,7 +143,7 @@ export function AdminStats({ totalRsvps, totalGuests, totalNotAttending, totalMe
                     <div className="flex gap-2 w-full sm:w-auto">
                         <button
                             onClick={() => {
-                                const invitationUrl = `https://${client?.subdomain}.bodas-ez22.vercel.app`;
+                                const invitationUrl = getClientUrl(client?.subdomain || '');
                                 const message = `¡Hola! Tenemos un cambio de última hora en la boda. Por favor, revisa la invitación para ver los nuevos detalles de horario y lugar: ${invitationUrl}`;
                                 navigator.clipboard.writeText(message);
                                 alert('Mensaje copiado al portapapeles. Ahora puedes pegarlo en WhatsApp.');
@@ -153,7 +154,7 @@ export function AdminStats({ totalRsvps, totalGuests, totalNotAttending, totalMe
                         </button>
                         <button
                             onClick={() => {
-                                const invitationUrl = `https://${client?.subdomain}.bodas-ez22.vercel.app`;
+                                const invitationUrl = getClientUrl(client?.subdomain || '');
                                 const message = `¡Hola! Tenemos un cambio de última hora en la boda. Por favor, revisa la invitación para ver los nuevos detalles de horario y lugar: ${invitationUrl}`;
                                 window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
                             }}
