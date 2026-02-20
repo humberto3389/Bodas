@@ -34,11 +34,19 @@ export function UrgentAlert({ client }: UrgentAlertProps) {
 
     const currentData = {
       weddingTime: validateAndFormatTime(client.weddingTime),
-      weddingLocation: (client.churchName || client.ceremonyLocationName || '').trim(),
-      weddingAddress: (client.ceremonyAddress || '').trim(),
+      weddingLocation: (client.isCeremonySameAsReception
+        ? (client.receptionLocationName || '')
+        : (client.churchName || client.ceremonyLocationName || '')).trim(),
+      weddingAddress: (client.isCeremonySameAsReception
+        ? (client.receptionAddress || '')
+        : (client.ceremonyAddress || '')).trim(),
       receptionTime: validateAndFormatTime(client.receptionTime),
-      receptionLocation: (client.receptionLocationName || '').trim(),
-      receptionAddress: (client.receptionAddress || '').trim(),
+      receptionLocation: (client.isReceptionSameAsCeremony
+        ? (client.churchName || client.ceremonyLocationName || '')
+        : (client.receptionLocationName || '')).trim(),
+      receptionAddress: (client.isReceptionSameAsCeremony
+        ? (client.ceremonyAddress || '')
+        : (client.receptionAddress || '')).trim(),
       isReceptionSameAsCeremony: !!client.isReceptionSameAsCeremony,
       isCeremonySameAsReception: !!client.isCeremonySameAsReception
     };
@@ -108,13 +116,16 @@ export function UrgentAlert({ client }: UrgentAlertProps) {
     // Cambios en banderas de "Mismo Lugar"
     if (currentData.isReceptionSameAsCeremony !== seenData.isReceptionSameAsCeremony ||
       currentData.isCeremonySameAsReception !== seenData.isCeremonySameAsReception) {
-      detected.push({
-        id: 'loc-mode',
-        type: 'location',
-        event: 'General',
-        oldValue: 'Configuración de ubicación previa',
-        newValue: 'Se ha unificado la ubicación de la ceremonia y recepción'
-      });
+      // Solo disparar alerta general si no hay una más específica ya detectada
+      if (detected.length === 0) {
+        detected.push({
+          id: 'loc-mode',
+          type: 'location',
+          event: 'General',
+          oldValue: 'Configuración de ubicación previa',
+          newValue: 'Se ha unificado la ubicación de la ceremonia y recepción'
+        });
+      }
     }
 
     if (detected.length > 0) {
@@ -160,11 +171,19 @@ export function UrgentAlert({ client }: UrgentAlertProps) {
     // Al cerrar el modal, actualizamos los datos "vistos" para que no vuelva a saltar
     const currentData = {
       weddingTime: validateAndFormatTime(client.weddingTime),
-      weddingLocation: (client.churchName || client.ceremonyLocationName || '').trim(),
-      weddingAddress: (client.ceremonyAddress || '').trim(),
+      weddingLocation: (client.isCeremonySameAsReception
+        ? (client.receptionLocationName || '')
+        : (client.churchName || client.ceremonyLocationName || '')).trim(),
+      weddingAddress: (client.isCeremonySameAsReception
+        ? (client.receptionAddress || '')
+        : (client.ceremonyAddress || '')).trim(),
       receptionTime: validateAndFormatTime(client.receptionTime),
-      receptionLocation: (client.receptionLocationName || '').trim(),
-      receptionAddress: (client.receptionAddress || '').trim(),
+      receptionLocation: (client.isReceptionSameAsCeremony
+        ? (client.churchName || client.ceremonyLocationName || '')
+        : (client.receptionLocationName || '')).trim(),
+      receptionAddress: (client.isReceptionSameAsCeremony
+        ? (client.ceremonyAddress || '')
+        : (client.receptionAddress || '')).trim(),
       isReceptionSameAsCeremony: !!client.isReceptionSameAsCeremony,
       isCeremonySameAsReception: !!client.isCeremonySameAsReception
     };
