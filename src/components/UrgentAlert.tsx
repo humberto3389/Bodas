@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { formatTimeForDisplay } from '../lib/timezone-utils';
+import { formatTimeForDisplay, validateAndFormatTime } from '../lib/timezone-utils';
 
 interface UrgentAlertProps {
   client: any;
@@ -24,29 +24,33 @@ export function UrgentAlert({ client }: UrgentAlertProps) {
   const storageKey = `seen_changes_${client?.id}`;
 
   const detectChanges = useCallback(() => {
-    if (!client) return;
+    if (!client) {
+      console.log('[UrgentAlert] detectChanges ignorado: client es null');
+      return;
+    }
 
     const seenDataRaw = localStorage.getItem(storageKey);
     const seenData = seenDataRaw ? JSON.parse(seenDataRaw) : null;
 
     const currentData = {
-      weddingTime: client.weddingTime,
-      weddingLocation: client.churchName || client.ceremonyLocationName,
-      weddingAddress: client.ceremonyAddress,
-      receptionTime: client.receptionTime,
-      receptionLocation: client.receptionLocationName,
-      receptionAddress: client.receptionAddress,
-      isReceptionSameAsCeremony: client.isReceptionSameAsCeremony,
-      isCeremonySameAsReception: client.isCeremonySameAsReception
+      weddingTime: validateAndFormatTime(client.weddingTime),
+      weddingLocation: (client.churchName || client.ceremonyLocationName || '').trim(),
+      weddingAddress: (client.ceremonyAddress || '').trim(),
+      receptionTime: validateAndFormatTime(client.receptionTime),
+      receptionLocation: (client.receptionLocationName || '').trim(),
+      receptionAddress: (client.receptionAddress || '').trim(),
+      isReceptionSameAsCeremony: !!client.isReceptionSameAsCeremony,
+      isCeremonySameAsReception: !!client.isCeremonySameAsReception
     };
 
     console.log('[UrgentAlert] Detectando cambios...', {
       current: currentData,
-      seen: seenData
+      seen: seenData,
+      fullClient: client
     });
 
     if (!seenData) {
-      // Primera vez o sin datos previos, guardamos el estado actual como "visto"
+      console.log('[UrgentAlert] No hay datos previos en localStorage. Guardando estado inicial:', currentData);
       localStorage.setItem(storageKey, JSON.stringify(currentData));
       return;
     }
@@ -155,14 +159,14 @@ export function UrgentAlert({ client }: UrgentAlertProps) {
     setShowModal(false);
     // Al cerrar el modal, actualizamos los datos "vistos" para que no vuelva a saltar
     const currentData = {
-      weddingTime: client.weddingTime,
-      weddingLocation: client.churchName || client.ceremonyLocationName,
-      weddingAddress: client.ceremonyAddress,
-      receptionTime: client.receptionTime,
-      receptionLocation: client.receptionLocationName,
-      receptionAddress: client.receptionAddress,
-      isReceptionSameAsCeremony: client.isReceptionSameAsCeremony,
-      isCeremonySameAsReception: client.isCeremonySameAsReception
+      weddingTime: validateAndFormatTime(client.weddingTime),
+      weddingLocation: (client.churchName || client.ceremonyLocationName || '').trim(),
+      weddingAddress: (client.ceremonyAddress || '').trim(),
+      receptionTime: validateAndFormatTime(client.receptionTime),
+      receptionLocation: (client.receptionLocationName || '').trim(),
+      receptionAddress: (client.receptionAddress || '').trim(),
+      isReceptionSameAsCeremony: !!client.isReceptionSameAsCeremony,
+      isCeremonySameAsReception: !!client.isCeremonySameAsReception
     };
     localStorage.setItem(storageKey, JSON.stringify(currentData));
     console.log('[UrgentAlert] Cambios marcados como vistos.');

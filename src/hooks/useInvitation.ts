@@ -19,25 +19,26 @@ export function useInvitation(subdomain?: string, initialData?: ClientToken, ref
             if (!subdomain) return;
 
             setLoading(true);
-            
+
             // ✅ CRÍTICO: Limpiar cliente anterior cuando cambia el subdomain
             // Esto previene que se muestre el perfil de otro usuario al recargar
             setUrlClient(null);
-            
+
             try {
                 // ✅ SIEMPRE cargar desde el BFF para garantizar que obtenemos el cliente correcto del subdominio
                 // NO usar initialData directamente en caso de navegación entre subdomains
                 // El subdomain de la URL es la única fuente de verdad
                 const bffData = await fetchWeddingDataFromBFF(subdomain, refresh || refreshTrigger > 0);
+                console.log('[useInvitation] Datos recibidos del BFF:', bffData);
                 const mappedClient = mapClientDataFromBFF(bffData.client);
-                
+
                 // ✅ CRÍTICO: Verificar que el cliente cargado corresponde al subdomain de la URL
                 if (mappedClient.subdomain.toLowerCase() !== subdomain.toLowerCase()) {
                     setUrlClient(null);
                     setLoading(false);
                     return;
                 }
-                
+
                 setUrlClient(mappedClient);
                 setMessages(bffData.messages || []);
                 setGalleryImages(bffData.galleryImages || []);
@@ -96,12 +97,13 @@ export function useInvitation(subdomain?: string, initialData?: ClientToken, ref
                     filter: `id=eq.${currentClient.id}`
                 },
                 (payload) => {
+                    console.log('[Realtime] ¡Cambio detectado en tabla clients!', payload);
                     setRefreshTrigger(prev => prev + 1);
                 }
             )
-            .subscribe((status, err) => {
+            .subscribe((status) => {
                 if (status === 'CHANNEL_ERROR') {
-                    // No interrumpir experiencia del invitado si Realtime falla.
+                    console.error('[Realtime] Error en canal de actualizaciones');
                 }
             });
 
