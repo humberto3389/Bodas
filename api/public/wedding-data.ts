@@ -63,7 +63,7 @@ function getSupabaseClient() {
 async function getPublicPageData(subdomain: string, bypassCache: boolean = false): Promise<CachedData> {
   // ✅ SIMPLIFICADO: No usar caché en memoria
   // El caché HTTP de Vercel es suficiente y evita problemas de estado compartido
-  
+
   console.log(`[BFF] Consultando Supabase para subdomain: ${subdomain}...`);
 
   try {
@@ -197,9 +197,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   // Configurar cabeceras de caché HTTP para el cliente y la CDN de Vercel
-  // s-maxage=1: Vercel mantiene la caché solo 1 segundo para cambios rápidos
-  // stale-while-revalidate=59: Sirve versión vieja mientras actualiza nueva por casi 1 min (optimización)
-  res.setHeader('Cache-Control', 'public, s-maxage=1, stale-while-revalidate=59');
+  if (req.query?.refresh === 'true') {
+    // Si es un refresh explícito, no cachear nada para asegurar datos frescos
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0');
+  } else {
+    // s-maxage=1: Vercel mantiene la caché solo 1 segundo para cambios rápidos
+    // stale-while-revalidate=59: Sirve versión vieja mientras actualiza nueva por casi 1 min (optimización)
+    res.setHeader('Cache-Control', 'public, s-maxage=1, stale-while-revalidate=59');
+  }
 
   try {
     const bypassCache = req.query?.refresh === 'true';

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { formatTimeForDisplay } from '../lib/timezone-utils';
 
@@ -9,7 +9,7 @@ interface UrgentAlertProps {
 interface ChangeDetail {
   id: string;
   type: 'time' | 'location';
-  event: 'Ceremonia' | 'Recepción';
+  event: 'Ceremonia' | 'Recepción' | 'General';
   oldValue: string;
   newValue: string;
 }
@@ -36,8 +36,14 @@ export function UrgentAlert({ client }: UrgentAlertProps) {
       receptionTime: client.receptionTime,
       receptionLocation: client.receptionLocationName,
       receptionAddress: client.receptionAddress,
-      isReceptionSameAsCeremony: client.isReceptionSameAsCeremony
+      isReceptionSameAsCeremony: client.isReceptionSameAsCeremony,
+      isCeremonySameAsReception: client.isCeremonySameAsReception
     };
+
+    console.log('[UrgentAlert] Detectando cambios...', {
+      current: currentData,
+      seen: seenData
+    });
 
     if (!seenData) {
       // Primera vez o sin datos previos, guardamos el estado actual como "visto"
@@ -57,7 +63,7 @@ export function UrgentAlert({ client }: UrgentAlertProps) {
         newValue: formatTimeForDisplay(currentData.weddingTime)
       });
     }
-    
+
     const currentCeremonyLoc = `${currentData.weddingLocation} (${currentData.weddingAddress})`;
     const seenCeremonyLoc = `${seenData.weddingLocation} (${seenData.weddingAddress})`;
     if (currentCeremonyLoc !== seenCeremonyLoc) {
@@ -95,11 +101,24 @@ export function UrgentAlert({ client }: UrgentAlertProps) {
       }
     }
 
+    // Cambios en banderas de "Mismo Lugar"
+    if (currentData.isReceptionSameAsCeremony !== seenData.isReceptionSameAsCeremony ||
+      currentData.isCeremonySameAsReception !== seenData.isCeremonySameAsReception) {
+      detected.push({
+        id: 'loc-mode',
+        type: 'location',
+        event: 'General',
+        oldValue: 'Configuración de ubicación previa',
+        newValue: 'Se ha unificado la ubicación de la ceremonia y recepción'
+      });
+    }
+
     if (detected.length > 0) {
+      console.log('[UrgentAlert] ¡Cambios detectados!', detected);
       setChanges(detected);
       setShowModal(true);
       setShowBanner(true);
-      
+
       // Notificar si la pestaña no está en foco y no hemos notificado ya en esta sesión
       if (document.hidden && !hasNotifiedActive) {
         triggerNativeNotification();
@@ -110,7 +129,7 @@ export function UrgentAlert({ client }: UrgentAlertProps) {
 
   const triggerNativeNotification = () => {
     if (!("Notification" in window)) return;
-    
+
     if (Notification.permission === "granted") {
       new Notification("⚠️ Cambio Urgente en el Horario", {
         body: "Se han actualizado detalles importantes en la invitación. Por favor revísalos.",
@@ -119,7 +138,7 @@ export function UrgentAlert({ client }: UrgentAlertProps) {
     } else if (Notification.permission !== "denied") {
       Notification.requestPermission().then(permission => {
         if (permission === "granted") {
-            triggerNativeNotification();
+          triggerNativeNotification();
         }
       });
     }
@@ -136,15 +155,17 @@ export function UrgentAlert({ client }: UrgentAlertProps) {
     setShowModal(false);
     // Al cerrar el modal, actualizamos los datos "vistos" para que no vuelva a saltar
     const currentData = {
-        weddingTime: client.weddingTime,
-        weddingLocation: client.churchName || client.ceremonyLocationName,
-        weddingAddress: client.ceremonyAddress,
-        receptionTime: client.receptionTime,
-        receptionLocation: client.receptionLocationName,
-        receptionAddress: client.receptionAddress,
-        isReceptionSameAsCeremony: client.isReceptionSameAsCeremony
+      weddingTime: client.weddingTime,
+      weddingLocation: client.churchName || client.ceremonyLocationName,
+      weddingAddress: client.ceremonyAddress,
+      receptionTime: client.receptionTime,
+      receptionLocation: client.receptionLocationName,
+      receptionAddress: client.receptionAddress,
+      isReceptionSameAsCeremony: client.isReceptionSameAsCeremony,
+      isCeremonySameAsReception: client.isCeremonySameAsReception
     };
     localStorage.setItem(storageKey, JSON.stringify(currentData));
+    console.log('[UrgentAlert] Cambios marcados como vistos.');
   };
 
   if (changes.length === 0) return null;
@@ -164,9 +185,9 @@ export function UrgentAlert({ client }: UrgentAlertProps) {
               <span className="animate-pulse">⚠️</span>
               <span>¡Atención! Hay cambios importantes en el evento</span>
             </div>
-            <button 
-                onClick={() => setShowModal(true)}
-                className="bg-white/20 hover:bg-white/30 px-3 py-1 rounded-full text-[10px] font-bold uppercase"
+            <button
+              onClick={() => setShowModal(true)}
+              className="bg-white/20 hover:bg-white/30 px-3 py-1 rounded-full text-[10px] font-bold uppercase"
             >
               Ver Detalles
             </button>
@@ -185,7 +206,7 @@ export function UrgentAlert({ client }: UrgentAlertProps) {
               className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
               onClick={handleCloseModal}
             />
-            
+
             <motion.div
               initial={{ scale: 0.9, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
@@ -194,16 +215,16 @@ export function UrgentAlert({ client }: UrgentAlertProps) {
             >
               {/* Decoración de fondo */}
               <div className="absolute top-0 right-0 w-32 h-32 bg-rose-50 rounded-full -mr-16 -mt-16 blur-3xl opacity-50" />
-              
+
               <div className="relative text-center">
                 <div className="w-20 h-20 bg-rose-100 rounded-full flex items-center justify-center mx-auto mb-6 text-4xl shadow-inner">
                   📢
                 </div>
-                
+
                 <h2 className="font-elegant text-3xl text-slate-900 font-bold mb-4 leading-tight">
                   Aviso de Cambio Urgente
                 </h2>
-                
+
                 <p className="text-slate-500 text-sm mb-8 leading-relaxed">
                   Los novios han actualizado algunos detalles que debes tener en cuenta. Por favor, revisa los cambios:
                 </p>
@@ -217,7 +238,7 @@ export function UrgentAlert({ client }: UrgentAlertProps) {
                           {change.event}
                         </span>
                       </div>
-                      
+
                       <div className="space-y-1">
                         <div className="text-[10px] text-slate-400 font-medium">Anterior: <span className="line-through">{change.oldValue}</span></div>
                         <div className="text-sm font-bold text-slate-800">Nuevo: {change.newValue}</div>
