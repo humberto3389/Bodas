@@ -62,63 +62,108 @@ export function AdminStats({ totalRsvps, totalGuests, totalNotAttending, totalMe
     ];
 
     return (
-        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4 mb-6 sm:mb-8">
-            {stats.map((stat, idx) => (
-                <motion.div
-                    key={stat.label}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: idx * 0.1, duration: 0.4 }}
-                    whileHover={{ y: -4, transition: { duration: 0.2 } }}
-                    className={`${stat.bg} rounded-lg sm:rounded-2xl p-3 sm:p-6 border border-white shadow-[0_4px_20px_rgba(0,0,0,0.03)] group cursor-default`}
-                >
-                    <div className="flex items-start justify-between mb-2 sm:mb-4">
-                        <div className={`p-2 sm:p-3 rounded-lg sm:rounded-xl bg-gradient-to-br ${stat.color} text-white shadow-lg`}>
-                            <svg className="w-4 sm:w-6 h-4 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">{stat.icon.props.children}</svg>
-                        </div>
-                        <div className={`text-[9px] sm:text-xs font-medium ${stat.text} px-2 sm:px-3 py-0.5 sm:py-1 rounded-full bg-white/50 whitespace-nowrap`}>
-                            Hoy
-                        </div>
-                    </div>
-
-                    <div>
-                        <p className="text-2xl sm:text-3xl font-semibold text-slate-900 mb-1">{stat.value}</p>
-                        <p className={`text-xs sm:text-sm font-medium ${stat.text} truncate`}>{stat.label}</p>
-                    </div>
-
-                    <div className="mt-2 sm:mt-4 pt-2 sm:pt-4 border-t border-white/50 hidden sm:block">
-                        <div className="flex items-center gap-2">
-                            <div className="flex-1 h-1.5 bg-white/50 rounded-full overflow-hidden">
-                                <motion.div
-                                    initial={{ width: 0 }}
-                                    animate={{
-                                        width: `${(() => {
-                                            if (!client) return Math.min(stat.value * 10, 100);
-                                            const plan = (client.planType || 'basic') as 'basic' | 'premium' | 'deluxe';
-                                            const limit = stat.label === 'Invitados' ? PLAN_LIMITS[plan].guests :
-                                                stat.label === 'Mensajes' ? PLAN_LIMITS[plan].messages :
-                                                    PLAN_LIMITS[plan].rsvps;
-                                            return limit === Infinity ? 0 : Math.min((stat.value / limit) * 100, 100);
-                                        })()}%`
-                                    }}
-                                    transition={{ delay: idx * 0.1 + 0.3, duration: 0.8 }}
-                                    className={`h-full bg-gradient-to-r ${stat.color} rounded-full`}
-                                />
+        <>
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4 mb-6 sm:mb-8">
+                {stats.map((stat, idx) => (
+                    <motion.div
+                        key={stat.label}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: idx * 0.1, duration: 0.4 }}
+                        whileHover={{ y: -4, transition: { duration: 0.2 } }}
+                        className={`${stat.bg} rounded-lg sm:rounded-2xl p-3 sm:p-6 border border-white shadow-[0_4px_20px_rgba(0,0,0,0.03)] group cursor-default`}
+                    >
+                        <div className="flex items-start justify-between mb-2 sm:mb-4">
+                            <div className={`p-2 sm:p-3 rounded-lg sm:rounded-xl bg-gradient-to-br ${stat.color} text-white shadow-lg`}>
+                                <svg className="w-4 sm:w-6 h-4 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">{stat.icon.props.children}</svg>
                             </div>
-                            <span className={`text-xs font-medium ${stat.text}`}>
-                                {(() => {
-                                    if (!client) return `${Math.min(stat.value * 10, 100)}%`;
-                                    const plan = (client.planType || 'basic') as 'basic' | 'premium' | 'deluxe';
-                                    const limit = stat.label === 'Invitados' ? PLAN_LIMITS[plan].guests :
-                                        stat.label === 'Mensajes' ? PLAN_LIMITS[plan].messages :
-                                            PLAN_LIMITS[plan].rsvps;
-                                    return limit === Infinity ? '∞' : `${Math.floor(Math.min((stat.value / limit) * 100, 100))}%`;
-                                })()}
-                            </span>
+                            <div className={`text-[9px] sm:text-xs font-medium ${stat.text} px-2 sm:px-3 py-0.5 sm:py-1 rounded-full bg-white/50 whitespace-nowrap`}>
+                                Hoy
+                            </div>
+                        </div>
+
+                        <div>
+                            <p className="text-2xl sm:text-3xl font-semibold text-slate-900 mb-1">{stat.value}</p>
+                            <p className={`text-xs sm:text-sm font-medium ${stat.text} truncate`}>{stat.label}</p>
+                        </div>
+
+                        <div className="mt-2 sm:mt-4 pt-2 sm:pt-4 border-t border-white/50 hidden sm:block">
+                            <div className="flex items-center gap-2">
+                                <div className="flex-1 h-1.5 bg-white/50 rounded-full overflow-hidden">
+                                    <motion.div
+                                        initial={{ width: 0 }}
+                                        animate={{
+                                            width: `${(() => {
+                                                if (!client) return Math.min(stat.value * 10, 100);
+                                                const plan = (client.planType || 'basic') as 'basic' | 'premium' | 'deluxe';
+                                                const limit = stat.label === 'Invitados' ? PLAN_LIMITS[plan].guests :
+                                                    stat.label === 'Mensajes' ? PLAN_LIMITS[plan].messages :
+                                                        PLAN_LIMITS[plan].rsvps;
+                                                return limit === Infinity ? 0 : Math.min((stat.value / limit) * 100, 100);
+                                            })()}%`
+                                        }}
+                                        transition={{ delay: idx * 0.1 + 0.3, duration: 0.8 }}
+                                        className={`h-full bg-gradient-to-r ${stat.color} rounded-full`}
+                                    />
+                                </div>
+                                <span className={`text-xs font-medium ${stat.text}`}>
+                                    {(() => {
+                                        if (!client) return `${Math.min(stat.value * 10, 100)}%`;
+                                        const plan = (client.planType || 'basic') as 'basic' | 'premium' | 'deluxe';
+                                        const limit = stat.label === 'Invitados' ? PLAN_LIMITS[plan].guests :
+                                            stat.label === 'Mensajes' ? PLAN_LIMITS[plan].messages :
+                                                PLAN_LIMITS[plan].rsvps;
+                                        return limit === Infinity ? '∞' : `${Math.floor(Math.min((stat.value / limit) * 100, 100))}%`;
+                                    })()}
+                                </span>
+                            </div>
+                        </div>
+                    </motion.div>
+                ))}
+            </div>
+
+            {/* Herramienta de Difusión Urgente */}
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-rose-100 shadow-sm mb-8"
+            >
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 bg-rose-100 rounded-full flex items-center justify-center text-xl shadow-inner">
+                            📢
+                        </div>
+                        <div>
+                            <h3 className="font-bold text-slate-900">Difusión de Cambios</h3>
+                            <p className="text-xs text-slate-500">Genera un mensaje para avisar a tus invitados por WhatsApp</p>
                         </div>
                     </div>
-                </motion.div>
-            ))}
-        </div>
+
+                    <div className="flex gap-2 w-full sm:w-auto">
+                        <button
+                            onClick={() => {
+                                const invitationUrl = `https://${client?.subdomain}.bodas-ez22.vercel.app`;
+                                const message = `¡Hola! Tenemos un cambio de última hora en la boda. Por favor, revisa la invitación para ver los nuevos detalles de horario y lugar: ${invitationUrl}`;
+                                navigator.clipboard.writeText(message);
+                                alert('Mensaje copiado al portapapeles. Ahora puedes pegarlo en WhatsApp.');
+                            }}
+                            className="flex-1 sm:flex-none bg-rose-600 text-white px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-rose-700 transition-colors shadow-md shadow-rose-600/20"
+                        >
+                            Copiar Mensaje
+                        </button>
+                        <button
+                            onClick={() => {
+                                const invitationUrl = `https://${client?.subdomain}.bodas-ez22.vercel.app`;
+                                const message = `¡Hola! Tenemos un cambio de última hora en la boda. Por favor, revisa la invitación para ver los nuevos detalles de horario y lugar: ${invitationUrl}`;
+                                window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
+                            }}
+                            className="flex-1 sm:flex-none bg-emerald-500 text-white px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-emerald-600 transition-colors shadow-md shadow-emerald-500/20"
+                        >
+                            Enviar WhatsApp
+                        </button>
+                    </div>
+                </div>
+            </motion.div>
+        </>
     );
 }

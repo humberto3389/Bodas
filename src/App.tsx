@@ -11,6 +11,7 @@ import { AudioProvider } from './contexts/AudioContext';
 // Componentes críticos para el render inicial (cargados inmediatamente)
 import { HeroSection } from './pages/invitation-sections/HeroSection';
 import { VerseSection } from './pages/invitation-sections/VerseSection';
+import { UrgentAlert } from './components/UrgentAlert';
 
 // Componentes lazy-loaded (cargados bajo demanda)
 const Countdown = lazy(() => import('./components/Countdown').then(m => ({ default: m.Countdown })));
@@ -129,6 +130,9 @@ export default function App({ clientData: propData }: AppProps) {
       <div className={`relative min-h-screen bg-white selection:bg-amber-100 selection:text-amber-900 overflow-x-hidden ${hasPremiumVisuals ? 'premium-visuals-active' : ''} transition-colors duration-500`}>
         {/* 📊 Scroll Progress Bar - Premium */}
         <ScrollProgress />
+
+        {/* 📢 Sistema de Alertas Urgentes */}
+        <UrgentAlert client={client} />
 
         {/* Deluxe Visual Animations - Split into background and foreground layers */}
         {planType === 'deluxe' && (
