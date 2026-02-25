@@ -393,9 +393,9 @@ export function ContentEditor({
                             </div>
 
                             <div className="space-y-4">
-                                <div className="flex items-center justify-between p-4 bg-rose-50/50 border border-rose-100 rounded-2xl">
+                                <label className="flex items-center justify-between p-4 bg-rose-50/50 border border-rose-100 rounded-2xl cursor-pointer hover:bg-rose-100/50 transition-colors group">
                                     <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 bg-rose-100 text-rose-600 rounded-xl flex items-center justify-center text-xl">
+                                        <div className="w-10 h-10 bg-rose-100 text-rose-600 rounded-xl flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
                                             ⚠️
                                         </div>
                                         <div>
@@ -413,7 +413,7 @@ export function ContentEditor({
                                         />
                                         <div className="w-10 h-6 bg-slate-200 rounded-full peer peer-checked:bg-rose-600 transition-all duration-300 after:content-[''] after:absolute after:top-1 after:left-1 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-4 shadow-inner"></div>
                                     </div>
-                                </div>
+                                </label>
 
                                 <div>
                                     <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5 sm:mb-2 text-rose-600">Motivo del cambio (Opcional)</label>
