@@ -185,40 +185,47 @@ export function HeroSection({ clientData }: HeroSectionProps) {
                         </span>
                     </motion.div>
 
-                    <h1 className="flex flex-col items-center gap-1 sm:gap-2 mb-8 sm:mb-12">
+                    <div className="flex flex-col items-center gap-1 sm:gap-2 mb-8 sm:mb-12">
                         {groom || bride ? (
                             <>
-                                <motion.span
-                                    initial={{ opacity: 0, x: -30 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 0.8, duration: 1 }}
-                                    className={`font-elegant tracking-tighter text-hero-premium leading-[1.1] sm:leading-tight ${foilClass}`}
-                                    style={{ fontSize: 'var(--font-size-4xl)' }}
+                                <motion.h1
+                                    initial={{ opacity: 0, scale: 0.9 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    transition={{ delay: 1, duration: 1.5 }}
+                                    className="flex flex-col items-center"
                                 >
-                                    {groom}
-                                </motion.span>
-                                <motion.span
-                                    initial={{ opacity: 0, rotate: -45, scale: 0 }}
-                                    animate={{ opacity: 1, rotate: 0, scale: 1 }}
-                                    transition={{ delay: 1.2, duration: 0.8, type: "spring" }}
-                                    className="font-brush text-3xl sm:text-5xl md:text-6xl text-gold drop-shadow-lg my-1 sm:my-2 italic"
-                                >
-                                    &
-                                </motion.span>
-                                <motion.span
-                                    initial={{ opacity: 0, x: 30 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 1.5, duration: 1 }}
-                                    className={`font-elegant tracking-tighter drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)] leading-[1.1] sm:leading-tight ${foilClass}`}
-                                    style={{ fontSize: 'var(--font-size-4xl)' }}
-                                >
-                                    {bride}
-                                </motion.span>
+                                    <motion.span
+                                        initial={{ opacity: 0, x: -30 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        transition={{ delay: 0.8, duration: 1 }}
+                                        className={`font-elegant tracking-tighter text-hero-premium leading-[1.1] sm:leading-tight ${foilClass}`}
+                                        style={{ fontSize: 'var(--font-size-4xl)' }}
+                                    >
+                                        {groom}
+                                    </motion.span>
+                                    <motion.span
+                                        initial={{ opacity: 0, rotate: -45, scale: 0 }}
+                                        animate={{ opacity: 1, rotate: 0, scale: 1 }}
+                                        transition={{ delay: 1.2, duration: 0.8, type: "spring" }}
+                                        className="font-brush text-3xl sm:text-5xl md:text-6xl text-gold drop-shadow-lg my-1 sm:my-2 italic"
+                                    >
+                                        &
+                                    </motion.span>
+                                    <motion.span
+                                        initial={{ opacity: 0, x: 30 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        transition={{ delay: 1.5, duration: 1 }}
+                                        className={`font-elegant tracking-tighter drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)] leading-[1.1] sm:leading-tight ${foilClass}`}
+                                        style={{ fontSize: 'var(--font-size-4xl)' }}
+                                    >
+                                        {bride}
+                                    </motion.span>
+                                </motion.h1>
                             </>
                         ) : (
-                            <span className={`font-elegant text-4xl sm:text-6xl md:text-8xl lg:text-9xl tracking-tighter text-hero-premium leading-[1.1] sm:leading-tight ${foilClass}`}>{couple}</span>
+                            <h1 className={`font-elegant text-4xl sm:text-6xl md:text-8xl lg:text-9xl tracking-tighter text-hero-premium leading-[1.1] sm:leading-tight ${foilClass}`}>{couple}</h1>
                         )}
-                    </h1>
+                    </div>
 
                     <motion.div
                         initial={{ opacity: 0, scale: 0.95 }}

@@ -29,7 +29,7 @@ const PadrinosSection = lazy(() => import('./pages/invitation-sections/PadrinosS
 import { ScrollProgress } from './components/ScrollProgress';
 import { SmoothReveal } from './components/SmoothReveal';
 import { MobileAppChrome } from './components/MobileAppChrome';
-
+import { SEO_Invitation } from './components/SEO_Invitation';
 import type { ClientToken } from './lib/auth-system';
 
 interface AppProps {
@@ -73,6 +73,32 @@ export default function App({ clientData: propData }: AppProps) {
     videos,
     padrinos
   } = useInvitation(subdomain, initialData, shouldRefresh);
+
+  // ✅ SEO DINÁMICO: Actualizar título y meta tags según los datos del cliente
+  useEffect(() => {
+    if (client) {
+      const bride = client.brideName || '';
+      const groom = client.groomName || '';
+      const coupleNames = bride && groom ? `${bride} & ${groom}` : 'Nuestra Boda';
+
+      // Actualizar Título
+      document.title = `Boda de ${coupleNames} | Suspiro Nupcial`;
+
+      // Actualizar Meta Tags (OG)
+      const metaTitle = document.querySelector('meta[property="og:title"]');
+      if (metaTitle) metaTitle.setAttribute('content', `Invitación de Boda: ${coupleNames}`);
+
+      const metaDesc = document.querySelector('meta[property="og:description"]');
+      if (metaDesc) metaDesc.setAttribute('content', `Te invitamos a celebrar nuestra unión matrimonial. ¡No faltes!`);
+
+      // Si el cliente tiene una foto de hero, podríamos usarla para og:image dinámico
+      // Por ahora mantenemos la genérica o la primera de la galería
+      if (galleryImages.length > 0) {
+        const metaImage = document.querySelector('meta[property="og:image"]');
+        if (metaImage) metaImage.setAttribute('content', galleryImages[0].url);
+      }
+    }
+  }, [client, galleryImages]);
 
   if (loading) {
     return (
@@ -127,6 +153,7 @@ export default function App({ clientData: propData }: AppProps) {
 
   return (
     <AudioProvider>
+      {client && <SEO_Invitation clientData={client} />}
       <div className={`relative min-h-screen bg-transparent ${hasPremiumVisuals ? 'premium-visuals-active' : ''}`}>
         {/* 📊 Scroll Progress Bar - Premium */}
         <ScrollProgress />

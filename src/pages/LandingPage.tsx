@@ -1,11 +1,10 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { SYSTEM_CONFIG } from '../lib/config';
 import ContactForm from '../components/ContactForm';
 import { MagneticButton } from '../components/MagneticButton';
 import { loadLandingPageContent, type LandingPageContent } from '../lib/landing-page-content';
-import { supabase } from '../lib/supabase';
 
 const WHATSAPP_NUMBER = import.meta.env.VITE_WHATSAPP_NUMBER || '51960696131';
 const WHATSAPP_MESSAGE = 'Hola! Me interesa contratar un sitio web para mi boda. Podrian brindarme mas informacion sobre los planes disponibles?';
@@ -236,6 +235,8 @@ const GeometricParticle = ({ index: _index }: { index: number }) => {
   );
 };
 
+import { SEO_Landing } from '../components/SEO_Landing';
+
 export default function LandingPage() {
   const [selectedPlan] = useState<'basic' | 'premium' | 'deluxe' | null>(null);
   const [hoveredCard, setHoveredCard] = useState<number | null>(null);
@@ -320,6 +321,7 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-rose-50/20 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 relative overflow-hidden transition-colors duration-500">
+      <SEO_Landing />
       {/* Partículas de fondo */}
       <FloatingParticles mobile={isMobile} />
 
@@ -377,9 +379,9 @@ export default function LandingPage() {
                   <path d="M9 12 L15 12" stroke="white" strokeWidth="1.5" opacity="0.6" />
                 </svg>
               </div>
-              <Link to="/" className="text-2xl font-bold tracking-tight text-white">
+              <div className="text-2xl font-bold tracking-tight text-white">
                 Suspiro<span className="bg-gradient-to-r from-rose-400 to-amber-500 bg-clip-text text-transparent">Nupcial</span>
-              </Link>
+              </div>
             </motion.div>
 
             {/* Menú Desktop */}

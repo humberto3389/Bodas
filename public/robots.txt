@@ -1,0 +1,12 @@
+# robots.txt para Suspiro Nupcial
+
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /client-admin/
+Disallow: /panel/
+
+# Ayuda a que los buscadores no indexen páginas de error o login si no es necesario
+Disallow: /login
+
+Sitemap: https://suspiro-nupcial.vercel.app/sitemap.xml # Si decides generar uno luego
