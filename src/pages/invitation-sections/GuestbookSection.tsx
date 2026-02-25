@@ -29,7 +29,7 @@ export function GuestbookSection({ messages, onSendMessage }: GuestbookSectionPr
     };
 
     return (
-        <section id="snap-guestbook" className="snap-section">
+        <section id="guestbook" className="py-20 relative overflow-hidden">
             <div className="w-full relative px-0 sm:px-6">
                 <SectionTitle subtitle="Libro de Visitas">
                     Dedicatorias

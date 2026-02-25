@@ -38,7 +38,7 @@ export function LocationSection({ clientData }: LocationSectionProps) {
     return (
         <section
             id="location"
-            className="snap-section"
+            className="py-20 relative overflow-hidden"
         >
             <div className="w-full relative px-0 sm:px-6">
                 {/* Background Glow */}
@@ -59,7 +59,7 @@ export function LocationSection({ clientData }: LocationSectionProps) {
                             transition={{ delay: idx * 0.15, duration: 0.7, ease: 'easeOut' }}
                             className="relative w-full max-w-lg group"
                         >
-                            <div className="card-luxe relative h-full px-8 sm:px-10 py-16 text-center sm:rounded-[3rem] rounded-none border-x-0 sm:border-x">
+                            <div className="card-luxe relative h-full px-8 sm:px-10 py-12 text-center sm:rounded-[3rem] rounded-none border-x-0 sm:border-x">
                                 {/* Icon */}
                                 <div className="mb-10 flex justify-center">
                                     <div className="relative">

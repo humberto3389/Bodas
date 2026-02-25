@@ -85,7 +85,7 @@ export function HeroSection({ clientData }: HeroSectionProps) {
         <section
             id="hero"
             ref={ref}
-            className="relative h-[100dvh] w-full overflow-hidden flex items-center justify-center bg-black"
+            className="relative min-h-[100dvh] w-full overflow-hidden flex items-center justify-center bg-black"
         >
             {/* Media Background */}
             <div className="absolute inset-0 z-0 overflow-hidden">
