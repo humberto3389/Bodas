@@ -11,95 +11,103 @@ export function VerseSection({ clientData }: VerseSectionProps) {
     if (!bibleVerse && !invitationText) return null;
 
     return (
-        <section className="relative py-10 sm:py-20 overflow-hidden bg-white">
+        <section className="relative py-16 sm:py-32 overflow-visible bg-transparent">
             <div className="section-container relative z-10">
-                <div className="max-w-4xl mx-auto flex flex-col items-center">
-
+                <div className="max-w-4xl mx-auto flex flex-col items-center group">
                     {/* Header Ornamental */}
                     <SectionTitle subtitle="La Palabra">
                         Con Todo Nuestro Amor
                     </SectionTitle>
 
-                    {/* Decoration Image */}
-                    {clientData.verseImageUrl && (
+                    {/* Custom Image Decoration (Verse Image) */}
+                    {clientData?.verseImageUrl && (
                         <motion.div
                             initial={{ opacity: 0, scale: 0.95 }}
                             whileInView={{ opacity: 1, scale: 1 }}
                             viewport={{ once: true }}
-                            transition={{ duration: 1.5, ease: "easeOut" }}
-                            className="flex justify-center -mt-6 -mb-4 sm:-mt-10 sm:-mb-8 relative z-0 pointer-events-none select-none"
+                            className="mb-12 relative w-full max-w-lg"
                         >
-                            <div className="relative w-40 h-40 sm:w-80 sm:h-80 opacity-90 mix-blend-multiply">
-                                <img
-                                    src={clientData.verseImageUrl}
-                                    alt="Decoración"
-                                    className="w-full h-full object-contain drop-shadow-md"
-                                />
-                            </div>
+                            <div className="absolute inset-0 bg-rose-600/5 blur-2xl rounded-full scale-110" />
+                            <img
+                                src={clientData.verseImageUrl}
+                                alt="Decoración"
+                                className="relative w-full h-auto object-contain mx-auto"
+                                style={{
+                                    maskImage: 'radial-gradient(circle, black 60%, transparent 95%)',
+                                    WebkitMaskImage: 'radial-gradient(circle, black 60%, transparent 95%)'
+                                }}
+                            />
                         </motion.div>
                     )}
 
                     {/* Content Container - Editorial Style */}
-                    <div className="relative w-full max-w-2xl mx-auto text-center space-y-12 sm:space-y-16 px-4">
+                    <motion.div
+                        initial={{ opacity: 0, y: 30 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        className="card-luxe overflow-hidden w-full"
+                    >
+                        <div className="relative px-6 sm:px-12 py-16 sm:py-24 text-center space-y-12">
+                            {/* Bible Verse */}
+                            {bibleVerse && (
+                                <motion.div
+                                    initial={{ opacity: 0 }}
+                                    whileInView={{ opacity: 1 }}
+                                    viewport={{ once: true }}
+                                    transition={{ duration: 1 }}
+                                    className="space-y-6"
+                                >
+                                    <blockquote className="relative">
+                                        <p className="font-elegant leading-relaxed text-slate-800 italic tracking-wide" style={{ fontSize: 'var(--font-size-xl)' }}>
+                                            "{bibleVerse}"
+                                        </p>
+                                        {bibleVerseBook && (
+                                            <footer className="mt-6">
+                                                <cite className="not-italic text-[10px] font-black tracking-[0.4em] uppercase text-rose-500/60">
+                                                    — {bibleVerseBook} —
+                                                </cite>
+                                            </footer>
+                                        )}
+                                    </blockquote>
+                                </motion.div>
+                            )}
 
-                        {/* Bible Verse */}
-                        {bibleVerse && (
+                            {/* Divider */}
+                            <div className="flex items-center justify-center gap-4 py-2">
+                                <div className="h-[0.5px] w-12 bg-gradient-to-r from-transparent to-rose-200" />
+                                <div className="w-1.5 h-1.5 border border-rose-300 rotate-45" />
+                                <div className="h-[0.5px] w-12 bg-gradient-to-l from-transparent to-rose-200" />
+                            </div>
+
+                            {/* Invitation Text - High Impact */}
+                            {invitationText && (
+                                <motion.div
+                                    initial={{ opacity: 0 }}
+                                    whileInView={{ opacity: 1 }}
+                                    viewport={{ once: true }}
+                                    transition={{ duration: 1, delay: 0.3 }}
+                                >
+                                    <h2 className="font-elegant font-bold text-slate-950 tracking-tight leading-snug" style={{ fontSize: 'var(--font-size-2xl)' }}>
+                                        {invitationText}
+                                    </h2>
+                                </motion.div>
+                            )}
+
+                            {/* Footer Signature */}
                             <motion.div
-                                initial={{ opacity: 0, y: 20 }}
-                                whileInView={{ opacity: 1, y: 0 }}
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                whileInView={{ opacity: 1, scale: 1 }}
                                 viewport={{ once: true }}
-                                transition={{ duration: 1 }}
-                                className="space-y-6"
+                                transition={{ delay: 0.5 }}
+                                className="pt-8"
                             >
-                                {religiousSymbol && (
-                                    <div className="text-4xl sm:text-5xl text-rose-300 font-light mb-4">
-                                        {religiousSymbol}
-                                    </div>
-                                )}
-
-                                <blockquote className="relative">
-                                    <p className="text-xl sm:text-3xl font-elegant leading-relaxed text-slate-600 italic tracking-wide">
-                                        "{bibleVerse}"
-                                    </p>
-                                    {bibleVerseBook && (
-                                        <footer className="mt-6">
-                                            <cite className="not-italic text-xs sm:text-sm font-bold tracking-[0.3em] uppercase text-rose-500">
-                                                — {bibleVerseBook} —
-                                            </cite>
-                                        </footer>
-                                    )}
-                                </blockquote>
+                                <span className="text-[9px] font-black uppercase tracking-[0.5em] text-slate-400 block mb-4">Con amor</span>
+                                <div className="font-display text-rose-600 drop-shadow-sm" style={{ fontSize: 'var(--font-size-3xl)' }}>
+                                    {clientData.groomName} & {clientData.brideName}
+                                </div>
                             </motion.div>
-                        )}
-
-                        {/* Divider */}
-                        {(bibleVerse && invitationText) && (
-                            <motion.div
-                                initial={{ scaleX: 0 }}
-                                whileInView={{ scaleX: 1 }}
-                                viewport={{ once: true }}
-                                transition={{ duration: 1.5, delay: 0.5 }}
-                                className="w-24 h-px bg-rose-200 mx-auto"
-                            />
-                        )}
-
-                        {/* Invitation Text - High Impact */}
-                        {invitationText && (
-                            <motion.div
-                                initial={{ opacity: 0, y: 30 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ duration: 1, delay: 0.3 }}
-                                className="relative py-4"
-                            >
-                                <p className="text-xl sm:text-2xl font-elegant leading-relaxed text-slate-600 italic tracking-wide">
-                                    {invitationText}
-                                </p>
-
-                            </motion.div>
-                        )}
-
-                    </div>
+                        </div>
+                    </motion.div>
                 </div>
             </div>
         </section>

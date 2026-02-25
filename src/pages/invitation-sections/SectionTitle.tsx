@@ -3,10 +3,10 @@ import { motion } from 'framer-motion';
 export function SectionTitle({ children, subtitle }: { children: React.ReactNode, subtitle?: string }) {
 
     return (
-        <div className="mb-8 sm:mb-16 text-center relative">
+        <div className="mb-12 sm:mb-20 text-center relative px-4">
             {/* Halo decorativo de título sutil */}
             <div className="absolute inset-0 -z-10 flex justify-center items-center pointer-events-none">
-                <div className="w-[300px] h-[300px] bg-rose-50/50 blur-[80px] rounded-full" />
+                <div className="w-[300px] h-[300px] bg-rose-100/20 blur-[100px] rounded-full" />
             </div>
             {subtitle && (
                 <motion.span
@@ -24,9 +24,11 @@ export function SectionTitle({ children, subtitle }: { children: React.ReactNode
                     initial={{ opacity: 0, y: 10 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    className={`font-elegant text-5xl sm:text-6xl text-slate-900 pb-2 font-bold tracking-tight`}
+                    className={`font-elegant text-slate-900 pb-2 font-bold tracking-tight relative group`}
+                    style={{ fontSize: 'var(--font-size-3xl)' }}
                 >
                     {children}
+                    <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-12 h-1 bg-gradient-to-r from-rose-500 to-amber-500 rounded-full opacity-30 group-hover:w-24 transition-all duration-700" />
                 </motion.h2>
 
                 {/* Decorative Elements */}

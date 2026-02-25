@@ -43,11 +43,13 @@ export function GallerySection({ clientData, images: propImages }: GallerySectio
     if (loading || images.length === 0) return null;
 
     return (
-        <section id="galeria" className="py-10 sm:py-16 relative overflow-hidden bg-transparent">
-            <div className="section-container">
+        <section id="galeria" className="relative py-16 sm:py-32 overflow-visible bg-transparent">
+            {/* Background Decor */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-5xl aspect-square bg-rose-50/10 blur-[120px] rounded-full -z-10" />
 
-                <SectionTitle subtitle="Galería">
-                    Momentos
+            <div className="section-container relative">
+                <SectionTitle subtitle="Recuerdos">
+                    Galería de Fotos
                 </SectionTitle>
 
                 <div className="relative h-[400px] sm:h-[650px] mt-8 sm:mt-12 perspective-2000">
@@ -103,35 +105,43 @@ export function GallerySection({ clientData, images: propImages }: GallerySectio
                         </div>
                     </AnimatePresence>
 
-                    {/* Manual Navigation Controls */}
+                    {/* Navigation Controls - Modern Glassmorphism */}
                     {images.length > 1 && (
-                        <div className="absolute -bottom-12 left-1/2 -translate-x-1/2 flex items-center gap-8 w-full max-w-xs justify-center z-40">
-                            <button
+                        <div className="absolute -bottom-16 left-1/2 -translate-x-1/2 flex items-center gap-10 w-full max-w-sm justify-center z-40">
+                            <motion.button
+                                whileHover={{ scale: 1.1, x: -5 }}
+                                whileTap={{ scale: 0.9 }}
                                 onClick={prevSlide}
-                                className="p-3 rounded-full bg-white/80 hover:bg-rose-50 text-slate-400 hover:text-rose-600 transition-all shadow-sm backdrop-blur-sm"
+                                className="w-14 h-14 rounded-full bg-white/40 backdrop-blur-md border border-white/60 shadow-sm flex items-center justify-center text-slate-800 transition-all hover:bg-white/80 hover:shadow-rose-100"
                                 aria-label="Anterior"
                             >
-                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15 19l-7-7 7-7" /></svg>
-                            </button>
+                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15 19l-7-7 7-7" />
+                                </svg>
+                            </motion.button>
 
                             <div className="flex gap-2">
                                 {images.map((_, idx) => (
                                     <button
                                         key={idx}
                                         onClick={() => setCurrentIndex(idx)}
-                                        className={`transition-all duration-500 h-1 rounded-full ${currentIndex === idx ? 'w-6 bg-rose-500' : 'w-1.5 bg-rose-200'}`}
+                                        className={`transition-all duration-500 h-1 rounded-full ${currentIndex === idx ? 'w-8 bg-rose-500' : 'w-2 bg-rose-200/50'}`}
                                         aria-label={`Ir a imagen ${idx + 1}`}
                                     />
                                 ))}
                             </div>
 
-                            <button
+                            <motion.button
+                                whileHover={{ scale: 1.1, x: 5 }}
+                                whileTap={{ scale: 0.9 }}
                                 onClick={nextSlide}
-                                className="p-3 rounded-full bg-white/80 hover:bg-slate-100 text-slate-400 hover:text-slate-800 transition-all shadow-sm backdrop-blur-sm"
+                                className="w-14 h-14 rounded-full bg-white/40 backdrop-blur-md border border-white/60 shadow-sm flex items-center justify-center text-slate-800 transition-all hover:bg-white/80 hover:shadow-rose-100"
                                 aria-label="Siguiente"
                             >
-                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 5l7 7-7 7" /></svg>
-                            </button>
+                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 5l7 7-7 7" />
+                                </svg>
+                            </motion.button>
                         </div>
                     )}
                 </div>

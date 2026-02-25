@@ -34,7 +34,7 @@ export function RSVPSection({ onSubmit }: RSVPSectionProps) {
     // Validar que un nombre sea realista (no palabras vagas)
     const isValidName = (name: string): boolean => {
         const trimmed = name.trim().toLowerCase();
-        
+
         // Palabras sospechosas que NO son nombres
         const suspiciousWords = [
             'no', 'no sé', 'no se', 'nosé', 'nose',
@@ -45,17 +45,17 @@ export function RSVPSection({ onSubmit }: RSVPSectionProps) {
             '?', '...', 'x', 'xx', 'xxx',
             'test', 'prueba', 'demo', 'ejemplo'
         ];
-        
+
         // Si es exactamente una palabra sospechosa, no es válido
         if (suspiciousWords.includes(trimmed)) {
             return false;
         }
-        
+
         // Validar longitud mínima (nombre debe tener 3+ caracteres)
         if (trimmed.length < 3) {
             return false;
         }
-        
+
         // Idealmente un nombre debe tener al menos una letra seguida de espacio seguida de otra letra
         // O al menos de 5 caracteres
         const hasSpace = trimmed.includes(' ');
@@ -66,12 +66,12 @@ export function RSVPSection({ onSubmit }: RSVPSectionProps) {
                 return true;
             }
         }
-        
+
         // Si no tiene espacio pero tiene suficiente longitud, puede ser válido
         if (trimmed.length >= 5 && /^[a-záéíóúñ\s'-]+$/i.test(trimmed)) {
             return true;
         }
-        
+
         return false;
     };
 
@@ -81,13 +81,13 @@ export function RSVPSection({ onSubmit }: RSVPSectionProps) {
             .split('\n')
             .map(line => line.trim())
             .filter(line => line.length > 0);
-        
+
         const invalidNames = names.filter(name => !isValidName(name));
-        
+
         if (invalidNames.length > 0) {
             return `⚠️ Estos nombres no parecen válidos: "${invalidNames.join('", "')}". Verifica que sean nombres reales.`;
         }
-        
+
         return null;
     };
 
@@ -108,12 +108,15 @@ export function RSVPSection({ onSubmit }: RSVPSectionProps) {
     };
 
     return (
-        <section id="rsvp" className="py-10 sm:py-16 bg-transparent px-4 relative overflow-hidden">
+        <section id="rsvp" className="relative py-16 sm:py-32 overflow-visible bg-transparent px-4">
+            {/* Background Decor */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-5xl aspect-square bg-rose-50/20 blur-[120px] rounded-full -z-10" />
+
             <div className="max-w-3xl mx-auto relative z-10">
                 <SectionTitle subtitle="Confirmación">
                     Confirma tu Asistencia
                 </SectionTitle>
-                <p className="text-lg text-slate-800/60 font-light tracking-wide max-w-lg mx-auto leading-relaxed text-center mb-8">
+                <p className="font-elegant italic text-slate-500 text-center mb-12 opacity-80 decoration-rose-200 decoration-wavy underline underline-offset-8" style={{ fontSize: 'var(--font-size-lg)' }}>
                     Será un honor para nosotros contar con tu presencia en este día tan especial.
                 </p>
 
@@ -123,24 +126,24 @@ export function RSVPSection({ onSubmit }: RSVPSectionProps) {
                     viewport={{ once: true }}
                     transition={{ duration: 0.8 }}
                     onSubmit={handleSubmit(handleFormSubmit)}
-                    className="card-luxe p-8 sm:p-12 relative overflow-hidden"
+                    className="card-luxe p-8 sm:p-16 relative group"
                 >
-                    <div className="space-y-10 relative z-10">
+                    <div className="space-y-12 relative z-10">
                         {/* ¿Asistirás? */}
-                        <div className="space-y-4">
-                            <label className="block text-[10px] font-bold text-slate-900 uppercase tracking-[0.2em] text-center">¿Confirmas tu asistencia?</label>
-                            <div className="flex flex-wrap justify-center gap-4">
+                        <div className="space-y-6">
+                            <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400 text-center">¿Confirmas tu asistencia?</h3>
+                            <div className="flex flex-wrap justify-center gap-6">
                                 <button
                                     type="button"
                                     onClick={() => setValue('isAttending', true)}
-                                    className={`px-8 py-3 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all duration-300 border ${formValues.isAttending ? 'bg-rose-600 text-white border-rose-600 shadow-md' : 'bg-white text-slate-400 border-slate-100 hover:border-slate-200'}`}
+                                    className={`px-10 py-4 rounded-full text-[10px] font-black uppercase tracking-[0.4em] transition-all duration-500 border ${formValues.isAttending ? 'bg-rose-600 text-white border-rose-600 shadow-md scale-105' : 'bg-rose-50/50 text-rose-300 border-rose-100 hover:border-rose-300'}`}
                                 >
                                     ¡Sí, asistiré!
                                 </button>
                                 <button
                                     type="button"
                                     onClick={() => setValue('isAttending', false)}
-                                    className={`px-8 py-3 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all duration-300 border ${formValues.isAttending === false ? 'bg-rose-600 text-white border-rose-600 shadow-md' : 'bg-white text-slate-400 border-slate-100 hover:border-slate-200'}`}
+                                    className={`px-10 py-4 rounded-full text-[10px] font-black uppercase tracking-[0.4em] transition-all duration-500 border ${formValues.isAttending === false ? 'bg-rose-600 text-white border-rose-600 shadow-md scale-105' : 'bg-rose-50/50 text-rose-300 border-rose-100 hover:border-rose-300'}`}
                                 >
                                     No podré asistir
                                 </button>
@@ -149,41 +152,41 @@ export function RSVPSection({ onSubmit }: RSVPSectionProps) {
                         </div>
 
                         {/* Nombre */}
-                        <div className="space-y-2">
-                            <label className="block text-[10px] font-bold text-slate-900 uppercase tracking-[0.2em]">
-                                Nombre Completo <span className="text-rose-600 text-sm">*</span>
+                        <div className="space-y-4">
+                            <label className="block text-[10px] font-black uppercase tracking-[0.4em] text-slate-400 ml-4">
+                                Nombre Completo <span className="text-rose-500 text-sm">*</span>
                             </label>
                             <input
                                 {...register('name', { required: 'Por favor ingresa tu nombre' })}
                                 className="input-luxe"
                                 placeholder="Escribe tu nombre aquí"
                             />
-                            {errors.name && <p className="text-rose-500 text-[10px] font-bold mt-1 uppercase tracking-widest">{errors.name.message as string}</p>}
+                            {errors.name && <p className="text-rose-500 text-[9px] font-black mt-2 uppercase tracking-widest ml-4">{errors.name.message as string}</p>}
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                             {/* Email */}
-                            <div className="space-y-2">
-                                <label className="block text-[10px] font-bold text-slate-900 uppercase tracking-[0.2em]">Correo Electrónico <span className="text-slate-400 text-xs">(opcional)</span></label>
+                            <div className="space-y-4">
+                                <label className="block text-[10px] font-black uppercase tracking-[0.4em] text-slate-400 ml-4">Email <span className="opacity-50">(Opcional)</span></label>
                                 <input
                                     {...register('email', { pattern: { value: /^\S+@\S+$/i, message: 'Email inválido' } })}
                                     className="input-luxe"
                                     placeholder="tu@email.com"
                                 />
-                                {errors.email && <p className="text-rose-500 text-[10px] font-bold mt-1 uppercase tracking-widest">{errors.email.message as string}</p>}
+                                {errors.email && <p className="text-rose-500 text-[9px] font-black mt-2 uppercase tracking-widest ml-4">{errors.email.message as string}</p>}
                             </div>
 
                             {/* Invitados (Solo si asiste) */}
                             {formValues.isAttending && (
-                                <div className="space-y-2">
-                                    <label className="block text-[10px] font-bold text-slate-900 uppercase tracking-[0.2em]">N° de Acompañantes</label>
+                                <div className="space-y-4">
+                                    <label className="block text-[10px] font-black uppercase tracking-[0.4em] text-slate-400 ml-4">N° de Acompañantes</label>
                                     <input
                                         type="number"
                                         {...register('guests', { valueAsNumber: true, min: { value: 0, message: 'Mínimo 0' }, max: { value: 10, message: 'Máximo 10' } })}
                                         className="input-luxe"
                                         defaultValue={0}
                                     />
-                                    {errors.guests && <p className="text-rose-500 text-[10px] font-bold mt-1 uppercase tracking-widest">{errors.guests.message as string}</p>}
+                                    {errors.guests && <p className="text-rose-500 text-[9px] font-black mt-2 uppercase tracking-widest ml-4">{errors.guests.message as string}</p>}
                                 </div>
                             )}
                         </div>
@@ -270,17 +273,17 @@ export function RSVPSection({ onSubmit }: RSVPSectionProps) {
                             </motion.div>
                         )}
 
-                        <div className="pt-6 text-center">
+                        <div className="pt-10 text-center">
                             <motion.button
                                 whileHover={{ scale: 1.02 }}
                                 whileTap={{ scale: 0.98 }}
                                 type="submit"
                                 disabled={isSubmitting}
-                                className={`w-full sm:w-auto min-w-[200px] px-8 py-3 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all duration-300 border shadow-md text-white ${status === 'success' ? 'bg-rose-600 border-rose-600' : status === 'error' ? 'bg-rose-500 border-rose-500' : 'bg-rose-600 border-rose-600 hover:bg-rose-700 hover:border-rose-700'}`}
+                                className="btn-luxe w-full py-5 text-[11px]"
                             >
                                 {isSubmitting ? 'Enviando...' :
-                                    status === 'success' ? 'Confirmado' :
-                                        status === 'error' ? 'Reintentar' : 'Enviar Confirmación'}
+                                    status === 'success' ? '✓ Asistencia Registrada' :
+                                        status === 'error' ? '✖ Error - Reintentar' : 'Confirmar Asistencia'}
                             </motion.button>
                         </div>
                     </div>
@@ -292,9 +295,9 @@ export function RSVPSection({ onSubmit }: RSVPSectionProps) {
                                 initial={{ opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0 }}
-                                className={`absolute inset-x-0 bottom-0 py-3 text-center text-[10px] font-bold uppercase tracking-widest ${status === 'success' ? 'bg-rose-50 text-rose-600' : 'bg-rose-100 text-rose-700'}`}
+                                className={`absolute inset-x-0 bottom-0 py-4 text-center text-[10px] font-black uppercase tracking-[0.4em] ${status === 'success' ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'}`}
                             >
-                                {status === 'success' ? '¡Gracias! Tu asistencia ha sido registrada.' : errorMessage}
+                                {status === 'success' ? '✨ ¡Gracias! Tu asistencia ha sido registrada.' : `✖ ${errorMessage}`}
                             </motion.div>
                         )}
                     </AnimatePresence>
