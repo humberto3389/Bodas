@@ -379,7 +379,6 @@ export function ContentEditor({
                                         className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all resize-none font-elegant text-sm sm:text-lg"
                                     />
                                 </div>
-
                                 <div>
                                     <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5 sm:mb-2">Referencia</label>
                                     <input
@@ -388,6 +387,18 @@ export function ContentEditor({
                                         value={editForm.bibleVerseBook}
                                         onChange={handleChange}
                                         className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all text-sm"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5 sm:mb-2">Mensaje de invitación</label>
+                                    <textarea
+                                        name="invitationText"
+                                        value={editForm.invitationText}
+                                        onChange={handleChange}
+                                        rows={3}
+                                        className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all resize-none text-sm"
+                                        placeholder="Ej: Nos complace invitarte a..."
                                     />
                                 </div>
                             </div>
