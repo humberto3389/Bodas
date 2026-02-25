@@ -16,7 +16,7 @@ function getInitials(name: string): string {
         .join('');
 }
 
-export function PadrinosSection({ clientId, padrinos: propPadrinos }: PadrinosSectionProps) {
+export function PadrinosSection({ padrinos: propPadrinos }: Omit<PadrinosSectionProps, 'clientId'>) {
     // ✅ USAR DATOS DEL BFF si están disponibles
     const activePadrinos = propPadrinos?.filter(p => p.is_active) || [];
 
@@ -24,9 +24,8 @@ export function PadrinosSection({ clientId, padrinos: propPadrinos }: PadrinosSe
     if (activePadrinos.length === 0) return null;
 
     return (
-        <section id="padrinos" className="py-12 relative overflow-hidden">
-
-            <div className="section-container relative z-10">
+        <section id="snap-padrinos" className="snap-section">
+            <div className="w-full relative z-10 px-0 sm:px-6">
                 {/* Section Header */}
                 <SectionTitle subtitle="Corte de Honor">
                     Nuestros Padrinos
@@ -58,7 +57,7 @@ export function PadrinosSection({ clientId, padrinos: propPadrinos }: PadrinosSe
                             transition={{ delay: index * 0.15, duration: 0.7 }}
                             className="group"
                         >
-                            <div className="relative bg-white backdrop-blur-md p-10 flex flex-col items-center text-center h-full shadow-[0_15px_45px_-15px_rgba(30,27,75,0.15)] hover:shadow-[0_25px_60px_-10px_rgba(30,27,75,0.25)] transition-all duration-500 rounded-[2.5rem] border border-white/80">
+                            <div className="card-luxe relative h-full p-10 flex flex-col items-center text-center sm:rounded-[2.5rem] rounded-none border-x-0 sm:border-x">
 
                                 {/* Photo Frame */}
                                 <div className="relative mb-8">

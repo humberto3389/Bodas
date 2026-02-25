@@ -43,11 +43,8 @@ export function GallerySection({ clientData, images: propImages }: GallerySectio
     if (loading || images.length === 0) return null;
 
     return (
-        <section id="galeria" className="relative py-16 sm:py-32 overflow-visible bg-transparent">
-            {/* Background Decor */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-5xl aspect-square bg-rose-50/10 blur-[120px] rounded-full -z-10" />
-
-            <div className="section-container relative">
+        <section id="snap-gallery" className="snap-section">
+            <div className="w-full relative px-0 sm:px-6">
                 <SectionTitle subtitle="Recuerdos">
                     Galería de Fotos
                 </SectionTitle>

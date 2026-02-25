@@ -2,7 +2,6 @@
 import { useParams } from 'react-router-dom';
 import { useClientAuth } from './contexts/ClientAuthContext';
 import { LoadingSpinner } from './components/LoadingSpinner';
-import { ToastContainer } from './components/Toast';
 import { useToast } from './hooks/useToast';
 import { useInvitation } from './hooks/useInvitation';
 import { useState, useEffect, Suspense, lazy } from 'react';
@@ -29,6 +28,7 @@ const PadrinosSection = lazy(() => import('./pages/invitation-sections/PadrinosS
 // Premium Effects
 import { ScrollProgress } from './components/ScrollProgress';
 import { SmoothReveal } from './components/SmoothReveal';
+import { MobileAppChrome } from './components/MobileAppChrome';
 
 import type { ClientToken } from './lib/auth-system';
 
@@ -127,17 +127,19 @@ export default function App({ clientData: propData }: AppProps) {
 
   return (
     <AudioProvider>
-      <div className={`relative min-h-screen bg-white selection:bg-amber-100 selection:text-amber-900 overflow-x-hidden ${hasPremiumVisuals ? 'premium-visuals-active' : ''} transition-colors duration-500`}>
+      <div className={`relative h-screen bg-transparent overflow-hidden ${hasPremiumVisuals ? 'premium-visuals-active' : ''}`}>
         {/* 📊 Scroll Progress Bar - Premium */}
         <ScrollProgress />
 
         {/* 📢 Sistema de Alertas Urgentes */}
         <UrgentAlert client={client} />
 
-        {/* Deluxe Visual Animations - Split into background and foreground layers */}
+        {/* Dynamic App Chrome (Meta/Theme Color) */}
+        <MobileAppChrome />
+
+        {/* Deluxe Visual Animations */}
         {planType === 'deluxe' && (
           <>
-            {/* Background Layer - Aurora effects behind content */}
             <div className="fixed inset-0 z-[0] pointer-events-none">
               <Suspense fallback={null}>
                 <DeluxeEffects
@@ -147,8 +149,6 @@ export default function App({ clientData: propData }: AppProps) {
                 />
               </Suspense>
             </div>
-
-            {/* Foreground Layer - Petals and particles on top of content */}
             <div className="fixed inset-0 z-[50] pointer-events-none">
               <Suspense fallback={null}>
                 <DeluxeEffects
@@ -161,7 +161,7 @@ export default function App({ clientData: propData }: AppProps) {
           </>
         )}
 
-        {/* Partículas básicas para otros planes si se activan (fallback) - Lazy loaded */}
+        {/* Partículas básicas */}
         {planType !== 'deluxe' && client.advancedAnimations?.enabled && (
           <div className="fixed inset-0 z-[1] pointer-events-none">
             <Suspense fallback={null}>
@@ -173,69 +173,97 @@ export default function App({ clientData: propData }: AppProps) {
         {/* Design System Overlays */}
         <div className="bg-noise opacity-[0.03] fixed inset-0 pointer-events-none z-[2]" />
 
-        <HeroSection clientData={client} />
+        {/* APP-LIKE SNAP CONTAINER */}
+        <div className="app-snap-container">
+          <section className="snap-section">
+            <HeroSection clientData={client} />
+          </section>
 
-        <main className="relative z-10 pb-10">
-          {/* Versículo e Invitación (Todos los planes) */}
-          <SmoothReveal delay={0.2}>
-            <VerseSection clientData={client} />
-          </SmoothReveal>
-
-          {/* Cuenta Regresiva (Premium+) - Lazy loaded */}
-          {(planType === 'premium' || planType === 'deluxe') && (
-            <section id="cuenta-regresiva" className="py-6 relative">
-              <div className="max-w-7xl mx-auto px-4">
-                <Suspense fallback={<div className="h-32" />}>
-                  <Countdown date={client.weddingDate} time={client.weddingTime} clientData={client} />
-                </Suspense>
-              </div>
+          <main className="relative z-10 box-border">
+            {/* Versículo e Invitación */}
+            <section id="snap-verse" className="snap-section">
+              <SmoothReveal delay={0.2}>
+                <VerseSection clientData={client} />
+              </SmoothReveal>
             </section>
-          )}
 
-          <Suspense fallback={<div className="h-[550px]" />}>
-            <SmoothReveal delay={0.3}>
-              <GallerySection clientData={client} images={galleryImages} />
-            </SmoothReveal>
-          </Suspense>
+            {/* Cuenta Regresiva */}
+            {(planType === 'premium' || planType === 'deluxe') && (
+              <section id="snap-countdown" className="snap-section">
+                <div className="max-w-7xl mx-auto px-4">
+                  <Suspense fallback={<div className="h-32" />}>
+                    <Countdown date={client.weddingDate} time={client.weddingTime} clientData={client} />
+                  </Suspense>
+                </div>
+              </section>
+            )}
 
-          <Suspense fallback={null}>
-            <VideoSection clientData={client} videos={videos} />
-          </Suspense>
+            {/* Galería */}
+            <section id="snap-gallery" className="snap-section">
+              <Suspense fallback={<div className="h-96" />}>
+                <SmoothReveal delay={0.3}>
+                  <GallerySection clientData={client} images={galleryImages} />
+                </SmoothReveal>
+              </Suspense>
+            </section>
 
-          {/* Padrinos (Premium+) - Lazy loaded */}
-          {(planType === 'premium' || planType === 'deluxe') && client?.id && (
-            <Suspense fallback={null}>
-              <PadrinosSection clientId={client.id} padrinos={padrinos} />
-            </Suspense>
-          )}
+            {/* Video */}
+            {videos && videos.length > 0 && (
+              <section id="snap-video" className="snap-section">
+                <Suspense fallback={<div className="h-96" />}>
+                  <VideoSection clientData={client} videos={videos} />
+                </Suspense>
+              </section>
+            )}
 
-          <Suspense fallback={<div className="h-96" />}>
-            <SmoothReveal delay={0.4}>
-              <LocationSection clientData={client} />
-            </SmoothReveal>
-          </Suspense>
+            {/* Padrinos */}
+            {(planType === 'premium' || planType === 'deluxe') && client?.id && padrinos && padrinos.length > 0 && (
+              <section id="snap-padrinos" className="snap-section">
+                <Suspense fallback={<div className="h-96" />}>
+                  <PadrinosSection padrinos={padrinos} />
+                </Suspense>
+              </section>
+            )}
 
-          <Suspense fallback={<div className="h-96" />}>
-            <RSVPSection onSubmit={submitRSVP} />
-          </Suspense>
+            {/* Ubicación */}
+            <section id="snap-location" className="snap-section">
+              <Suspense fallback={<div className="h-96" />}>
+                <SmoothReveal delay={0.4}>
+                  <LocationSection clientData={client} />
+                </SmoothReveal>
+              </Suspense>
+            </section>
 
-          <Suspense fallback={<div className="h-96" />}>
-            <GuestbookSection messages={messages} onSendMessage={submitMessage} />
-          </Suspense>
-        </main>
+            {/* RSVP */}
+            <section id="snap-rsvp" className="snap-section">
+              <Suspense fallback={<div className="h-96" />}>
+                <RSVPSection onSubmit={submitRSVP} />
+              </Suspense>
+            </section>
 
-        <Suspense fallback={null}>
-          <InvitationFooter clientData={client} />
-        </Suspense>
+            {/* Guestbook */}
+            <section id="snap-guestbook" className="snap-section">
+              <Suspense fallback={<div className="h-96" />}>
+                <GuestbookSection messages={messages} onSendMessage={submitMessage} />
+              </Suspense>
+            </section>
 
-        {/* Música de Fondo - Lazy loaded */}
+            {/* Footer */}
+            <section id="snap-footer" className="snap-section">
+              <Suspense fallback={null}>
+                <InvitationFooter clientData={client} />
+              </Suspense>
+            </section>
+          </main>
+        </div>
+
+        {/* Música de Fondo */}
         {bgAudioSrc && (
           <Suspense fallback={null}>
             <BackgroundMusic src={bgAudioSrc} />
           </Suspense>
         )}
 
-        <ToastContainer toasts={toasts} onClose={removeToast} />
       </div>
     </AudioProvider>
   );

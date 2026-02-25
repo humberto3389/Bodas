@@ -29,8 +29,8 @@ export function GuestbookSection({ messages, onSendMessage }: GuestbookSectionPr
     };
 
     return (
-        <section id="muro" className="py-10 sm:py-16 bg-transparent px-4 relative overflow-hidden">
-            <div className="section-container">
+        <section id="snap-guestbook" className="snap-section">
+            <div className="w-full relative px-0 sm:px-6">
                 <SectionTitle subtitle="Libro de Visitas">
                     Dedicatorias
                 </SectionTitle>
@@ -45,7 +45,7 @@ export function GuestbookSection({ messages, onSendMessage }: GuestbookSectionPr
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     onSubmit={handleSubmit}
-                    className="card-luxe p-8 sm:p-12 mb-10 max-w-3xl mx-auto"
+                    className="card-luxe p-8 sm:p-12 mb-10 max-w-3xl mx-auto sm:rounded-[2rem] rounded-none border-x-0 sm:border-x"
                 >
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-10 mb-10">
                         <div className="space-y-2">

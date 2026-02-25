@@ -82,7 +82,11 @@ export function HeroSection({ clientData }: HeroSectionProps) {
     }, [showVideo, heroVideoAudioEnabled, isInView, requestFocus, releaseFocus]);
 
     return (
-        <section ref={ref} className="relative min-h-[100svh] w-full overflow-visible flex items-center justify-center bg-black py-6 sm:py-16 md:py-20">
+        <section
+            id="hero"
+            ref={ref}
+            className="relative h-[100dvh] w-full overflow-hidden flex items-center justify-center bg-black"
+        >
             {/* Media Background */}
             <div className="absolute inset-0 z-0 overflow-hidden">
                 <motion.div

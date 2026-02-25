@@ -79,8 +79,8 @@ export function VideoSection({ clientData, videos: propVideos }: { clientData: a
     if (videos.length === 0 || clientData.planType !== 'deluxe') return null;
 
     return (
-        <section ref={ref} id="videos" className="py-10 sm:py-16 relative overflow-hidden bg-transparent">
-            <div className="section-container">
+        <section ref={ref} id="videos" className="snap-section">
+            <div className="w-full relative px-0 sm:px-6">
                 <SectionTitle subtitle="Cinema">
                     Nuestra Historia
                 </SectionTitle>
@@ -183,8 +183,8 @@ export function VideoSection({ clientData, videos: propVideos }: { clientData: a
 
 export function InvitationFooter({ clientData }: { clientData: any }) {
     return (
-        <footer className="py-16 bg-transparent relative overflow-hidden">
-            <div className="max-w-7xl mx-auto px-6 relative z-10">
+        <footer className="snap-section">
+            <div className="w-full relative px-6 sm:px-12">
 
                 {/* Main Content: Couple */}
                 <div className="text-center mb-16 max-w-2xl mx-auto">

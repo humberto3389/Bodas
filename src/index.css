@@ -20,30 +20,53 @@
   --font-size-4xl: clamp(2.5rem, 2rem + 2.5vw, 4rem);
   --font-size-hero: clamp(3.5rem, 3rem + 5vw, 7rem);
 
-  /* Luxury Theme Colors */
-  --color-silk-bg: #fffcf9;
-  --color-silk-accent: #fff5f5;
-  --color-silk-gold: #fdf2f2;
+  /* Luxury Theme Colors - ENHANCED CONTRAST */
+  --color-silk-bg: #fdf8f4;
+  /* Deepened warmer cream for better clarity */
+  --color-silk-accent: #f8f1ec;
+  --color-silk-gold: #f4eae1;
 }
 
 body {
   @apply text-slate-900 antialiased selection:bg-rose-500/20 selection:text-rose-600;
   background-color: var(--color-silk-bg);
-  background-image:
-    radial-gradient(at 0% 0%, hsla(253, 16%, 7%, 1) 0, transparent 50%),
-    radial-gradient(at 50% 0%, hsla(225, 39%, 30%, 1) 0, transparent 50%),
-    radial-gradient(at 100% 0%, hsla(339, 49%, 30%, 1) 0, transparent 50%),
-    radial-gradient(at 0% 100%, hsla(339, 49%, 30%, 1) 0, transparent 50%),
-    radial-gradient(at 100% 100%, hsla(253, 16%, 7%, 1) 0, transparent 50%);
-  background-image:
-    radial-gradient(at 0% 0%, rgba(255, 241, 242, 1) 0px, transparent 50%),
-    radial-gradient(at 50% 0%, rgba(255, 251, 235, 1) 0px, transparent 50%),
-    radial-gradient(at 100% 0%, rgba(254, 242, 242, 1) 0px, transparent 50%),
-    radial-gradient(at 0% 100%, rgba(255, 251, 235, 1) 0px, transparent 50%),
-    radial-gradient(at 100% 100%, rgba(255, 241, 242, 1) 0px, transparent 50%);
-  background-attachment: fixed;
   min-height: 100vh;
+  overflow-x: hidden;
   font-size: var(--font-size-base);
+}
+
+/* --- APP-LIKE SNAP CONTAINER --- */
+.app-snap-container {
+  height: 100dvh;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Hide Scrollbar for App Feel */
+.app-snap-container::-webkit-scrollbar {
+  display: none;
+}
+
+.app-snap-container {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Snap Section Wrapper (Edge-to-Edge by default) */
+.snap-section {
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  padding: 0 !important;
+  /* Force edge-to-edge layout */
 }
 
 .dark body {
@@ -83,16 +106,18 @@ body {
   transform: translateY(-1px);
 }
 
-/* Tarjeta Glassmorphism Premium - Ultra Refinada */
+/* Tarjeta Glassmorphism Premium - ENHANCED CONTRAST */
 .card-luxe {
-  background: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.7);
+  /* Slightly more opaque for clarity */
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.8);
   box-shadow:
-    0 15px 45px -15px rgba(30, 27, 75, 0.1),
-    0 5px 15px -5px rgba(190, 24, 93, 0.05),
-    inset 0 1px 1px rgba(255, 255, 255, 0.8);
+    0 4px 6px -1px rgba(0, 0, 0, 0.05),
+    0 20px 50px -15px rgba(136, 114, 100, 0.2),
+    /* Deep shadow for better separation */
+    inset 0 1px 1px rgba(255, 255, 255, 0.9);
   border-radius: clamp(1.5rem, 5vw, 3rem);
   position: relative;
   overflow: hidden;

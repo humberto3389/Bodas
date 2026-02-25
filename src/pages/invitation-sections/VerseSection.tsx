@@ -6,13 +6,13 @@ interface VerseSectionProps {
 }
 
 export function VerseSection({ clientData }: VerseSectionProps) {
-    const { bibleVerse, bibleVerseBook, invitationText, religiousSymbol } = clientData;
+    const { bibleVerse, bibleVerseBook, invitationText, groomName, brideName } = clientData;
 
     if (!bibleVerse && !invitationText) return null;
 
     return (
-        <section className="relative py-16 sm:py-32 overflow-visible bg-transparent">
-            <div className="section-container relative z-10">
+        <section id="verse" className="snap-section">
+            <div className="w-full relative z-10 px-0 sm:px-6">
                 <div className="max-w-4xl mx-auto flex flex-col items-center group">
                     {/* Header Ornamental */}
                     <SectionTitle subtitle="La Palabra">
@@ -45,9 +45,9 @@ export function VerseSection({ clientData }: VerseSectionProps) {
                         initial={{ opacity: 0, y: 30 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
-                        className="card-luxe overflow-hidden w-full"
+                        className="card-luxe overflow-hidden w-full sm:rounded-[3rem] rounded-none border-x-0 sm:border-x"
                     >
-                        <div className="relative px-6 sm:px-12 py-16 sm:py-24 text-center space-y-12">
+                        <div className="relative px-8 sm:px-12 py-20 sm:py-32 text-center space-y-12">
                             {/* Bible Verse */}
                             {bibleVerse && (
                                 <motion.div

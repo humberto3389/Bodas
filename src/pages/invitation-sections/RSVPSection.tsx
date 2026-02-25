@@ -108,11 +108,8 @@ export function RSVPSection({ onSubmit }: RSVPSectionProps) {
     };
 
     return (
-        <section id="rsvp" className="relative py-16 sm:py-32 overflow-visible bg-transparent px-4">
-            {/* Background Decor */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-5xl aspect-square bg-rose-50/20 blur-[120px] rounded-full -z-10" />
-
-            <div className="max-w-3xl mx-auto relative z-10">
+        <section id="snap-rsvp" className="snap-section">
+            <div className="w-full relative px-0 sm:px-6">
                 <SectionTitle subtitle="Confirmación">
                     Confirma tu Asistencia
                 </SectionTitle>
@@ -126,7 +123,7 @@ export function RSVPSection({ onSubmit }: RSVPSectionProps) {
                     viewport={{ once: true }}
                     transition={{ duration: 0.8 }}
                     onSubmit={handleSubmit(handleFormSubmit)}
-                    className="card-luxe p-8 sm:p-16 relative group"
+                    className="card-luxe p-8 sm:p-16 relative group sm:rounded-[3rem] rounded-none border-x-0 sm:border-x"
                 >
                     <div className="space-y-12 relative z-10">
                         {/* ¿Asistirás? */}
