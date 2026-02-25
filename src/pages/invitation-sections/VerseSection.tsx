@@ -45,7 +45,7 @@ export function VerseSection({ clientData }: VerseSectionProps) {
                         initial={{ opacity: 0, y: 30 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
-                        className="card-luxe overflow-hidden w-full rounded-3xl sm:rounded-[3rem]"
+                        className="card-luxe overflow-hidden w-full rounded-3xl sm:rounded-[3rem] max-w-4xl mx-auto"
                     >
                         <div className="relative px-8 sm:px-12 py-16 sm:py-24 text-center space-y-10">
                             {/* Bible Verse */}

@@ -123,7 +123,7 @@ export function RSVPSection({ onSubmit }: RSVPSectionProps) {
                     viewport={{ once: true }}
                     transition={{ duration: 0.8 }}
                     onSubmit={handleSubmit(handleFormSubmit)}
-                    className="card-luxe p-8 sm:p-12 relative group rounded-3xl sm:rounded-[3rem]"
+                    className="card-luxe p-8 sm:p-12 relative group rounded-3xl sm:rounded-[3rem] max-w-3xl mx-auto"
                 >
                     <div className="space-y-12 relative z-10">
                         {/* ¿Asistirás? */}

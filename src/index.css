@@ -79,10 +79,10 @@ body {
   transform: translateY(-1px);
 }
 
-/* Tarjeta Glassmorphism Premium - SOLID WHITE CONTRAST */
+/* Tarjeta Glassmorphism Premium - DISTINCT CONTRAST */
 .card-luxe {
-  background: #ffffff;
-  /* Solid white for maximum clarity against Pearl bg */
+  background: #fffbf7;
+  /* Cream White for distinction against Pearl Grey bg */
   border: 1px solid rgba(0, 0, 0, 0.08);
   box-shadow:
     0 4px 20px -5px rgba(0, 0, 0, 0.1),

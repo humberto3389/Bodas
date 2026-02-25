@@ -84,45 +84,47 @@ export function GuestbookSection({ messages, onSendMessage }: GuestbookSectionPr
                 </motion.form>
 
                 {/* Grid de Mensajes Masonry-style */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-min">
-                    <AnimatePresence initial={false}>
-                        {messages.length === 0 ? (
-                            <motion.div
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                className="col-span-full text-center py-20"
-                            >
-                                <p className="font-elegant text-2xl text-slate-800/40 italic">
-                                    Sé el primero en escribir nuestra historia... ✨
-                                </p>
-                            </motion.div>
-                        ) : (
-                            messages.map((m, idx) => (
+                <div className="max-w-6xl mx-auto">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-min">
+                        <AnimatePresence initial={false}>
+                            {messages.length === 0 ? (
                                 <motion.div
-                                    key={m.id || idx}
-                                    initial={{ opacity: 0, scale: 0.95 }}
-                                    whileInView={{ opacity: 1, scale: 1 }}
-                                    viewport={{ once: true }}
-                                    layout
-                                    className="bg-white/80 p-8 rounded-2xl shadow-sm border border-slate-100/60 hover:shadow-md transition-shadow"
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    className="col-span-full text-center py-20"
                                 >
-                                    <div className="mb-6">
-                                        <p className="font-elegant text-xl text-slate-900/70 italic leading-relaxed">
-                                            "{m.message}"
-                                        </p>
-                                    </div>
-                                    <div className="flex items-center justify-between pt-6 border-t border-slate-50">
-                                        <h4 className="font-bold text-xs uppercase tracking-widest text-slate-800">
-                                            {m.name}
-                                        </h4>
-                                        <span className="text-[9px] font-bold text-slate-300 uppercase tracking-widest">
-                                            {m.created_at ? safeNewDate(m.created_at).toLocaleDateString() : '—'}
-                                        </span>
-                                    </div>
+                                    <p className="font-elegant text-2xl text-slate-800/40 italic">
+                                        Sé el primero en escribir nuestra historia... ✨
+                                    </p>
                                 </motion.div>
-                            ))
-                        )}
-                    </AnimatePresence>
+                            ) : (
+                                messages.map((m, idx) => (
+                                    <motion.div
+                                        key={m.id || idx}
+                                        initial={{ opacity: 0, scale: 0.95 }}
+                                        whileInView={{ opacity: 1, scale: 1 }}
+                                        viewport={{ once: true }}
+                                        layout
+                                        className="bg-white/80 p-8 rounded-2xl shadow-sm border border-slate-100/60 hover:shadow-md transition-shadow"
+                                    >
+                                        <div className="mb-6">
+                                            <p className="font-elegant text-xl text-slate-900/70 italic leading-relaxed">
+                                                "{m.message}"
+                                            </p>
+                                        </div>
+                                        <div className="flex items-center justify-between pt-6 border-t border-slate-50">
+                                            <h4 className="font-bold text-xs uppercase tracking-widest text-slate-800">
+                                                {m.name}
+                                            </h4>
+                                            <span className="text-[9px] font-bold text-slate-300 uppercase tracking-widest">
+                                                {m.created_at ? safeNewDate(m.created_at).toLocaleDateString() : '—'}
+                                            </span>
+                                        </div>
+                                    </motion.div>
+                                ))
+                            )}
+                        </AnimatePresence>
+                    </div>
                 </div>
             </div>
         </section>
