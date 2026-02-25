@@ -108,7 +108,7 @@ export function RSVPSection({ onSubmit }: RSVPSectionProps) {
     };
 
     return (
-        <section id="rsvp" className="py-20 relative overflow-hidden">
+        <section id="rsvp" className="py-20 relative overflow-hidden px-4 sm:px-6">
             <div className="w-full relative px-0 sm:px-6">
                 <SectionTitle subtitle="Confirmación">
                     Confirma tu Asistencia
@@ -123,7 +123,7 @@ export function RSVPSection({ onSubmit }: RSVPSectionProps) {
                     viewport={{ once: true }}
                     transition={{ duration: 0.8 }}
                     onSubmit={handleSubmit(handleFormSubmit)}
-                    className="card-luxe p-8 sm:p-12 relative group sm:rounded-[3rem] rounded-none border-x-0 sm:border-x"
+                    className="card-luxe p-8 sm:p-12 relative group rounded-3xl sm:rounded-[3rem]"
                 >
                     <div className="space-y-12 relative z-10">
                         {/* ¿Asistirás? */}

@@ -127,7 +127,7 @@ export default function App({ clientData: propData }: AppProps) {
 
   return (
     <AudioProvider>
-      <div className={`relative h-screen bg-transparent overflow-hidden ${hasPremiumVisuals ? 'premium-visuals-active' : ''}`}>
+      <div className={`relative min-h-screen bg-transparent ${hasPremiumVisuals ? 'premium-visuals-active' : ''}`}>
         {/* 📊 Scroll Progress Bar - Premium */}
         <ScrollProgress />
 
@@ -173,89 +173,83 @@ export default function App({ clientData: propData }: AppProps) {
         {/* Design System Overlays */}
         <div className="bg-noise opacity-[0.03] fixed inset-0 pointer-events-none z-[2]" />
 
-        {/* APP-LIKE SNAP CONTAINER */}
-        <div className="app-snap-container">
-          <section className="snap-section">
-            <HeroSection clientData={client} />
+        {/* CONTINUOUS CONTENT */}
+        <HeroSection clientData={client} />
+
+        <main className="relative z-10 box-border">
+          {/* Versículo e Invitación */}
+          <section id="verse">
+            <SmoothReveal delay={0.2}>
+              <VerseSection clientData={client} />
+            </SmoothReveal>
           </section>
 
-          <main className="relative z-10 box-border">
-            {/* Versículo e Invitación */}
-            <section id="snap-verse" className="snap-section">
-              <SmoothReveal delay={0.2}>
-                <VerseSection clientData={client} />
+          {/* Cuenta Regresiva */}
+          {(planType === 'premium' || planType === 'deluxe') && (
+            <section id="countdown">
+              <div className="max-w-7xl mx-auto px-4">
+                <Suspense fallback={<div className="h-32" />}>
+                  <Countdown date={client.weddingDate} time={client.weddingTime} clientData={client} />
+                </Suspense>
+              </div>
+            </section>
+          )}
+
+          {/* Galería */}
+          <section id="gallery">
+            <Suspense fallback={<div className="h-96" />}>
+              <SmoothReveal delay={0.3}>
+                <GallerySection clientData={client} images={galleryImages} />
               </SmoothReveal>
-            </section>
+            </Suspense>
+          </section>
 
-            {/* Cuenta Regresiva */}
-            {(planType === 'premium' || planType === 'deluxe') && (
-              <section id="snap-countdown" className="snap-section">
-                <div className="max-w-7xl mx-auto px-4">
-                  <Suspense fallback={<div className="h-32" />}>
-                    <Countdown date={client.weddingDate} time={client.weddingTime} clientData={client} />
-                  </Suspense>
-                </div>
-              </section>
-            )}
-
-            {/* Galería */}
-            <section id="snap-gallery" className="snap-section">
+          {/* Video */}
+          {videos && videos.length > 0 && (
+            <section id="video">
               <Suspense fallback={<div className="h-96" />}>
-                <SmoothReveal delay={0.3}>
-                  <GallerySection clientData={client} images={galleryImages} />
-                </SmoothReveal>
+                <VideoSection clientData={client} videos={videos} />
               </Suspense>
             </section>
+          )}
 
-            {/* Video */}
-            {videos && videos.length > 0 && (
-              <section id="snap-video" className="snap-section">
-                <Suspense fallback={<div className="h-96" />}>
-                  <VideoSection clientData={client} videos={videos} />
-                </Suspense>
-              </section>
-            )}
-
-            {/* Padrinos */}
-            {(planType === 'premium' || planType === 'deluxe') && client?.id && padrinos && padrinos.length > 0 && (
-              <section id="snap-padrinos" className="snap-section">
-                <Suspense fallback={<div className="h-96" />}>
-                  <PadrinosSection padrinos={padrinos} />
-                </Suspense>
-              </section>
-            )}
-
-            {/* Ubicación */}
-            <section id="snap-location" className="snap-section">
+          {/* Padrinos */}
+          {(planType === 'premium' || planType === 'deluxe') && client?.id && padrinos && padrinos.length > 0 && (
+            <section id="padrinos">
               <Suspense fallback={<div className="h-96" />}>
-                <SmoothReveal delay={0.4}>
-                  <LocationSection clientData={client} />
-                </SmoothReveal>
+                <PadrinosSection padrinos={padrinos} />
               </Suspense>
             </section>
+          )}
 
-            {/* RSVP */}
-            <section id="snap-rsvp" className="snap-section">
-              <Suspense fallback={<div className="h-96" />}>
-                <RSVPSection onSubmit={submitRSVP} />
-              </Suspense>
-            </section>
+          {/* Ubicación */}
+          <section id="location">
+            <Suspense fallback={<div className="h-96" />}>
+              <SmoothReveal delay={0.4}>
+                <LocationSection clientData={client} />
+              </SmoothReveal>
+            </Suspense>
+          </section>
 
-            {/* Guestbook */}
-            <section id="snap-guestbook" className="snap-section">
-              <Suspense fallback={<div className="h-96" />}>
-                <GuestbookSection messages={messages} onSendMessage={submitMessage} />
-              </Suspense>
-            </section>
+          {/* RSVP */}
+          <section id="rsvp">
+            <Suspense fallback={<div className="h-96" />}>
+              <RSVPSection onSubmit={submitRSVP} />
+            </Suspense>
+          </section>
 
-            {/* Footer */}
-            <section id="snap-footer" className="snap-section">
-              <Suspense fallback={null}>
-                <InvitationFooter clientData={client} />
-              </Suspense>
-            </section>
-          </main>
-        </div>
+          {/* Guestbook */}
+          <section id="guestbook">
+            <Suspense fallback={<div className="h-96" />}>
+              <GuestbookSection messages={messages} onSendMessage={submitMessage} />
+            </Suspense>
+          </section>
+
+          {/* Footer */}
+          <Suspense fallback={null}>
+            <InvitationFooter clientData={client} />
+          </Suspense>
+        </main>
 
         {/* Música de Fondo */}
         {bgAudioSrc && (

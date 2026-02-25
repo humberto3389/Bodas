@@ -79,7 +79,7 @@ export function VideoSection({ clientData, videos: propVideos }: { clientData: a
     if (videos.length === 0 || clientData.planType !== 'deluxe') return null;
 
     return (
-        <section ref={ref} id="videos" className="py-20 relative overflow-hidden">
+        <section ref={ref} id="videos" className="py-20 relative overflow-hidden px-4 sm:px-6">
             <div className="w-full relative px-0 sm:px-6">
                 <SectionTitle subtitle="Cinema">
                     Nuestra Historia
@@ -183,7 +183,7 @@ export function VideoSection({ clientData, videos: propVideos }: { clientData: a
 
 export function InvitationFooter({ clientData }: { clientData: any }) {
     return (
-        <footer className="py-20 relative overflow-hidden">
+        <footer className="py-20 relative overflow-hidden px-4 sm:px-6">
             <div className="w-full relative px-6 sm:px-12">
 
                 {/* Main Content: Couple */}

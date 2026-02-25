@@ -24,7 +24,7 @@ export function PadrinosSection({ padrinos: propPadrinos }: Omit<PadrinosSection
     if (activePadrinos.length === 0) return null;
 
     return (
-        <section id="padrinos" className="py-20 relative overflow-hidden">
+        <section id="padrinos" className="py-20 relative overflow-hidden px-4 sm:px-6">
             <div className="w-full relative z-10 px-0 sm:px-6">
                 {/* Section Header */}
                 <SectionTitle subtitle="Corte de Honor">
@@ -57,7 +57,7 @@ export function PadrinosSection({ padrinos: propPadrinos }: Omit<PadrinosSection
                             transition={{ delay: index * 0.15, duration: 0.7 }}
                             className="group"
                         >
-                            <div className="card-luxe relative h-full p-8 flex flex-col items-center text-center sm:rounded-[2.5rem] rounded-none border-x-0 sm:border-x">
+                            <div className="card-luxe relative h-full p-8 flex flex-col items-center text-center rounded-3xl sm:rounded-[2.5rem]">
 
                                 {/* Photo Frame */}
                                 <div className="relative mb-8">

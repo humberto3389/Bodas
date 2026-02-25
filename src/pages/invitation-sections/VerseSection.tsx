@@ -11,7 +11,7 @@ export function VerseSection({ clientData }: VerseSectionProps) {
     if (!bibleVerse && !invitationText) return null;
 
     return (
-        <section id="verse" className="py-20 relative overflow-hidden">
+        <section id="verse" className="py-20 relative overflow-hidden px-4 sm:px-6">
             <div className="w-full relative z-10 px-0 sm:px-6">
                 <div className="max-w-4xl mx-auto flex flex-col items-center group">
                     {/* Header Ornamental */}
@@ -45,7 +45,7 @@ export function VerseSection({ clientData }: VerseSectionProps) {
                         initial={{ opacity: 0, y: 30 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
-                        className="card-luxe overflow-hidden w-full sm:rounded-[3rem] rounded-none border-x-0 sm:border-x"
+                        className="card-luxe overflow-hidden w-full rounded-3xl sm:rounded-[3rem]"
                     >
                         <div className="relative px-8 sm:px-12 py-16 sm:py-24 text-center space-y-10">
                             {/* Bible Verse */}
