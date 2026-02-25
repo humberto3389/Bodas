@@ -80,6 +80,7 @@ export interface ClientToken {
   wedding_datetime_utc?: string; // Nuevo campo para hora precisa
   timezone?: string; // Zona horaria del evento
   verseImageUrl?: string;
+  isUrgent?: boolean;
 }
 
 // Planes disponibles
@@ -184,6 +185,7 @@ async function syncClientToSupabase(client: ClientToken): Promise<void> {
       max_guests: client.maxGuests ?? 50,
       expires_at: client.expiresAt?.toISOString() || null,
       wedding_type: client.weddingType || 'Boda', // Asegurar que se guarde el tipo de boda
+      is_urgent: client.isUrgent ?? false,
     };
 
     // ESTRATEGIA: Verificar si el cliente ya existe
@@ -250,6 +252,7 @@ async function syncClientToSupabase(client: ClientToken): Promise<void> {
       if (client.heroBackgroundUrl) updateData.hero_background_url = client.heroBackgroundUrl;
       if (client.heroBackgroundVideoUrl) updateData.hero_background_video_url = client.heroBackgroundVideoUrl;
       if (client.cinemaVideoAudioEnabled !== undefined) updateData.cinema_video_audio_enabled = client.cinemaVideoAudioEnabled;
+      if (client.isUrgent !== undefined) updateData.is_urgent = client.isUrgent;
 
       // Solo actualizar si hay campos para actualizar
       if (Object.keys(updateData).length > 0) {
@@ -392,6 +395,7 @@ export function mapSupabaseClientToToken(row: any): ClientToken {
     isCeremonySameAsReception: row.is_ceremony_same_as_reception,
     changeExplanation: row.change_explanation || undefined,
     weddingType: row.wedding_type || undefined,
+    isUrgent: !!row.is_urgent,
   };
 }
 

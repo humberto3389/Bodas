@@ -1,21 +1,11 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { formatTimeForDisplay, validateAndFormatTime } from '../lib/timezone-utils';
 
 interface UrgentAlertProps {
   client: any;
 }
 
-interface ChangeDetail {
-  id: string;
-  type: 'time' | 'location';
-  event: 'Ceremonia' | 'Recepción' | 'General';
-  oldValue: string;
-  newValue: string;
-}
-
 export function UrgentAlert({ client }: UrgentAlertProps) {
-  const [changes, setChanges] = useState<ChangeDetail[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [showBanner, setShowBanner] = useState(false);
   const [hasNotifiedActive, setHasNotifiedActive] = useState(false);
@@ -23,99 +13,13 @@ export function UrgentAlert({ client }: UrgentAlertProps) {
   // Usamos una referencia para saber si ya mostramos el modal AUTOMÁTICAMENTE en esta carga de página
   const autoShownRef = useRef(false);
 
-  // Clave única para guardar el estado visto en localStorage por cliente (para Before/After)
-  const storageKey = `seen_changes_${client?.id}`;
-
   const detectChanges = useCallback(() => {
     if (!client) return;
 
-    const seenDataRaw = localStorage.getItem(storageKey);
-    const seenData = seenDataRaw ? JSON.parse(seenDataRaw) : null;
-
-    const currentData = {
-      weddingTime: validateAndFormatTime(client.weddingTime),
-      weddingLocation: (client.isCeremonySameAsReception
-        ? (client.receptionLocationName || '')
-        : (client.churchName || client.ceremonyLocationName || '')).trim(),
-      weddingAddress: (client.isCeremonySameAsReception
-        ? (client.receptionAddress || '')
-        : (client.ceremonyAddress || '')).trim(),
-      receptionTime: validateAndFormatTime(client.receptionTime),
-      receptionLocation: (client.isReceptionSameAsCeremony
-        ? (client.churchName || client.ceremonyLocationName || '')
-        : (client.receptionLocationName || '')).trim(),
-      receptionAddress: (client.isReceptionSameAsCeremony
-        ? (client.ceremonyAddress || '')
-        : (client.receptionAddress || '')).trim(),
-      isReceptionSameAsCeremony: !!client.isReceptionSameAsCeremony,
-      isCeremonySameAsReception: !!client.isCeremonySameAsReception,
-      changeExplanation: (client.changeExplanation || '').trim()
-    };
-
-    // Si no hay datos previos, guardamos el estado actual como base pero NO retornamos
-    // para permitir que el Banner se muestre si hay una explicación activa.
-    if (!seenData) {
-      localStorage.setItem(storageKey, JSON.stringify(currentData));
-    }
-
-    const detected: ChangeDetail[] = [];
-
-    // Solo comparamos si tenemos datos previos
-    if (seenData) {
-      // Cambios en Ceremonia
-      if (currentData.weddingTime !== seenData.weddingTime) {
-        detected.push({
-          id: 'c-time',
-          type: 'time',
-          event: 'Ceremonia',
-          oldValue: formatTimeForDisplay(seenData.weddingTime),
-          newValue: formatTimeForDisplay(currentData.weddingTime)
-        });
-      }
-
-      const currentCeremonyLoc = `${currentData.weddingLocation} (${currentData.weddingAddress})`;
-      const seenCeremonyLoc = `${seenData.weddingLocation} (${seenData.weddingAddress})`;
-      if (currentCeremonyLoc !== seenCeremonyLoc) {
-        detected.push({
-          id: 'c-loc',
-          type: 'location',
-          event: 'Ceremonia',
-          oldValue: seenCeremonyLoc,
-          newValue: currentCeremonyLoc
-        });
-      }
-
-      // Cambios en Recepción
-      if (!currentData.isReceptionSameAsCeremony) {
-        if (currentData.receptionTime !== seenData.receptionTime) {
-          detected.push({
-            id: 'r-time',
-            type: 'time',
-            event: 'Recepción',
-            oldValue: formatTimeForDisplay(seenData.receptionTime),
-            newValue: formatTimeForDisplay(currentData.receptionTime)
-          });
-        }
-
-        const currentReceptionLoc = `${currentData.receptionLocation} (${currentData.receptionAddress})`;
-        const seenReceptionLoc = `${seenData.receptionLocation} (${seenData.receptionAddress})`;
-        if (currentReceptionLoc !== seenReceptionLoc) {
-          detected.push({
-            id: 'r-loc',
-            type: 'location',
-            event: 'Recepción',
-            oldValue: seenReceptionLoc,
-            newValue: currentReceptionLoc
-          });
-        }
-      }
-    }
-
-    // Lógica Agresiva: Si hay explicación o cambios, activamos Banner y Modal
-    const hasActiveUpdate = detected.length > 0 || currentData.changeExplanation.length > 0;
+    // Lógica Manual Explicita: Si el cliente marcó isUrgent en el panel
+    const hasActiveUpdate = !!client.isUrgent;
 
     if (hasActiveUpdate) {
-      setChanges(detected);
       setShowBanner(true);
 
       // Auto-mostrar el modal solo una vez por carga de página (para no ser molesto al navegar)
@@ -133,7 +37,7 @@ export function UrgentAlert({ client }: UrgentAlertProps) {
       setShowBanner(false);
       setShowModal(false);
     }
-  }, [client, storageKey, hasNotifiedActive]);
+  }, [client, hasNotifiedActive]);
 
   const triggerNativeNotification = () => {
     if (!("Notification" in window)) return;
@@ -157,7 +61,7 @@ export function UrgentAlert({ client }: UrgentAlertProps) {
   };
 
   // Solo ocultamos todo si REALMENTE no hay nada que mostrar
-  if (!showBanner && changes.length === 0 && !client?.changeExplanation) return null;
+  if (!showBanner && !client?.isUrgent) return null;
 
   return (
     <>
@@ -222,26 +126,9 @@ export function UrgentAlert({ client }: UrgentAlertProps) {
                 )}
 
                 <div className="space-y-3 mb-8 text-left max-h-[40vh] overflow-y-auto pr-2 custom-scrollbar">
-                  {changes.length > 0 ? (
-                    changes.map((change) => (
-                      <div key={change.id} className="bg-rose-50/50 rounded-2xl p-4 border border-rose-100/50">
-                        <div className="flex items-center gap-2 mb-2">
-                          <span className="text-rose-600 text-base">{change.type === 'time' ? '🕒' : '📍'}</span>
-                          <span className="text-[10px] font-black uppercase tracking-widest text-rose-600">
-                            {change.event}
-                          </span>
-                        </div>
-                        <div className="space-y-1">
-                          <div className="text-[10px] text-slate-400 font-medium">Anterior: <span className="line-through">{change.oldValue}</span></div>
-                          <div className="text-sm font-bold text-slate-800">Nuevo: {change.newValue}</div>
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <div className="text-center py-4 bg-slate-50 rounded-2xl border border-slate-100 text-slate-500 text-xs italic">
-                      Revisa los horarios y ubicaciones actualizados en la invitación.
-                    </div>
-                  )}
+                  <div className="text-center py-4 bg-slate-50 rounded-2xl border border-slate-100 text-slate-500 text-xs italic">
+                    Revisa los horarios y ubicaciones actualizados en la invitación.
+                  </div>
                 </div>
 
                 <motion.button

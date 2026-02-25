@@ -392,17 +392,41 @@ export function ContentEditor({
                                 </div>
                             </div>
 
-                            <div>
-                                <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5 sm:mb-2 text-rose-600">Motivo del cambio (Aviso Urgente)</label>
-                                <textarea
-                                    name="changeExplanation"
-                                    value={editForm.changeExplanation}
-                                    onChange={handleChange}
-                                    rows={3}
-                                    className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-rose-50/30 border border-rose-100 rounded-xl focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all resize-none leading-relaxed text-sm"
-                                    placeholder="Ej: Cambio de horario por clima, nueva ubicación del brindis..."
-                                />
-                                <p className="text-[10px] text-slate-400 mt-1">Este texto aparecerá en la alerta de cambios urgentes para tus invitados.</p>
+                            <div className="space-y-4">
+                                <div className="flex items-center justify-between p-4 bg-rose-50/50 border border-rose-100 rounded-2xl">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-10 h-10 bg-rose-100 text-rose-600 rounded-xl flex items-center justify-center text-xl">
+                                            ⚠️
+                                        </div>
+                                        <div>
+                                            <p className="text-xs font-black text-slate-900 uppercase tracking-widest">Alerta de Emergencia</p>
+                                            <p className="text-[10px] text-slate-500 font-medium">Activar aviso para los invitados</p>
+                                        </div>
+                                    </div>
+                                    <div className="relative">
+                                        <input
+                                            type="checkbox"
+                                            name="isUrgent"
+                                            checked={editForm.isUrgent}
+                                            onChange={handleChange}
+                                            className="sr-only peer"
+                                        />
+                                        <div className="w-10 h-6 bg-slate-200 rounded-full peer peer-checked:bg-rose-600 transition-all duration-300 after:content-[''] after:absolute after:top-1 after:left-1 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-4 shadow-inner"></div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5 sm:mb-2 text-rose-600">Motivo del cambio (Opcional)</label>
+                                    <textarea
+                                        name="changeExplanation"
+                                        value={editForm.changeExplanation}
+                                        onChange={handleChange}
+                                        rows={3}
+                                        className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white border border-rose-100 rounded-xl focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all resize-none leading-relaxed text-sm"
+                                        placeholder="Ej: Cambio de horario por clima, nueva ubicación del brindis..."
+                                    />
+                                    <p className="text-[10px] text-slate-400 mt-1">Este texto aparecerá dentro del aviso urgente si la alerta está activada.</p>
+                                </div>
                             </div>
                         </div>
 
