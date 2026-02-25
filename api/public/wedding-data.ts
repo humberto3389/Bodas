@@ -91,7 +91,7 @@ async function getPublicPageData(subdomain: string, bypassCache: boolean = false
       .select('id, name, message, created_at')
       .eq('client_id', clientId)
       .order('created_at', { ascending: false })
-      .limit(30); // LÍMITE CRÍTICO PARA CONTROLAR EL TAMAÑO
+      .limit(30);
 
     if (messagesError) {
       console.error('[BFF] Error cargando mensajes:', messagesError);
@@ -109,6 +109,20 @@ async function getPublicPageData(subdomain: string, bypassCache: boolean = false
       console.error('[BFF] Error cargando padrinos:', padrinosError);
     }
 
+    // --- FUNCIÓN HELPER PARA URLS SEGURAS ---
+    const getSafeUrl = (path: string, bucket: string): string => {
+      try {
+        const { data } = supabase.storage.from(bucket).getPublicUrl(path);
+        // Validar que la URL sea válida usando el constructor WHATWG URL
+        return new URL(data.publicUrl).toString();
+      } catch (e) {
+        console.error(`[BFF] Error validando URL para ${path}:`, e);
+        // Fallback seguro si falla la validación
+        const { data } = supabase.storage.from(bucket).getPublicUrl(path);
+        return data.publicUrl;
+      }
+    };
+
     // Consulta 4: Imágenes de galería (storage)
     let galleryImages: { name: string; url: string }[] = [];
     try {
@@ -117,15 +131,13 @@ async function getPublicPageData(subdomain: string, bypassCache: boolean = false
         .list(`${clientId}/hero`, { limit: 50, sortBy: { column: 'created_at', order: 'asc' } });
 
       if (!galleryError && galleryData) {
-        const paths = galleryData
+        galleryImages = galleryData
           .filter(f => !f.name.startsWith('.'))
           .filter(f => !f.name.toLowerCase().includes('padrino'))
-          .map(f => `${clientId}/hero/${f.name}`);
-
-        galleryImages = paths.map((path) => {
-          const { data: urlData } = supabase.storage.from('gallery').getPublicUrl(path);
-          return { name: path, url: urlData.publicUrl };
-        });
+          .map(f => {
+            const path = `${clientId}/hero/${f.name}`;
+            return { name: path, url: getSafeUrl(path, 'gallery') };
+          });
       }
     } catch (galleryErr) {
       console.error('[BFF] Error cargando galería:', galleryErr);
@@ -139,13 +151,12 @@ async function getPublicPageData(subdomain: string, bypassCache: boolean = false
         .list(`${clientId}/video`, { limit: 10, sortBy: { column: 'created_at', order: 'asc' } });
 
       if (!videoError && videoData) {
-        const videoItems = videoData
+        videos = videoData
           .filter(f => !f.name.startsWith('.') && ['mp4', 'webm', 'mov'].includes(f.name.split('.').pop()?.toLowerCase() || ''))
           .map(f => {
-            const { data: urlData } = supabase.storage.from('videos').getPublicUrl(`${clientId}/video/${f.name}`);
-            return { name: f.name, url: urlData.publicUrl };
+            const path = `${clientId}/video/${f.name}`;
+            return { name: f.name, url: getSafeUrl(path, 'videos') };
           });
-        videos = videoItems;
       }
     } catch (videoErr) {
       console.error('[BFF] Error cargando videos:', videoErr);
