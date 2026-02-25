@@ -42,7 +42,7 @@ export default function App({ clientData: propData }: AppProps) {
   // El subdomain de la URL es la única fuente de verdad para páginas de invitación
   // Solo usar ClientAuthContext si NO hay subdomain (área de admin en /panel)
   const { client: authClient } = useClientAuth();
-  const { toasts, removeToast } = useToast();
+  useToast();
 
   const [isMobile, setIsMobile] = useState(false);
   useEffect(() => {

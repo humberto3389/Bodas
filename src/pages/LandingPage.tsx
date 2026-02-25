@@ -36,6 +36,7 @@ const NavbarSnowParticle = ({ index: _index, mobile = false }: { index: number, 
         top: `${startY}%`,
         filter: `blur(${isLarge ? 0.2 : 0.5}px)`,
         zIndex: 1,
+        willChange: 'transform, opacity',
       }}
       animate={{
         y: [`${startY}%`, `${startY + 150}%`],
@@ -93,6 +94,7 @@ const DarkModeSnowParticle = ({ index: _index, mobile = false }: { index: number
         top: `${startY}%`,
         filter: `blur(${isLarge ? 0.1 : 0.3}px)`,
         zIndex: 0,
+        willChange: 'transform, opacity',
       }}
       animate={{
         y: [`${startY}%`, `${startY + 200}%`],
@@ -347,8 +349,8 @@ export default function LandingPage() {
         transition={{ duration: 0.8 }}
       >
         {/* Partículas de nieve en el navbar - SIEMPRE visibles */}
-        <div className="absolute inset-0 overflow-hidden">
-          {Array.from({ length: isMobile ? 12 : 25 }).map((_, i) => (
+        <div className="absolute inset-0 overflow-hidden" aria-hidden="true">
+          {Array.from({ length: isMobile ? 6 : 20 }).map((_, i) => (
             <NavbarSnowParticle key={i} index={i} mobile={isMobile} />
           ))}
         </div>
@@ -588,7 +590,7 @@ export default function LandingPage() {
               <MagneticButton
                 href="#planes"
                 strength={0.4}
-                className="group bg-gradient-to-r from-rose-400 to-amber-500 text-white font-semibold px-8 py-4 rounded-2xl shadow-xl shadow-rose-500/20 hover:shadow-2xl hover:shadow-rose-500/30 transition-all duration-500"
+                className="group bg-gradient-to-r from-rose-500 to-amber-600 text-white font-semibold px-8 py-4 rounded-2xl shadow-xl shadow-rose-500/20 hover:shadow-2xl hover:shadow-rose-500/30 transition-all duration-500"
               >
                 <span className="flex items-center space-x-2">
                   <span>{content?.heroButton1Text || 'Descubrir Planes'}</span>
@@ -603,6 +605,7 @@ export default function LandingPage() {
                 whileHover={{ scale: 1.05, y: -2 }}
                 whileTap={{ scale: 0.98 }}
                 className="group bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm text-slate-700 dark:text-slate-300 font-semibold px-8 py-4 rounded-2xl border border-slate-200/50 dark:border-slate-700/50 hover:border-green-400/50 transition-all duration-500 flex items-center space-x-3 shadow-lg hover:shadow-xl w-full sm:w-auto"
+                aria-label="Contactar por WhatsApp para consultar disponibilidad"
               >
                 <motion.div
                   animate={{ scale: [1, 1.1, 1] }}

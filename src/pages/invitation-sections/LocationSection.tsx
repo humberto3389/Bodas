@@ -109,6 +109,7 @@ export function LocationSection({ clientData }: LocationSectionProps) {
                                         }
                                     }}
                                     className="btn-luxe w-full"
+                                    aria-label={`Ver ubicación de ${loc.type} en Google Maps`}
                                 >
                                     Ver Mapa
                                 </motion.button>

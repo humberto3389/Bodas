@@ -58,6 +58,7 @@ export function PadrinosSection({ padrinos }: PadrinosSectionProps) {
                                                     src={padrino.photo_url}
                                                     alt={padrino.name}
                                                     className="w-full h-full object-cover"
+                                                    loading="lazy"
                                                 />
                                             </div>
                                         ) : (

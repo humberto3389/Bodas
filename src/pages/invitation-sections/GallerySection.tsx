@@ -12,7 +12,6 @@ export function GallerySection({ images }: GallerySectionProps) {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [loading, setLoading] = useState(true);
     const [direction, setDirection] = useState(0);
-    const containerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         if (images && images.length > 0) {
@@ -95,12 +94,14 @@ export function GallerySection({ images }: GallerySectionProps) {
                             <button
                                 onClick={prevSlide}
                                 className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-white/90 backdrop-blur shadow-xl border border-rose-100 flex items-center justify-center text-rose-600 hover:bg-rose-600 hover:text-white transition-all transform hover:scale-110 pointer-events-auto"
+                                aria-label="Imagen anterior"
                             >
                                 <ChevronLeft size={32} />
                             </button>
                             <button
                                 onClick={nextSlide}
                                 className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-white/90 backdrop-blur shadow-xl border border-rose-100 flex items-center justify-center text-rose-600 hover:bg-rose-600 hover:text-white transition-all transform hover:scale-110 pointer-events-auto"
+                                aria-label="Siguiente imagen"
                             >
                                 <ChevronRight size={32} />
                             </button>
@@ -116,6 +117,7 @@ export function GallerySection({ images }: GallerySectionProps) {
                                         setCurrentIndex(idx);
                                     }}
                                     className={`h-1.5 transition-all duration-500 rounded-full ${idx === currentIndex ? 'w-8 bg-rose-600' : 'w-1.5 bg-rose-200 hover:bg-rose-300'}`}
+                                    aria-label={`Ir a la imagen ${idx + 1}`}
                                 />
                             ))}
                         </div>
