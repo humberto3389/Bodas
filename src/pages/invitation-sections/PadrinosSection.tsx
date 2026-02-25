@@ -21,7 +21,7 @@ export function PadrinosSection({ padrinos }: PadrinosSectionProps) {
 
     return (
         <section id="padrinos" className="py-20 relative overflow-hidden px-4 sm:px-6">
-            <div className="w-full relative z-10 px-0 sm:px-6">
+            <div className="section-container">
                 {/* Section Header */}
                 <SectionTitle subtitle="Corte de Honor">
                     Nuestros Padrinos
@@ -37,7 +37,7 @@ export function PadrinosSection({ padrinos }: PadrinosSectionProps) {
                 </motion.p>
 
                 {/* Padrinos Grid */}
-                <div className="max-w-5xl mx-auto">
+                <div className="mt-12">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 items-stretch justify-center">
                         {activePadrinos.map((padrino, index) => (
                             <motion.div

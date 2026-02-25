@@ -12,7 +12,7 @@ export function VerseSection({ clientData }: VerseSectionProps) {
 
     return (
         <section id="verse" className="py-20 relative overflow-hidden px-4 sm:px-6">
-            <div className="w-full relative z-10 px-0 sm:px-6">
+            <div className="section-container">
                 <div className="max-w-4xl mx-auto flex flex-col items-center group">
                     {/* Header Ornamental */}
                     <SectionTitle subtitle="La Palabra">

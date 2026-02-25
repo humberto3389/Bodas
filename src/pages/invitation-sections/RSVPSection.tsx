@@ -109,7 +109,7 @@ export function RSVPSection({ onSubmit }: RSVPSectionProps) {
 
     return (
         <section id="rsvp" className="py-20 relative overflow-hidden px-4 sm:px-6">
-            <div className="w-full relative px-0 sm:px-6">
+            <div className="section-container">
                 <SectionTitle subtitle="Confirmación">
                     Confirma tu Asistencia
                 </SectionTitle>

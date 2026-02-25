@@ -30,7 +30,7 @@ export function GuestbookSection({ messages, onSendMessage }: GuestbookSectionPr
 
     return (
         <section id="guestbook" className="py-20 relative overflow-hidden px-4 sm:px-6">
-            <div className="w-full relative px-0 sm:px-6">
+            <div className="section-container">
                 <SectionTitle subtitle="Libro de Visitas">
                     Dedicatorias
                 </SectionTitle>
@@ -84,7 +84,7 @@ export function GuestbookSection({ messages, onSendMessage }: GuestbookSectionPr
                 </motion.form>
 
                 {/* Grid de Mensajes Masonry-style */}
-                <div className="max-w-6xl mx-auto">
+                <div className="mt-12">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-min">
                         <AnimatePresence initial={false}>
                             {messages.length === 0 ? (

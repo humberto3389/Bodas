@@ -199,7 +199,7 @@ export default function App({ clientData: propData }: AppProps) {
           <section id="gallery">
             <Suspense fallback={<div className="h-96" />}>
               <SmoothReveal delay={0.3}>
-                <GallerySection clientData={client} images={galleryImages} />
+                <GallerySection clientData={client} images={galleryImages.map(img => img.url)} />
               </SmoothReveal>
             </Suspense>
           </section>
