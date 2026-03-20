@@ -27,19 +27,18 @@
   --color-silk-gold: #dcd2c5;
 }
 
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 body {
   @apply text-slate-900 antialiased selection:bg-rose-500/20 selection:text-rose-600;
   background-color: var(--color-silk-bg);
   min-height: 100dvh;
-  min-height: 100svh; /* Fallback for older browsers */
   overflow-x: hidden;
   font-size: var(--font-size-base);
-  
-  /* Support for edge-to-edge display on notched devices */
-  /* Remove padding-top to allow background behind status bar */
-  padding-bottom: env(safe-area-inset-bottom, 0);
-  padding-left: env(safe-area-inset-left, 0);
-  padding-right: env(safe-area-inset-right, 0);
 }
 
 /* Section Wrapper */

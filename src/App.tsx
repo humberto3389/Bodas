@@ -154,7 +154,7 @@ export default function App({ clientData: propData }: AppProps) {
   return (
     <AudioProvider>
       {client && <SEO_Invitation clientData={client} />}
-      <div className={`relative min-h-screen bg-transparent ${hasPremiumVisuals ? 'premium-visuals-active' : ''}`}>
+      <div className={`relative min-h-[100dvh] bg-transparent ${hasPremiumVisuals ? 'premium-visuals-active' : ''}`}>
         {/* 📊 Scroll Progress Bar - Premium */}
         <ScrollProgress />
 
