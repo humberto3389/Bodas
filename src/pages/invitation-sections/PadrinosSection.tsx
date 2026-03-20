@@ -38,7 +38,7 @@ export function PadrinosSection({ padrinos }: PadrinosSectionProps) {
 
                 {/* Padrinos Grid */}
                 <div className="mt-12">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 items-stretch justify-center">
+                    <div className="flex flex-wrap items-center justify-center gap-10">
                         {activePadrinos.map((padrino, index) => (
                             <motion.div
                                 key={padrino.id}
@@ -46,7 +46,7 @@ export function PadrinosSection({ padrinos }: PadrinosSectionProps) {
                                 whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true }}
                                 transition={{ delay: index * 0.15, duration: 0.7 }}
-                                className="group h-full"
+                                className="group w-full md:w-[calc(50%-2.5rem)] lg:w-[calc(33.333%-2.5rem)] max-w-sm"
                             >
                                 <div className="card-luxe relative h-full p-8 flex flex-col items-center text-center rounded-3xl sm:rounded-[2.5rem]">
                                     {/* Photo Frame */}

@@ -39,7 +39,7 @@ export function MobileAppChrome() {
   // Track active section for menu focus
   useEffect(() => {
     // Correct logical order in the page: Hero -> Gallery -> Location -> RSVP
-    const sections = ['hero', 'gallery', 'location', 'rsvp'];
+    const sections = ['hero', 'gallery', 'location', 'rsvp', 'guestbook'];
 
     const observerOptions = {
       root: null,
@@ -84,6 +84,7 @@ export function MobileAppChrome() {
           <NavIcon label="Fotos" icon="📸" onClick={() => scrollToSection('gallery')} isActive={activeSection === 'gallery'} />
           <NavIcon label="Mapa" icon="📍" onClick={() => scrollToSection('location')} isActive={activeSection === 'location'} />
           <NavIcon label="RSVP" icon="💌" onClick={() => scrollToSection('rsvp')} isActive={activeSection === 'rsvp'} />
+          <NavIcon label="Deseos" icon="✨" onClick={() => scrollToSection('guestbook')} isActive={activeSection === 'guestbook'} />
         </motion.div>
       </div>
     </>

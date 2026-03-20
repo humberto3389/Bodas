@@ -28,7 +28,7 @@ export function HeroSection({ clientData }: HeroSectionProps) {
     const advancedAnimations = clientData?.advancedAnimations;
     const foilClass = (planType === 'deluxe' && advancedAnimations?.enabled && advancedAnimations?.floatingElements) ? 'deluxe-foil-text' : '';
 
-    const showVideo = planType === 'deluxe' && heroVideo && heroDisplayMode === 'video';
+    const showVideo = heroVideo && heroDisplayMode === 'video';
     const dateObj = clientData?.weddingDate ? getLocalDate(clientData.weddingDate) : new Date(2026, 1, 21);
 
     // Formatting parts for a more modular and elegant design

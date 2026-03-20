@@ -276,13 +276,11 @@ export default function App({ clientData: propData }: AppProps) {
           </section>
 
           {/* Guestbook */}
-          {messages && messages.length > 0 && (
-            <section id="guestbook" className="flex items-center py-10 md:py-20">
-              <Suspense fallback={<div className="h-96" />}>
-                <GuestbookSection messages={messages} onSendMessage={submitMessage} />
-              </Suspense>
-            </section>
-          )}
+          <section id="guestbook" className="flex items-center py-12 md:py-24">
+            <Suspense fallback={<div className="h-96" />}>
+              <GuestbookSection messages={messages || []} onSendMessage={submitMessage} />
+            </Suspense>
+          </section>
 
           {/* Footer */}
           <Suspense fallback={null}>

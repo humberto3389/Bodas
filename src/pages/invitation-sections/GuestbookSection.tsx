@@ -84,21 +84,16 @@ export function GuestbookSection({ messages, onSendMessage }: GuestbookSectionPr
                 </motion.form>
 
                 {/* Grid de Mensajes Masonry-style */}
-                <div className="mt-12">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-min">
-                        <AnimatePresence initial={false}>
-                            {messages.length === 0 ? (
-                                <motion.div
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    className="col-span-full text-center py-20"
-                                >
-                                    <p className="font-elegant text-2xl text-slate-800/40 italic">
-                                        Sé el primero en escribir nuestra historia... ✨
-                                    </p>
-                                </motion.div>
-                            ) : (
-                                messages.map((m, idx) => (
+                <AnimatePresence initial={false}>
+                    {messages.length > 0 && (
+                        <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                            className="mt-12 overflow-hidden"
+                        >
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-min">
+                                {messages.map((m, idx) => (
                                     <motion.div
                                         key={m.id || idx}
                                         initial={{ opacity: 0, scale: 0.95 }}
@@ -121,11 +116,11 @@ export function GuestbookSection({ messages, onSendMessage }: GuestbookSectionPr
                                             </span>
                                         </div>
                                     </motion.div>
-                                ))
-                            )}
-                        </AnimatePresence>
-                    </div>
-                </div>
+                                ))}
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             </div>
         </section>
     );
