@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import ContactForm from '../components/ContactForm';
 import { loadLandingPageContent, type LandingPageContent } from '../lib/landing-page-content';
 import { LandingParticles } from '../components/landing-sections/LandingParticles';
 
