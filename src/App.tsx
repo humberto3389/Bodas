@@ -252,7 +252,7 @@ export default function App({ clientData: propData }: AppProps) {
 
           {/* Padrinos */}
           {(planType === 'premium' || planType === 'deluxe') && client?.id && padrinos && padrinos.length > 0 && (
-            <section id="padrinos" className="flex items-center py-12 md:py-24">
+            <section id="padrinos" className="w-full flex flex-col items-center py-12 md:py-24">
               <Suspense fallback={<div className="h-96" />}>
                 <PadrinosSection padrinos={padrinos} />
               </Suspense>
@@ -271,7 +271,7 @@ export default function App({ clientData: propData }: AppProps) {
           {/* RSVP */}
           <section id="rsvp" className="snap-section flex items-center py-8 md:py-20">
             <Suspense fallback={<div className="h-96" />}>
-              <RSVPSection onSubmit={submitRSVP} />
+              <RSVPSection onSubmit={submitRSVP} weddingDate={client.weddingDate as any} />
             </Suspense>
           </section>
 

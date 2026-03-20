@@ -17,18 +17,32 @@ function getLocalDate(dateInput: string | Date | undefined): Date {
 }
 
 export function HeroSection({ clientData }: HeroSectionProps) {
+    console.log(clientData); // Debugging clientData
     const groom = clientData?.groomName;
     const bride = clientData?.brideName;
     const couple = clientData?.clientName;
     const planType = clientData?.planType || 'basic';
     const heroBg = clientData?.heroBackgroundUrl || '/boda.avif';
-    const heroVideo = clientData?.heroBackgroundVideoUrl || '/hero.mp4';
+    const heroVideo = clientData?.heroBackgroundVideoUrl;
     const heroDisplayMode = clientData?.heroDisplayMode || 'image';
     const heroVideoAudioEnabled = clientData?.heroVideoAudioEnabled || false;
     const advancedAnimations = clientData?.advancedAnimations;
     const foilClass = (planType === 'deluxe' && advancedAnimations?.enabled && advancedAnimations?.floatingElements) ? 'deluxe-foil-text' : '';
 
-    const showVideo = heroVideo && heroDisplayMode === 'video';
+    // Safety Fallback: If user provides a video, respect the mode. 
+    // If no mode is set but video exists, we could default to video, 
+    // but the user says it "doesn't change", implying they ARE changing the mode but it's not reflecting.
+    // LOG CRÍTICO para depurar video
+    useEffect(() => {
+        console.log('Hero Background Video State:', {
+            videoUrl: !!heroVideo,
+            displayMode: heroDisplayMode,
+            plan: planType,
+            willShow: !!heroVideo && heroDisplayMode === 'video'
+        });
+    }, [heroVideo, heroDisplayMode, planType]);
+
+    const showVideo = !!heroVideo && heroDisplayMode === 'video';
     const dateObj = clientData?.weddingDate ? getLocalDate(clientData.weddingDate) : new Date(2026, 1, 21);
 
     // Formatting parts for a more modular and elegant design

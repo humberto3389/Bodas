@@ -37,8 +37,8 @@ export function PadrinosSection({ padrinos }: PadrinosSectionProps) {
                 </motion.p>
 
                 {/* Padrinos Grid */}
-                <div className="mt-12">
-                    <div className="flex flex-wrap items-center justify-center gap-10">
+                <div className="mt-12 w-full">
+                    <div className="flex flex-wrap items-center justify-center gap-10 w-full">
                         {activePadrinos.map((padrino, index) => (
                             <motion.div
                                 key={padrino.id}

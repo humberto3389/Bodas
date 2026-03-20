@@ -7,7 +7,18 @@ interface RSVPSectionProps {
     onSubmit: (data: any) => Promise<any>;
 }
 
-export function RSVPSection({ onSubmit }: RSVPSectionProps) {
+export function RSVPSection({ onSubmit, weddingDate }: RSVPSectionProps & { weddingDate?: string }) {
+    console.log('RSVP Received weddingDate:', weddingDate);
+    // Definir fecha límite (15 días antes de la boda)
+    const getDeadline = () => {
+        if (!weddingDate) return "20 de enero";
+        const date = new Date(weddingDate);
+        date.setDate(date.getDate() - 15);
+        return date.toLocaleDateString('es-ES', { day: 'numeric', month: 'long' });
+    };
+
+    const deadlineStr = getDeadline();
+
     const { register, handleSubmit, reset, watch, setValue, formState: { errors, isSubmitting } } = useForm({
         defaultValues: {
             isAttending: true,
@@ -78,7 +89,7 @@ export function RSVPSection({ onSubmit }: RSVPSectionProps) {
                 
                 <p className="font-elegant text-slate-500 text-center mb-16 max-w-xl mx-auto leading-relaxed" style={{ fontSize: 'var(--font-size-lg)' }}>
                     Nos encantaría que nos acompañaras en este día inolvidable. 
-                    Por favor, confírmanos antes del <span className="text-rose-600 font-semibold italic">20 de enero</span>.
+                    Por favor, confírmanos antes del <span className="text-rose-600 font-semibold italic">{deadlineStr}</span>.
                 </p>
 
                 <motion.div
