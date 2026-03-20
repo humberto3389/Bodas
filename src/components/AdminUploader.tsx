@@ -67,7 +67,7 @@ export default function AdminUploader({
       const { countFilesInStorage } = await import('../lib/storage-utils');
 
       // Contar archivos desde storage (fuente de verdad)
-      const currentCount = await countFilesInStorage(clientId, bucket);
+      const currentCount = await countFilesInStorage(clientId, bucket as 'gallery' | 'videos');
       const totalAfterUpload = currentCount + selectedFiles.length;
 
       const { allowed, message: limitMsg } = checkLimit(client, resourceType, totalAfterUpload);
@@ -87,8 +87,8 @@ export default function AdminUploader({
       return
     }
 
-    // Validación de tamaño (Max 50MB para fotos, 350MB para videos)
-    const MAX_SIZE_MB = bucket === 'videos' ? 350 : 50;
+    // Validación de tamaño (Max 50MB para fotos, 350MB para videos, 20MB para audio)
+    const MAX_SIZE_MB = bucket === 'videos' ? 350 : bucket === 'gallery' ? 50 : 20;
     const MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024;
     const oversizedFiles = selectedFiles.filter(f => f.size > MAX_SIZE_BYTES);
 
@@ -168,7 +168,14 @@ export default function AdminUploader({
       <div className="flex justify-between items-center mb-6">
         <div>
           <h3 className="text-xl font-semibold text-neutral-800">{title}</h3>
-          <p className="text-sm text-neutral-500">{files.length} archivo(s)</p>
+          <p className="text-sm text-neutral-500 mb-2">{files.length} archivo(s)</p>
+          <div className="text-xs text-slate-600 bg-slate-50/80 p-2.5 rounded-lg border border-slate-200 inline-block shadow-sm">
+             <span className="font-semibold text-indigo-700 flex items-center gap-1.5 mb-1">
+               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+               Guía de subida:
+             </span>
+             {bucket === 'gallery' ? '📸 Formatos: JPG, PNG, WEBP. Tamaño máximo: 50MB por imagen.' : bucket === 'videos' ? '🎥 Formatos: MP4, WEBM. Tamaño máximo: 350MB por video.' : '🎵 Formatos: MP3, WAV, OGG. Tamaño máximo: 20MB por audio.'}
+          </div>
         </div>
         <div>
           <input

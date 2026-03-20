@@ -338,7 +338,9 @@ export function useClientAdmin() {
         if (!clientId) return null;
         try {
             const folder = bucket === 'gallery' ? 'hero' : bucket === 'audio' ? 'audio' : 'video';
-            const path = `${clientId}/${folder}/${file.name}`;
+            // Validar y limpiar el nombre del archivo para evitar el error "Invalid key" de Supabase
+            const cleanName = file.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-zA-Z0-9.\-_]/g, '_').replace(/_+/g, '_');
+            const path = `${clientId}/${folder}/${Date.now()}_${cleanName}`;
             const { error: uploadError } = await supabase.storage.from(bucket).upload(path, file, { upsert: true });
 
             if (uploadError) throw uploadError;
