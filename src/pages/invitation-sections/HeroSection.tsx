@@ -8,6 +8,7 @@ import { safeNewDate } from '../../lib/timezone-utils';
 
 interface HeroSectionProps {
     clientData: ClientToken;
+    videos?: { name: string; url: string }[];
 }
 
 // Helper para parsear fecha evitando problemas de zona horaria y NaN en móviles
@@ -16,14 +17,17 @@ function getLocalDate(dateInput: string | Date | undefined): Date {
     return new Date(d.getFullYear(), d.getMonth(), d.getDate());
 }
 
-export function HeroSection({ clientData }: HeroSectionProps) {
+export function HeroSection({ clientData, videos }: HeroSectionProps) {
     console.log(clientData); // Debugging clientData
     const groom = clientData?.groomName;
     const bride = clientData?.brideName;
     const couple = clientData?.clientName;
     const planType = clientData?.planType || 'basic';
     const heroBg = clientData?.heroBackgroundUrl || '/boda.avif';
-    const heroVideo = clientData?.heroBackgroundVideoUrl;
+    
+    // SMART FALLBACK: Si no hay video específico del hero, usar el primero de la lista de videos subidos
+    const heroVideo = clientData?.heroBackgroundVideoUrl || (videos && videos.length > 0 ? videos[0].url : undefined);
+    
     const heroDisplayMode = clientData?.heroDisplayMode || 'image';
     const heroVideoAudioEnabled = clientData?.heroVideoAudioEnabled || false;
     const advancedAnimations = clientData?.advancedAnimations;

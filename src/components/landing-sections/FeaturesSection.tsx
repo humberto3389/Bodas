@@ -40,7 +40,7 @@ export const FeaturesSection = ({
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-3 gap-8 items-stretch">
           {(featuresList || defaultFeatures).slice(0, 6).map((feature: any, index: number) => (
             <motion.div
               key={index}
@@ -48,11 +48,11 @@ export const FeaturesSection = ({
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
               viewport={{ once: true }}
-              className="bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm rounded-3xl p-8 border border-white/20 dark:border-slate-700/50"
+              className="bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm rounded-3xl p-8 border border-white/20 dark:border-slate-700/50 flex flex-col h-full text-center hover:bg-white dark:hover:bg-slate-800 transition-all duration-300 shadow-sm hover:shadow-xl"
             >
               <div className="text-4xl mb-6">{feature.icon}</div>
               <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">{feature.title}</h3>
-              <p className="text-slate-600 dark:text-slate-300">{feature.description}</p>
+              <p className="text-slate-600 dark:text-slate-300 leading-relaxed flex-1">{feature.description}</p>
             </motion.div>
           ))}
         </div>

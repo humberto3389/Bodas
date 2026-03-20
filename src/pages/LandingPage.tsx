@@ -382,10 +382,10 @@ export default function LandingPage() {
       </header>
 
       <React.Suspense fallback={<div className="h-64 flex items-center justify-center">Cargando...</div>}>
-        <section className="snap-section flex items-center py-10 md:py-20">
+        <section className="snap-section w-full flex flex-col items-center py-10 md:py-20">
           <DemoSection demoUrl={content?.demoUrl} />
         </section>
-        <section className="snap-section flex items-center py-10 md:py-20">
+        <section className="snap-section w-full flex flex-col items-center py-10 md:py-20">
           <FeaturesSection 
             featuresList={content?.featuresList}
             featuresBadge={content?.featuresBadge}
@@ -394,13 +394,13 @@ export default function LandingPage() {
             featuresDescription={content?.featuresDescription}
           />
         </section>
-        <section className="snap-section flex items-center py-10 md:py-20">
+        <section className="snap-section w-full flex flex-col items-center py-10 md:py-20">
           <TestimonialsSection 
             testimonialsList={content?.testimonialsList}
             testimonialsTitle={content?.testimonialsTitle}
           />
         </section>
-        <section className="snap-section flex items-center py-10 md:py-20">
+        <section className="snap-section w-full flex flex-col items-center py-10 md:py-20">
           <PricingSection 
             plansData={content?.plansData}
             handleWhatsAppClick={handleWhatsAppClick}
@@ -409,8 +409,8 @@ export default function LandingPage() {
       </React.Suspense>
 
       {/* Sección de Contacto - Diseño Elegante */}
-      <section id="contacto" className="py-12 md:py-32 relative snap-section flex items-center">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section id="contacto" className="py-12 md:py-32 relative snap-section w-full flex flex-col items-center">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
