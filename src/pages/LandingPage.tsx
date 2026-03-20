@@ -685,30 +685,23 @@ export default function LandingPage() {
                 {/* Notch */}
                 <div className="absolute top-0 inset-x-0 h-6 bg-slate-900 rounded-b-3xl w-1/2 mx-auto z-20" />
                 
-                {/* Contenido (Imagen del demo) */}
-                {content?.demoMediaUrl?.endsWith('.mp4') || content?.demoMediaUrl?.endsWith('.webm') ? (
-                  <video 
-                    src={content?.demoMediaUrl}
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <img 
-                    src={content?.demoMediaUrl || 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=800&auto=format&fit=crop'} 
-                    alt="Demo Invitación" 
-                    className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-700"
-                  />
-                )}
+                {/* Contenido (Demo Interactivo en iframe) */}
+                <iframe 
+                  src={content?.demoUrl || 'https://suspiro-nupcial.vercel.app/invitacion/humberto-nelida'}
+                  title="Demo de Invitación"
+                  className="w-full h-full border-0 absolute inset-0 z-10"
+                  allow="fullscreen; autoplay"
+                  loading="lazy"
+                />
                 
-                {/* Overlay gradiente */}
-                <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/60 to-transparent" />
                 
-                <div className="absolute bottom-6 inset-x-0 flex justify-center">
-                  <div className="px-4 py-2 bg-white/20 backdrop-blur-md rounded-full text-white text-sm font-medium border border-white/30">
-                    {content?.demoSectionTitle || 'Mira el Demo'}
+                {/* Overlay gradiente inferior para estética (ignora clics para no bloquear el iframe) */}
+                <div className="absolute inset-x-0 bottom-0 h-1/6 bg-gradient-to-t from-black/80 to-transparent pointer-events-none z-20" />
+                
+                <div className="absolute bottom-6 inset-x-0 flex justify-center pointer-events-none z-30">
+                  <div className="px-4 py-2 bg-slate-900/60 backdrop-blur-md rounded-full text-white text-xs font-semibold border border-white/20 shadow-xl flex items-center gap-2">
+                    <span className="w-2 h-2 bg-rose-500 rounded-full animate-pulse" />
+                    Demo Interactivo
                   </div>
                 </div>
               </div>
