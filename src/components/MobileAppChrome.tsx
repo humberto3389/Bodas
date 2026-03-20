@@ -6,7 +6,7 @@ export function MobileAppChrome() {
 
   // Update Theme Color meta tag for native browser integration
   useEffect(() => {
-    const themeColor = '#fdf8f4'; // Matching silk-bg
+    const themeColor = '#000000'; // Black for immersive hero/nav blending
     let meta = document.querySelector('meta[name="theme-color"]');
     if (!meta) {
       meta = document.createElement('meta');
@@ -38,12 +38,13 @@ export function MobileAppChrome() {
 
   // Track active section for menu focus
   useEffect(() => {
-    const sections = ['hero', 'location', 'rsvp', 'gallery'];
+    // Correct logical order in the page: Hero -> Gallery -> Location -> RSVP
+    const sections = ['hero', 'gallery', 'location', 'rsvp'];
 
     const observerOptions = {
       root: null,
-      rootMargin: '-20% 0px -60% 0px', // More sensitive to top/center entrance
-      threshold: 0.1
+      rootMargin: '-50% 0px -50% 0px', // High precision: detect exactly what is at the center line
+      threshold: 0
     };
 
     const observer = new IntersectionObserver((entries) => {

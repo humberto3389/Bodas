@@ -203,7 +203,7 @@ export default function App({ clientData: propData }: AppProps) {
         <div className="bg-noise opacity-[0.03] fixed inset-0 pointer-events-none z-[2]" />
 
         {/* CONTINUOUS CONTENT */}
-        <section id="hero" className="snap-section">
+        <section className="snap-section">
           <HeroSection clientData={client} />
         </section>
 
