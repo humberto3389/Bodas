@@ -72,17 +72,16 @@ export function MobileAppChrome() {
   return (
     <>
       {/* FLOATING BOTTOM NAV (Native App Feel) */}
-      <div className="fixed bottom-0 left-0 right-0 z-[60] flex justify-center pb-6 px-4 md:hidden pointer-events-none sticky-nav-wrapper">
+      <div className="fixed bottom-8 left-0 right-0 z-[60] flex justify-center px-4 md:hidden pointer-events-none">
         <motion.div
           initial={{ y: 100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 1.5, duration: 0.8 }}
-          className="bg-white/70 dark:bg-slate-900/70 backdrop-blur-2xl border border-white/40 dark:border-slate-700/40 shadow-[0_15px_40px_-10px_rgba(0,0,0,0.3)] rounded-full px-7 py-3 flex items-center justify-between pointer-events-auto w-full max-w-sm"
-          style={{ paddingBottom: 'calc(0.75rem + env(safe-area-inset-bottom, 0px))' }}
+          className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-2xl border border-white/40 dark:border-slate-700/40 shadow-[0_20px_50px_-10px_rgba(0,0,0,0.4)] rounded-[32px] px-7 py-4 flex items-center justify-between pointer-events-auto w-full max-w-[340px]"
         >
           <NavIcon label="Inicio" icon="🏠" onClick={() => scrollToSection('hero')} isActive={activeSection === 'hero'} />
           <NavIcon label="Mapa" icon="📍" onClick={() => scrollToSection('location')} isActive={activeSection === 'location'} />
-          <NavIcon label="RSVP" icon="💌" onClick={() => scrollToSection('rsvp')} isActive={activeSection === 'rsvp'} isPrimary />
+          <NavIcon label="RSVP" icon="💌" onClick={() => scrollToSection('rsvp')} isActive={activeSection === 'rsvp'} />
           <NavIcon label="Fotos" icon="📸" onClick={() => scrollToSection('gallery')} isActive={activeSection === 'gallery'} />
         </motion.div>
       </div>

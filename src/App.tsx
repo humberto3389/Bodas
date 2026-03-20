@@ -203,7 +203,9 @@ export default function App({ clientData: propData }: AppProps) {
         <div className="bg-noise opacity-[0.03] fixed inset-0 pointer-events-none z-[2]" />
 
         {/* CONTINUOUS CONTENT */}
-        <HeroSection clientData={client} />
+        <section id="hero" className="snap-section">
+          <HeroSection clientData={client} />
+        </section>
 
         <main className="relative z-10 box-border">
           {/* Versículo e Invitación */}

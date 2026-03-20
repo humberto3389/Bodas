@@ -643,26 +643,6 @@ export default function LandingPage() {
         </div>
       </footer>
 
-      {/* Sticky CTA (Mobile) */}
-      <AnimatePresence>
-        {isMobile && (
-          <motion.div
-            initial={{ opacity: 0, y: 100 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 100 }}
-            className="fixed bottom-4 left-4 right-4 z-50 md:hidden"
-          >
-            <button
-              onClick={handleWhatsAppClick}
-              className="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold py-4 px-6 rounded-2xl shadow-2xl flex items-center justify-center space-x-3 border-2 border-green-400/30 backdrop-blur-md"
-            >
-              <span className="text-lg">
-                {content?.stickyCtaText || '👉 💬 Pedir mi invitación (Desde S/39)'}
-              </span>
-            </button>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   );
 }
