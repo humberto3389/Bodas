@@ -420,6 +420,30 @@ export function useClientAdmin() {
         }
     };
 
+    const submitTestimonial = async (text: string) => {
+        if (!clientId || !clientSession) return { success: false, error: 'No session' };
+        try {
+            const { error } = await supabase
+                .from('client_testimonials')
+                .insert({
+                    client_id: clientId,
+                    client_name: clientSession.clientName || 'Cliente',
+                    wedding_date: clientSession.weddingDate 
+                        ? (clientSession.weddingDate instanceof Date ? clientSession.weddingDate.toISOString().split('T')[0] : String(clientSession.weddingDate).split('T')[0]) 
+                        : null,
+                    text: text,
+                    avatar_url: clientSession.heroBackgroundUrl || null,
+                    status: 'pending'
+                });
+
+            if (error) throw error;
+            return { success: true };
+        } catch (err: any) {
+            console.error('Error submitting testimonial:', err);
+            return { success: false, error: err.message };
+        }
+    };
+
     return {
         authed,
         clientSession,
@@ -440,6 +464,7 @@ export function useClientAdmin() {
         handleUpload,
         handleDelete,
         fetchData,
-        deleteRSVP
+        deleteRSVP,
+        submitTestimonial
     };
 }

@@ -38,12 +38,13 @@ export default function Admin() {
     videoFiles,
     handleUpload,
     handleDelete,
-    deleteRSVP
+    deleteRSVP,
+    submitTestimonial
   } = useClientAdmin()
 
   const [tokenInput, setTokenInput] = useState('')
   const [loginError, setLoginError] = useState('')
-  const [activeTab, setActiveTab] = useState<'content' | 'rsvps' | 'messages' | 'media'>('content')
+  const [activeTab, setActiveTab] = useState<'content' | 'rsvps' | 'messages' | 'media' | 'testimonial'>('content')
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   // Función para contar nombres válidos
@@ -162,6 +163,20 @@ export default function Admin() {
     return `${SYSTEM_CONFIG.DATABASE.SUPABASE_URL}/storage/v1/object/public/${bucket}/${path}`;
   }
 
+  const [testimonialText, setTestimonialText] = useState('')
+  const [isSubmittingTestimonial, setIsSubmittingTestimonial] = useState(false)
+  const [testimonialSubmitted, setTestimonialSubmitted] = useState(false)
+
+  const handleSubmitReview = async () => {
+    if (!testimonialText.trim()) return;
+    setIsSubmittingTestimonial(true);
+    const result = await submitTestimonial(testimonialText);
+    setIsSubmittingTestimonial(false);
+    if (result.success) {
+      setTestimonialSubmitted(true);
+    }
+  };
+
   //--- RENDER ---//
 
   if (!authed) {
@@ -205,6 +220,7 @@ export default function Admin() {
               { id: 'rsvps', label: '👥 RSVPs' },
               { id: 'messages', label: '💌 Mensajes' },
               { id: 'media', label: '🖼️ Media' },
+              { id: 'testimonial', label: '⭐ Reseña' },
             ].map((tab) => (
               <button key={tab.id} onClick={() => setActiveTab(tab.id as any)} className={`px-2 sm:px-6 py-2 sm:py-3 rounded-lg sm:rounded-xl font-semibold transition-all text-xs sm:text-sm whitespace-nowrap flex-shrink-0 min-h-[40px] min-w-max ${activeTab === tab.id ? 'bg-gradient-to-r from-rose-500 to-amber-500 text-white shadow-lg' : 'bg-white/80 text-neutral-700'}`}>
                 {tab.label}
@@ -258,6 +274,55 @@ export default function Admin() {
                   onToggleAudio={(val) => setEditForm({ ...editForm, heroVideoAudioEnabled: val })}
                   onUpgradeClick={() => window.open('https://wa.me/51958315579?text=Deseo%20mejorar%20mi%20plan', '_blank')}
                 />
+              </motion.div>
+            )}
+            {activeTab === 'testimonial' && (
+              <motion.div key="testimonial" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                <div className="bg-white/80 backdrop-blur-xl rounded-3xl p-6 sm:p-8 shadow-xl border border-white/60 max-w-2xl mx-auto">
+                  <div className="text-center mb-8">
+                    <div className="w-16 h-16 bg-amber-100 rounded-2xl flex items-center justify-center text-amber-600 text-2xl mx-auto mb-4">⭐</div>
+                    <h2 className="text-2xl font-bold text-slate-800">¡Tu opinión nos importa!</h2>
+                    <p className="text-slate-600 mt-2">Comparte tu experiencia con Suspiro Nupcial y ayuda a otras parejas.</p>
+                  </div>
+
+                  {testimonialSubmitted ? (
+                    <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-emerald-50 border border-emerald-100 rounded-2xl p-8 text-center">
+                      <div className="text-4xl mb-4">🎉</div>
+                      <h3 className="text-xl font-bold text-emerald-900 mb-2">¡Gracias por tu reseña!</h3>
+                      <p className="text-emerald-700">Tu testimonio ha sido enviado. Será revisado por el administrador antes de publicarse en la página principal.</p>
+                      <button onClick={() => { setTestimonialSubmitted(false); setTestimonialText(''); }} className="mt-6 text-emerald-600 font-semibold hover:underline">Enviar otra reseña</button>
+                    </motion.div>
+                  ) : (
+                    <div className="space-y-6">
+                      <div>
+                        <label className="block text-sm font-medium text-slate-700 mb-2">Mensaje</label>
+                        <textarea
+                          placeholder="Cuéntanos qué te pareció el servicio, tus invitados, el panel de control..."
+                          rows={5}
+                          className="w-full px-4 py-3 rounded-2xl border-2 border-slate-100 focus:border-rose-400 focus:outline-none transition-colors resize-none"
+                          value={testimonialText}
+                          onChange={(e) => setTestimonialText(e.target.value)}
+                        />
+                      </div>
+                      
+                      <div className="bg-amber-50 rounded-xl p-4 flex gap-3 items-start border border-amber-100">
+                        <div className="text-amber-500 mt-0.5">ℹ️</div>
+                        <p className="text-xs text-amber-800">
+                          Tu reseña será revisada por el administrador antes de ser publicada. 
+                          Usaremos tu nombre de cliente y tu foto principal (si has subido una) para el testimonio.
+                        </p>
+                      </div>
+
+                      <button
+                        onClick={handleSubmitReview}
+                        disabled={isSubmittingTestimonial || !testimonialText.trim()}
+                        className={`w-full font-bold px-6 py-4 rounded-2xl shadow-lg transition-all ${isSubmittingTestimonial || !testimonialText.trim() ? 'bg-slate-200 text-slate-400 cursor-not-allowed' : 'bg-gradient-to-r from-rose-500 to-amber-500 text-white hover:scale-[1.02]'}`}
+                      >
+                        {isSubmittingTestimonial ? 'Enviando...' : '🚀 Enviar Reseña'}
+                      </button>
+                    </div>
+                  )}
+                </div>
               </motion.div>
             )}
           </AnimatePresence>

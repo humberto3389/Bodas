@@ -6,6 +6,7 @@ import { useConfirmDialog } from '../hooks/useConfirmDialog.tsx';
 import { useMasterAdmin } from '../hooks/useMasterAdmin';
 
 import { SYSTEM_CONFIG, getClientUrl } from '../lib/config';
+import { supabase } from '../lib/supabase';
 import { loadLandingPageContent, saveLandingPageContent, type LandingPageContent } from '../lib/landing-page-content';
 
 // Función auxiliar para verificar si un usuario es master admin
@@ -440,6 +441,209 @@ const ClientListView = ({
   </motion.div>
 );
 
+
+// Vista previa del contenido de la landing page
+const LandingPageContentPreview = ({ content }: { content: LandingPageContent }) => {
+  return (
+    <div className="min-h-full bg-gradient-to-b from-rose-50 via-white to-white">
+      <section className="px-6 py-10 border-b border-slate-200">
+        <div className="max-w-5xl mx-auto text-center">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-100 text-rose-800 text-sm font-medium mb-4">
+            {content.heroBadgeText}
+          </div>
+          <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-slate-900">
+            <span>{content.heroTitleLine1} </span>
+            <span className="bg-gradient-to-r from-rose-600 to-amber-600 bg-clip-text text-transparent">{content.heroTitleHighlight}</span>
+            <span> {content.heroTitleLine2}</span>
+            <div>{content.heroTitleLine3}</div>
+          </h1>
+          <p className="mt-4 text-slate-600 max-w-3xl mx-auto">{content.heroDescription}</p>
+          <div className="mt-6 flex items-center justify-center gap-3">
+            <button className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-rose-500 to-amber-500 text-white font-semibold shadow">
+              {content.heroButton1Text}
+            </button>
+            <button className="px-5 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-700 font-semibold shadow-sm">
+              {content.heroButton2Text}
+            </button>
+          </div>
+          {content.heroMicrocopy && (
+            <p className="mt-4 text-sm font-medium text-slate-500 flex items-center justify-center gap-2">
+              <span className="text-amber-500">✨</span>
+              {content.heroMicrocopy}
+            </p>
+          )}
+        </div>
+      </section>
+
+      {/* Demo Section Preview */}
+      <section className="px-6 py-10 bg-slate-50">
+        <div className="max-w-5xl mx-auto text-center">
+          <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-6">{content.demoSectionTitle || 'Sección Demo'}</h2>
+          <div className="mx-auto max-w-sm rounded-[2rem] border-[4px] border-slate-800 bg-slate-800 aspect-[9/16] flex items-center justify-center text-slate-400 relative overflow-hidden shadow-xl">
+             {content.demoMediaUrl ? (
+               <img src={content.demoMediaUrl} alt="Demo" className="absolute inset-0 w-full h-full object-cover opacity-60" />
+             ) : (
+               <span>Preview Media</span>
+             )}
+             <button className="relative z-10 bg-white/90 backdrop-blur text-slate-900 font-bold py-2 px-4 rounded-full text-sm shadow-md">
+                {content.demoCtaText || 'Ver Demo'}
+             </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Control Section Preview */}
+      <section className="px-6 py-10 border-t border-slate-200">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-2xl font-bold text-slate-900 mb-3">{content.controlSectionTitle || 'Control Panel'}</h2>
+          <p className="text-slate-600 mb-6 max-w-2xl mx-auto">{content.controlSectionText}</p>
+          <div className="bg-rose-50/50 p-6 rounded-xl border border-rose-100 text-sm text-slate-700 max-w-md mx-auto line-dashed">
+            [Preview Panel de Control]
+          </div>
+        </div>
+      </section>
+
+      <section className="px-6 py-10">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-100 text-amber-800 text-sm font-medium mb-3">
+              {content.featuresBadge}
+            </div>
+            <h2 className="text-2xl md:text-3xl font-bold text-slate-900">
+              <span>{content.featuresTitleLine1} </span>
+              <span className="bg-gradient-to-r from-rose-600 to-amber-600 bg-clip-text text-transparent">{content.featuresTitleHighlight}</span>
+            </h2>
+            <p className="mt-3 text-slate-600 max-w-3xl mx-auto">{content.featuresDescription}</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {content.featuresList.map((f, i) => (
+              <div key={i} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                <div className="text-2xl mb-2">{f.icon}</div>
+                <div className="font-semibold text-slate-900">{f.title}</div>
+                <div className="text-slate-600 text-sm mt-1">{f.description}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials Section Preview */}
+      <section className="px-6 py-10 border-t border-slate-200 bg-slate-50">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-8">
+            <h2 className="text-2xl md:text-3xl font-bold text-slate-900">
+              {content.testimonialsTitle || 'Lo que dicen las parejas'}
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {(content.testimonialsList || []).map((t, i) => (
+              <div key={i} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm flex flex-col justify-between">
+                <div>
+                  <div className="flex text-amber-500 mb-3 text-sm">★★★★★</div>
+                  <div className="italic text-slate-600 mb-4">"{t.text}"</div>
+                </div>
+                <div className="flex items-center gap-3 mt-4">
+                  {t.avatarUrl ? (
+                    <img src={t.avatarUrl} alt={t.name} className="w-10 h-10 rounded-full object-cover bg-slate-200" />
+                  ) : (
+                    <div className="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-slate-500 font-bold border border-slate-300">
+                      {t.name.charAt(0)}
+                    </div>
+                  )}
+                  <div>
+                    <div className="font-bold text-slate-900 text-sm">{t.name}</div>
+                    <div className="text-slate-500 text-xs">{t.date}</div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="px-6 py-10 border-t border-slate-200">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-100 text-rose-800 text-sm font-medium mb-3">
+              {content.plansBadge}
+            </div>
+            <h2 className="text-2xl md:text-3xl font-bold text-slate-900">
+              <span>{content.plansTitleLine1} </span>
+              <span className="bg-gradient-to-r from-rose-600 to-amber-600 bg-clip-text text-transparent">{content.plansTitleHighlight}</span>
+            </h2>
+            <p className="mt-3 text-slate-600 max-w-3xl mx-auto">{content.plansDescription}</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {(['basic', 'premium', 'deluxe'] as const).map((tier) => {
+              const p = content.plansData[tier];
+              const popular = tier === 'premium';
+              return (
+                <div key={tier} className={`rounded-2xl border ${popular ? 'border-amber-400 ring-2 ring-amber-400/20' : 'border-slate-200'} bg-white p-5 shadow-sm relative ${popular ? '-mt-4' : ''}`}>
+                  {popular && content.pricingHighlightLabel && (
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-gradient-to-r from-amber-400 to-amber-500 text-white text-[10px] font-bold rounded-full whitespace-nowrap shadow-sm uppercase tracking-wider">
+                      {content.pricingHighlightLabel}
+                    </div>
+                  )}
+                  <div className="flex items-center justify-between">
+                    <div className="font-bold text-slate-900">{p.name}</div>
+                    {popular && content.plansPopularBadge && (
+                      <span className="px-2 py-1 text-[10px] uppercase font-bold tracking-wider rounded-full bg-rose-100 text-rose-800">{content.plansPopularBadge}</span>
+                    )}
+                  </div>
+                  <div className="mt-2 text-slate-700 text-sm">{p.duration} días • {p.maxGuests >= 999999 ? 'Invitados ILIMITADOS' : `${p.maxGuests} invitados`}</div>
+                  <div className="mt-2 text-2xl font-extrabold bg-gradient-to-r from-rose-600 to-amber-600 bg-clip-text text-transparent">${p.price}</div>
+                  <ul className="mt-3 space-y-1 text-slate-600 text-sm">
+                    {p.features.map((feat, i) => (
+                      <li key={i}>• {feat}</li>
+                    ))}
+                  </ul>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      <section className="px-6 py-10 border-t border-slate-200">
+        <div className="max-w-5xl mx-auto text-center">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-100 text-amber-800 text-sm font-medium mb-3">
+            {content.contactBadge}
+          </div>
+          <h2 className="text-2xl md:text-3xl font-bold text-slate-900">
+            <span>{content.contactTitleLine1} </span>
+            <span className="bg-gradient-to-r from-rose-600 to-amber-600 bg-clip-text text-transparent">{content.contactTitleHighlight}</span>
+          </h2>
+          <p className="mt-3 text-slate-600 max-w-3xl mx-auto">{content.contactDescription}</p>
+        </div>
+      </section>
+
+      <footer className="px-6 py-10 border-t border-slate-200 bg-white relative pb-24">
+        <div className="max-w-5xl mx-auto">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div>
+              <div className="text-xl font-bold text-slate-900">{content.footerBrandName}</div>
+              <div className="text-slate-600 text-sm mt-1">{content.footerDescription}</div>
+            </div>
+            <div className="text-slate-700 text-sm">
+              <div className="font-medium">Contacto</div>
+              <div>{content.footerEmail}</div>
+              <div>{content.footerPhone}</div>
+            </div>
+          </div>
+          <div className="mt-6 text-slate-500 text-xs">{content.footerCopyrightText}</div>
+        </div>
+
+        {/* Sticky CTA Preview */}
+        {content.stickyCtaText && (
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-[#25D366] text-white px-6 py-3 rounded-full font-bold shadow-lg text-sm flex items-center gap-2 max-w-[90%] w-full sm:w-auto justify-center">
+            <span>📱</span> {content.stickyCtaText}
+          </div>
+        )}
+      </footer>
+    </div>
+  );
+};
+
 // Componente para editar el Landing Page
 const LandingPageEditor = () => {
   const [content, setContent] = useState<LandingPageContent | null>(null);
@@ -447,10 +651,21 @@ const LandingPageEditor = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [viewMode, setViewMode] = useState<'edit' | 'preview'>('edit');
   const [notification, setNotification] = useState<{ type: 'success' | 'error', message: string } | null>(null);
+  const [pendingTestimonials, setPendingTestimonials] = useState<any[]>([]);
 
   useEffect(() => {
     loadContent();
+    loadPending();
   }, []);
+
+  const loadPending = async () => {
+    const { data } = await supabase
+      .from('client_testimonials')
+      .select('*')
+      .eq('status', 'pending')
+      .order('created_at', { ascending: false });
+    if (data) setPendingTestimonials(data);
+  };
 
   const loadContent = async () => {
     setIsLoading(true);
@@ -531,6 +746,54 @@ const LandingPageEditor = () => {
     setContent({ ...content, testimonialsList: newList });
   };
 
+  const approvePending = async (t: any) => {
+    if (!content) return;
+    
+    // 1. Actualizar estado en la tabla de testimonios
+    const { error: updateError } = await supabase
+      .from('client_testimonials')
+      .update({ status: 'approved' })
+      .eq('id', t.id);
+
+    if (updateError) {
+      setNotification({ type: 'error', message: 'Error al aprobar el testimonio' });
+      return;
+    }
+
+    // 2. Agregar a la lista dinámica de la landing page
+    const newList = [...(content.testimonialsList || []), {
+      name: t.client_name,
+      date: t.wedding_date || '',
+      text: t.text,
+      avatarUrl: t.avatar_url || ''
+    }];
+    
+    const updatedContent = { ...content, testimonialsList: newList };
+    setContent(updatedContent);
+
+    // 3. Guardar cambios en la landing page automáticamente
+    const saveSuccess = await saveLandingPageContent(updatedContent);
+    
+    if (saveSuccess) {
+      setNotification({ type: 'success', message: 'Testimonio aprobado y publicado' });
+      loadPending(); // Refrescar lista de pendientes
+    } else {
+      setNotification({ type: 'error', message: 'Testimonio aprobado pero hubo un error al guardar la Landing Page' });
+    }
+  };
+
+  const rejectPending = async (id: string) => {
+    const { error } = await supabase
+      .from('client_testimonials')
+      .update({ status: 'rejected' })
+      .eq('id', id);
+
+    if (!error) {
+      setNotification({ type: 'success', message: 'Testimonio rechazado' });
+      loadPending();
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -599,6 +862,51 @@ const LandingPageEditor = () => {
 
       {viewMode === 'edit' ? (
         <div className="space-y-6">
+          {/* Testimonios Pendientes de Clientes (Novedad) */}
+          {pendingTestimonials.length > 0 && (
+            <div className="bg-amber-50 border border-amber-200 rounded-2xl p-6 shadow-sm">
+              <div className="flex items-center gap-2 mb-4">
+                <span className="text-xl">⭐</span>
+                <h3 className="text-lg font-bold text-amber-900">Nuevos Testimonios por Revisar ({pendingTestimonials.length})</h3>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {pendingTestimonials.map((t) => (
+                  <div key={t.id} className="bg-white rounded-xl p-4 border border-amber-100 shadow-sm flex flex-col justify-between">
+                    <div>
+                      <div className="flex items-center gap-3 mb-2">
+                        {t.avatar_url ? (
+                          <img src={t.avatar_url} className="w-8 h-8 rounded-full border border-slate-200" alt="" />
+                        ) : (
+                          <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-xs font-bold text-slate-400">
+                            {t.client_name.charAt(0)}
+                          </div>
+                        )}
+                        <div>
+                          <p className="font-bold text-slate-900 text-sm">{t.client_name}</p>
+                          <p className="text-slate-500 text-xs">{t.wedding_date}</p>
+                        </div>
+                      </div>
+                      <p className="text-slate-700 text-sm italic mb-4">"{t.text}"</p>
+                    </div>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => approvePending(t)}
+                        className="flex-1 bg-emerald-500 text-white text-xs font-bold py-2 rounded-lg hover:bg-emerald-600 transition-colors"
+                      >
+                        Aprobar y Publicar
+                      </button>
+                      <button
+                        onClick={() => rejectPending(t.id)}
+                        className="px-3 py-2 bg-slate-100 text-slate-600 text-xs font-bold rounded-lg hover:bg-slate-200 transition-colors"
+                      >
+                        Rechazar
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
           {/* Sección Hero */}
           <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
             <h3 className="text-xl font-bold text-slate-800 mb-4">Sección Hero</h3>
@@ -1312,206 +1620,6 @@ const LandingPageEditor = () => {
   );
 };
 
-const LandingPageContentPreview = ({ content }: { content: LandingPageContent }) => {
-  return (
-    <div className="min-h-full bg-gradient-to-b from-rose-50 via-white to-white">
-      <section className="px-6 py-10 border-b border-slate-200">
-        <div className="max-w-5xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-100 text-rose-800 text-sm font-medium mb-4">
-            {content.heroBadgeText}
-          </div>
-          <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-slate-900">
-            <span>{content.heroTitleLine1} </span>
-            <span className="bg-gradient-to-r from-rose-600 to-amber-600 bg-clip-text text-transparent">{content.heroTitleHighlight}</span>
-            <span> {content.heroTitleLine2}</span>
-            <div>{content.heroTitleLine3}</div>
-          </h1>
-          <p className="mt-4 text-slate-600 max-w-3xl mx-auto">{content.heroDescription}</p>
-          <div className="mt-6 flex items-center justify-center gap-3">
-            <button className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-rose-500 to-amber-500 text-white font-semibold shadow">
-              {content.heroButton1Text}
-            </button>
-            <button className="px-5 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-700 font-semibold shadow-sm">
-              {content.heroButton2Text}
-            </button>
-          </div>
-          {content.heroMicrocopy && (
-            <p className="mt-4 text-sm font-medium text-slate-500 flex items-center justify-center gap-2">
-              <span className="text-amber-500">✨</span>
-              {content.heroMicrocopy}
-            </p>
-          )}
-        </div>
-      </section>
-
-      {/* Demo Section Preview */}
-      <section className="px-6 py-10 bg-slate-50">
-        <div className="max-w-5xl mx-auto text-center">
-          <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-6">{content.demoSectionTitle || 'Sección Demo'}</h2>
-          <div className="mx-auto max-w-sm rounded-[2rem] border-[4px] border-slate-800 bg-slate-800 aspect-[9/16] flex items-center justify-center text-slate-400 relative overflow-hidden shadow-xl">
-             {content.demoMediaUrl ? (
-               <img src={content.demoMediaUrl} alt="Demo" className="absolute inset-0 w-full h-full object-cover opacity-60" />
-             ) : (
-               <span>Preview Media</span>
-             )}
-             <button className="relative z-10 bg-white/90 backdrop-blur text-slate-900 font-bold py-2 px-4 rounded-full text-sm shadow-md">
-                {content.demoCtaText || 'Ver Demo'}
-             </button>
-          </div>
-        </div>
-      </section>
-
-      {/* Control Section Preview */}
-      <section className="px-6 py-10 border-t border-slate-200">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-2xl font-bold text-slate-900 mb-3">{content.controlSectionTitle || 'Control Panel'}</h2>
-          <p className="text-slate-600 mb-6 max-w-2xl mx-auto">{content.controlSectionText}</p>
-          <div className="bg-rose-50/50 p-6 rounded-xl border border-rose-100 text-sm text-slate-700 max-w-md mx-auto line-dashed">
-            [Preview Panel de Control]
-          </div>
-        </div>
-      </section>
-
-      <section className="px-6 py-10">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-100 text-amber-800 text-sm font-medium mb-3">
-              {content.featuresBadge}
-            </div>
-            <h2 className="text-2xl md:text-3xl font-bold text-slate-900">
-              <span>{content.featuresTitleLine1} </span>
-              <span className="bg-gradient-to-r from-rose-600 to-amber-600 bg-clip-text text-transparent">{content.featuresTitleHighlight}</span>
-            </h2>
-            <p className="mt-3 text-slate-600 max-w-3xl mx-auto">{content.featuresDescription}</p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {content.featuresList.map((f, i) => (
-              <div key={i} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-                <div className="text-2xl mb-2">{f.icon}</div>
-                <div className="font-semibold text-slate-900">{f.title}</div>
-                <div className="text-slate-600 text-sm mt-1">{f.description}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Testimonials Section Preview */}
-      <section className="px-6 py-10 border-t border-slate-200 bg-slate-50">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-8">
-            <h2 className="text-2xl md:text-3xl font-bold text-slate-900">
-              {content.testimonialsTitle || 'Lo que dicen las parejas'}
-            </h2>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {(content.testimonialsList || []).map((t, i) => (
-              <div key={i} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm flex flex-col justify-between">
-                <div>
-                  <div className="flex text-amber-500 mb-3 text-sm">★★★★★</div>
-                  <div className="italic text-slate-600 mb-4">"{t.text}"</div>
-                </div>
-                <div className="flex items-center gap-3 mt-4">
-                  {t.avatarUrl ? (
-                    <img src={t.avatarUrl} alt={t.name} className="w-10 h-10 rounded-full object-cover bg-slate-200" />
-                  ) : (
-                    <div className="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-slate-500 font-bold border border-slate-300">
-                      {t.name.charAt(0)}
-                    </div>
-                  )}
-                  <div>
-                    <div className="font-bold text-slate-900 text-sm">{t.name}</div>
-                    <div className="text-slate-500 text-xs">{t.date}</div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="px-6 py-10 border-t border-slate-200">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-100 text-rose-800 text-sm font-medium mb-3">
-              {content.plansBadge}
-            </div>
-            <h2 className="text-2xl md:text-3xl font-bold text-slate-900">
-              <span>{content.plansTitleLine1} </span>
-              <span className="bg-gradient-to-r from-rose-600 to-amber-600 bg-clip-text text-transparent">{content.plansTitleHighlight}</span>
-            </h2>
-            <p className="mt-3 text-slate-600 max-w-3xl mx-auto">{content.plansDescription}</p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {(['basic', 'premium', 'deluxe'] as const).map((tier) => {
-              const p = content.plansData[tier];
-              const popular = tier === 'premium';
-              return (
-                <div key={tier} className={`rounded-2xl border ${popular ? 'border-amber-400 ring-2 ring-amber-400/20' : 'border-slate-200'} bg-white p-5 shadow-sm relative ${popular ? '-mt-4' : ''}`}>
-                  {popular && content.pricingHighlightLabel && (
-                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-gradient-to-r from-amber-400 to-amber-500 text-white text-[10px] font-bold rounded-full whitespace-nowrap shadow-sm uppercase tracking-wider">
-                      {content.pricingHighlightLabel}
-                    </div>
-                  )}
-                  <div className="flex items-center justify-between">
-                    <div className="font-bold text-slate-900">{p.name}</div>
-                    {popular && content.plansPopularBadge && (
-                      <span className="px-2 py-1 text-[10px] uppercase font-bold tracking-wider rounded-full bg-rose-100 text-rose-800">{content.plansPopularBadge}</span>
-                    )}
-                  </div>
-                  <div className="mt-2 text-slate-700 text-sm">{p.duration} días • {p.maxGuests >= 999999 ? 'Invitados ILIMITADOS' : `${p.maxGuests} invitados`}</div>
-                  <div className="mt-2 text-2xl font-extrabold bg-gradient-to-r from-rose-600 to-amber-600 bg-clip-text text-transparent">${p.price}</div>
-                  <ul className="mt-3 space-y-1 text-slate-600 text-sm">
-                    {p.features.map((feat, i) => (
-                      <li key={i}>• {feat}</li>
-                    ))}
-                  </ul>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      <section className="px-6 py-10 border-t border-slate-200">
-        <div className="max-w-5xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-100 text-amber-800 text-sm font-medium mb-3">
-            {content.contactBadge}
-          </div>
-          <h2 className="text-2xl md:text-3xl font-bold text-slate-900">
-            <span>{content.contactTitleLine1} </span>
-            <span className="bg-gradient-to-r from-rose-600 to-amber-600 bg-clip-text text-transparent">{content.contactTitleHighlight}</span>
-          </h2>
-          <p className="mt-3 text-slate-600 max-w-3xl mx-auto">{content.contactDescription}</p>
-        </div>
-      </section>
-
-      <footer className="px-6 py-10 border-t border-slate-200 bg-white relative pb-24">
-        <div className="max-w-5xl mx-auto">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div>
-              <div className="text-xl font-bold text-slate-900">{content.footerBrandName}</div>
-              <div className="text-slate-600 text-sm mt-1">{content.footerDescription}</div>
-            </div>
-            <div className="text-slate-700 text-sm">
-              <div className="font-medium">Contacto</div>
-              <div>{content.footerEmail}</div>
-              <div>{content.footerPhone}</div>
-            </div>
-          </div>
-          <div className="mt-6 text-slate-500 text-xs">{content.footerCopyrightText}</div>
-        </div>
-
-        {/* Sticky CTA Preview */}
-        {content.stickyCtaText && (
-          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-[#25D366] text-white px-6 py-3 rounded-full font-bold shadow-lg text-sm flex items-center gap-2 max-w-[90%] w-full sm:w-auto justify-center">
-            <span>📱</span> {content.stickyCtaText}
-          </div>
-        )}
-      </footer>
-    </div>
-  );
-};
 
 export default function MasterAdmin() {
   const navigate = useNavigate();
