@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import AdminUploader from '../../components/AdminUploader';
 import { TimePicker } from '../../components/TimePicker';
 import { PadrinosManager } from './PadrinosManager';
+import { AdminHelpTooltip } from '../../components/AdminHelpTooltip';
 import type { MediaFile } from '../../hooks/useUploader';
 import { getEffectivePlan } from '../../lib/plan-limits';
 
@@ -93,7 +94,10 @@ export function ContentEditor({
 
                     <div className="space-y-3 sm:space-y-5">
                         <div>
-                            <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5 sm:mb-2">Nombre del evento</label>
+                            <label className="flex items-center gap-1.5 text-xs sm:text-sm font-medium text-slate-700 mb-1.5 sm:mb-2">
+                                Nombre del evento
+                                <AdminHelpTooltip content="Este es el nombre título principal de tu panel y el nombre de referencia de tu invitación." />
+                            </label>
                             <input
                                 type="text"
                                 name="clientName"
@@ -106,7 +110,10 @@ export function ContentEditor({
 
                         <div className="grid grid-cols-2 gap-2 sm:gap-4">
                             <div>
-                                <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5 sm:mb-2">Novio</label>
+                                <label className="flex items-center gap-1.5 text-xs sm:text-sm font-medium text-slate-700 mb-1.5 sm:mb-2">
+                                    Novio
+                                    <AdminHelpTooltip content="Nombre del novio tal como aparecerá en la invitación." />
+                                </label>
                                 <input
                                     type="text"
                                     name="groomName"
@@ -116,7 +123,10 @@ export function ContentEditor({
                                 />
                             </div>
                             <div>
-                                <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5 sm:mb-2">Novia</label>
+                                <label className="flex items-center gap-1.5 text-xs sm:text-sm font-medium text-slate-700 mb-1.5 sm:mb-2">
+                                    Novia
+                                    <AdminHelpTooltip content="Nombre de la novia tal como aparecerá en la invitación." />
+                                </label>
                                 <input
                                     type="text"
                                     name="brideName"
@@ -139,7 +149,10 @@ export function ContentEditor({
                     <div className="space-y-3 sm:space-y-5">
                         <div className="grid grid-cols-2 gap-2 sm:gap-4">
                             <div>
-                                <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5 sm:mb-2">Fecha</label>
+                                <label className="flex items-center gap-1.5 text-xs sm:text-sm font-medium text-slate-700 mb-1.5 sm:mb-2">
+                                    Fecha
+                                    <AdminHelpTooltip content="La fecha principal de la boda. Se usará para el contador de cuenta regresiva." />
+                                </label>
                                 <input
                                     type="date"
                                     name="weddingDate"
@@ -187,7 +200,10 @@ export function ContentEditor({
                     {!editForm.isCeremonySameAsReception ? (
                         <div className="space-y-3 sm:space-y-5">
                             <div>
-                                <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5 sm:mb-2">Lugar</label>
+                                <label className="flex items-center gap-1.5 text-xs sm:text-sm font-medium text-slate-700 mb-1.5 sm:mb-2">
+                                    Lugar
+                                    <AdminHelpTooltip content="Nombre del templo, iglesia o local donde será la ceremonia." />
+                                </label>
                                 <input
                                     type="text"
                                     name="churchName"
@@ -289,7 +305,10 @@ export function ContentEditor({
                     {!editForm.isReceptionSameAsCeremony ? (
                         <div className="space-y-3 sm:space-y-5">
                             <div>
-                                <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5 sm:mb-2">Lugar</label>
+                                <label className="flex items-center gap-1.5 text-xs sm:text-sm font-medium text-slate-700 mb-1.5 sm:mb-2">
+                                    Lugar
+                                    <AdminHelpTooltip content="Nombre del salón, hotel o local donde será la recepción/fiesta." />
+                                </label>
                                 <input
                                     type="text"
                                     name="receptionLocationName"
@@ -381,7 +400,10 @@ export function ContentEditor({
                         <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 md:gap-6">
                             <div className="space-y-3 sm:space-y-5">
                                 <div>
-                                    <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5 sm:mb-2">Versículo o poema</label>
+                                    <label className="flex items-center gap-1.5 text-xs sm:text-sm font-medium text-slate-700 mb-1.5 sm:mb-2">
+                                        Versículo o poema
+                                        <AdminHelpTooltip content="Un texto corto que aparecerá de forma elegante al inicio de la invitación." />
+                                    </label>
                                     <textarea
                                         name="bibleVerse"
                                         value={editForm.bibleVerse}
@@ -421,7 +443,10 @@ export function ContentEditor({
                                             ⚠️
                                         </div>
                                         <div>
-                                            <p className="text-xs font-black text-slate-900 uppercase tracking-widest">Alerta de Emergencia</p>
+                                            <div className="flex items-center gap-1.5">
+                                                <p className="text-xs font-black text-slate-900 uppercase tracking-widest">Alerta de Emergencia</p>
+                                                <AdminHelpTooltip content="Muestra un aviso importante (ej. cambio de local o clima) apenas el invitado abra la invitación." />
+                                            </div>
                                             <p className="text-[10px] text-slate-500 font-medium">Activar aviso para los invitados</p>
                                         </div>
                                     </div>
@@ -438,7 +463,10 @@ export function ContentEditor({
                                 </label>
 
                                 <div>
-                                    <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5 sm:mb-2 text-rose-600">Motivo del cambio (Opcional)</label>
+                                    <label className="flex items-center gap-1.5 text-xs sm:text-sm font-medium text-slate-700 mb-1.5 sm:mb-2 text-rose-600">
+                                        Motivo del cambio (Opcional)
+                                        <AdminHelpTooltip content="Este texto aparecerá dentro del cuadro de aviso urgente. Úsalo para explicar brevemente qué cambió." />
+                                    </label>
                                     <textarea
                                         name="changeExplanation"
                                         value={editForm.changeExplanation}
@@ -488,7 +516,10 @@ export function ContentEditor({
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         {/* Imagen de portada */}
                         <div className="md:col-span-2 space-y-4">
-                            <label className="block text-sm font-medium text-slate-700">Imagen principal</label>
+                            <label className="flex items-center gap-1.5 text-sm font-medium text-slate-700">
+                                Imagen principal
+                                <AdminHelpTooltip content="Esta es la gran foto de bienvenida que tus invitados verán apenas abran la invitación." />
+                            </label>
                             <div className="bg-slate-50 rounded-xl border-2 border-dashed border-slate-200 p-4">
                                 <AdminUploader
                                     title=""
@@ -511,7 +542,10 @@ export function ContentEditor({
                         {/* Audio */}
                         <div className="md:col-span-1 space-y-4">
                             <div className="flex items-center justify-between">
-                                <label className="block text-sm font-medium text-slate-700">Música de fondo</label>
+                                <label className="flex items-center gap-1.5 text-sm font-medium text-slate-700">
+                                    Música de fondo
+                                    <AdminHelpTooltip content="Sube el archivo MP3 de tu canción favorita. Se reproducirá automáticamente al abrir la invitación." />
+                                </label>
                                 {!isPremium && (
                                     <button
                                         onClick={onUpgradeClick}
@@ -542,7 +576,10 @@ export function ContentEditor({
                         {/* Video */}
                         <div className="md:col-span-1 space-y-4">
                             <div className="flex items-center justify-between">
-                                <label className="block text-sm font-medium text-slate-700">Video de portada</label>
+                                <label className="flex items-center gap-1.5 text-sm font-medium text-slate-700">
+                                    Video de portada
+                                    <AdminHelpTooltip content="Si tienes el plan Deluxe, puedes mostrar un video cinemático en lugar de una foto de portada." />
+                                </label>
                                 {!isDeluxe && (
                                     <button
                                         onClick={onUpgradeClick}

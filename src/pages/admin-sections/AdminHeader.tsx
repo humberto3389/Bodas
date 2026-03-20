@@ -8,9 +8,10 @@ interface AdminHeaderProps {
     setMobileMenuOpen: (open: boolean) => void;
     logout: () => void;
     onUpgradeClick: () => void;
+    onTutorialClick?: () => void;
 }
 
-export function AdminHeader({ clientName, planType, mobileMenuOpen, setMobileMenuOpen, logout, onUpgradeClick }: AdminHeaderProps) {
+export function AdminHeader({ clientName, planType, mobileMenuOpen, setMobileMenuOpen, logout, onUpgradeClick, onTutorialClick }: AdminHeaderProps) {
     const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
     useEffect(() => {
@@ -46,7 +47,6 @@ export function AdminHeader({ clientName, planType, mobileMenuOpen, setMobileMen
                             </p>
                         </div>
                     </div>
-
                     <div className="flex items-center gap-2 sm:gap-3">
                         {!isMobile && (
                             <div className="text-right mr-2 sm:mr-4">
@@ -68,6 +68,19 @@ export function AdminHeader({ clientName, planType, mobileMenuOpen, setMobileMen
                                     </motion.button>
                                 )}
                             </div>
+                        )}
+                        
+                        {onTutorialClick && (
+                            <motion.button
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                onClick={onTutorialClick}
+                                className="flex items-center gap-2 px-3 py-2 bg-slate-50 text-slate-600 rounded-xl hover:bg-slate-100 transition-colors border border-slate-200"
+                                title="Ver tutorial"
+                            >
+                                <span className="text-lg">💡</span>
+                                <span className="text-xs font-bold hidden sm:inline uppercase tracking-widest">Guía</span>
+                            </motion.button>
                         )}
                     </div>
 

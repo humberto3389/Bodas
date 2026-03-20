@@ -39,25 +39,25 @@ export function AdminTour({ clientId, clientName, setActiveTab }: AdminTourProps
       icon: "✨"
     },
     {
-      title: "1. Textos y Detalles",
+      title: "1. Contenido",
       content: "En la pestaña 'Contenido' vas a escribir la frase de bienvenida, los lugares de la ceremonia y la fecha exacta.",
       action: () => setActiveTab('content'),
       icon: "✍️"
     },
     {
-      title: "2. Galería y Videos",
+      title: "2. Multimedia",
       content: "La pestaña 'Multimedia' es donde ocurre la magia. Aquí subirás tu foto de portada, la música de fondo y los videos de su historia.",
       action: () => setActiveTab('media'),
       icon: "📸"
     },
     {
-      title: "3. Lista de Invitados",
-      content: "En 'RSVP' verás automáticamente las confirmaciones de las personas que asistirán. ¡Llevarás el control exacto de tús invitados!",
+      title: "3. RSVPs",
+      content: "En 'RSVP' verás automáticamente las confirmaciones de las personas que asistirán. ¡Llevarás el control exacto de tus invitados!",
       action: () => setActiveTab('rsvps'),
       icon: "📋"
     },
     {
-      title: "4. Libro de Firmas",
+      title: "4. Mensajes",
       content: "Tus amigos y familiares te dejarán mensajes de cariño y buenos deseos. Podrás leerlos y administrarlos en la pestaña 'Mensajes'.",
       action: () => setActiveTab('messages'),
       icon: "💌"

@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { getClientUrl } from '../../lib/config';
+import { AdminHelpTooltip } from '../../components/AdminHelpTooltip';
 
 interface ShareLinkProps {
     subdomain?: string;
@@ -40,7 +41,10 @@ export function ShareLink({ subdomain }: ShareLinkProps) {
                         </svg>
                     </div>
                     <div>
-                        <h2 className="text-lg font-semibold text-slate-900 mb-1">Compartir invitación</h2>
+                        <div className="flex items-center gap-1.5 mb-1">
+                            <h2 className="text-lg font-semibold text-slate-900">Compartir invitación</h2>
+                            <AdminHelpTooltip content="Este es el enlace que debes enviar a tus invitados por WhatsApp o redes sociales." />
+                        </div>
                         <p className="text-sm text-slate-500">Envía este enlace a tus invitados para que puedan ver la invitación</p>
                     </div>
                 </div>

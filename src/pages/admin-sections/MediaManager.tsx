@@ -1,7 +1,8 @@
 import { motion } from 'framer-motion';
 import AdminUploader from '../../components/AdminUploader';
 import type { MediaFile } from '../../hooks/useUploader';
-import { PLAN_LIMITS, getMaxDurationText, type PlanType, getEffectivePlan } from '../../lib/plan-limits';
+import { PLAN_LIMITS, getMaxDurationText, getEffectivePlan } from '../../lib/plan-limits';
+import { AdminHelpTooltip } from '../../components/AdminHelpTooltip';
 
 interface MediaManagerProps {
     imageFiles: MediaFile[];
@@ -60,9 +61,12 @@ export function MediaManager({
 
             {/* Sección de Imágenes */}
             <div className="bg-white/90 backdrop-blur-sm rounded-3xl p-3 sm:p-6 md:p-8 shadow-xl border border-white/40">
-                <h2 className="text-lg sm:text-xl md:text-2xl font-brush bg-gradient-to-r from-rose-600 to-amber-600 bg-clip-text text-transparent mb-4 sm:mb-6">
-                    Galería de Imágenes
-                </h2>
+                <div className="flex items-center gap-1.5 mb-4 sm:mb-6">
+                    <h2 className="text-lg sm:text-xl md:text-2xl font-brush bg-gradient-to-r from-rose-600 to-amber-600 bg-clip-text text-transparent">
+                        Galería de Imágenes
+                    </h2>
+                    <AdminHelpTooltip content="Sube hasta 20 fotos para tu galería. Se verán hermosas en un carrusel interactivo en tu invitación." />
+                </div>
                 <AdminUploader
                     title="Fotos para tu invitación"
                     bucket="gallery"
@@ -82,9 +86,12 @@ export function MediaManager({
             <div className={`bg-white/90 backdrop-blur-sm rounded-3xl p-3 sm:p-6 md:p-8 shadow-xl border border-white/40`}>
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
                     <div>
-                        <h2 className="text-lg sm:text-xl md:text-2xl font-brush bg-gradient-to-r from-rose-600 to-amber-600 bg-clip-text text-transparent">
-                            Videos de la Invitación
-                        </h2>
+                        <div className="flex items-center gap-1.5 font-brush bg-gradient-to-r from-rose-600 to-amber-600 bg-clip-text text-transparent">
+                            <h2 className="text-lg sm:text-xl md:text-2xl">
+                                Videos de la Invitación
+                            </h2>
+                            <AdminHelpTooltip content="Un video especial que cuenta su historia. Se recomienda formato vertical (tipo Reels/TikTok)." />
+                        </div>
                         <p className="text-xs sm:text-sm text-slate-500 mt-1">
                             Límite de tu plan: {videoLimits.videos === Infinity ? 'Ilimitado' : videoLimits.videos} videos ({maxDurationText} máx)
                         </p>
