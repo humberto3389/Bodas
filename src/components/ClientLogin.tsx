@@ -87,9 +87,37 @@ export default function ClientLogin({ onLogin }: ClientLoginProps) {
       });
 
       if (authError) {
-        setError('Error de autenticación: ' + authError.message);
-        setIsLoading(false);
-        return;
+        // Fallback: Si el usuario existe en DB pero falló el login en Auth
+        // (Probablemente la creación original falló por rate-limit de Supabase)
+        // Intentamos crearlo de nuevo aquí, ya que sabemos que el token es válido.
+        if (authError.message?.includes('Invalid login') || authError.status === 400) {
+           console.log('Intentando auto-provisionar usuario en Auth...');
+           const { error: signUpError } = await supabase.auth.signUp({
+              email: clientEmail,
+              password: password,
+              options: {
+                  data: {
+                      role: 'client',
+                      subdomain: clientData.subdomain,
+                      clientId: clientData.id,
+                      clientName: clientData.client_name
+                  }
+              }
+           });
+           
+           if (signUpError) {
+              setError('Fallo de sincronización Auth. Por favor, reportalo al administrador: ' + signUpError.message);
+              setIsLoading(false);
+              return;
+           }
+           
+           // Actualizar estado en DB si se pudo provisionar ahora
+           await supabase.from('clients').update({ provisioned: true, provision_error: null }).eq('id', clientData.id);
+        } else {
+           setError('Error de autenticación: ' + authError.message);
+           setIsLoading(false);
+           return;
+        }
       }
 
       // Crear objeto ClientToken compatible
@@ -208,6 +236,7 @@ export default function ClientLogin({ onLogin }: ClientLoginProps) {
         isActive: true,
         createdAt: new Date(),
         accessUntil: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000), // 1 año
+        expiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000), // 1 año
         planType: user.user_metadata?.plan || 'basic',
         maxGuests: 100,
         features: []

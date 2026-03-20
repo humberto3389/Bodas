@@ -875,54 +875,94 @@ const LandingPageEditor = () => {
 
       {viewMode === 'edit' ? (
         <div className="space-y-6">
-          {/* Testimonios Pendientes de Clientes (Novedad) */}
-          {pendingTestimonials.length > 0 && (
-            <div className="bg-amber-50 border border-amber-200 rounded-2xl p-6 shadow-sm">
-              <div className="flex items-center gap-2 mb-4">
-                <span className="text-xl">⭐</span>
-                <h3 className="text-lg font-bold text-amber-900">Nuevos Testimonios por Revisar ({pendingTestimonials.length})</h3>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {pendingTestimonials.map((t) => (
-                  <div key={t.id} className="bg-white rounded-xl p-4 border border-amber-100 shadow-sm flex flex-col justify-between">
-                    <div>
-                      <div className="flex items-center gap-3 mb-2">
-                        {t.avatar_url ? (
-                          <img src={t.avatar_url} className="w-8 h-8 rounded-full border border-slate-200" alt="" />
-                        ) : (
-                          <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-xs font-bold text-slate-400">
-                            {t.client_name.charAt(0)}
-                          </div>
-                        )}
-                        <div>
-                          <p className="font-bold text-slate-900 text-sm">{t.client_name}</p>
-                          <div className="flex items-center gap-2">
-                             <div className="flex text-amber-400 text-xs">{"★".repeat(t.rating || 5)}{"☆".repeat(5 - (t.rating || 5))}</div>
-                             <p className="text-slate-500 text-xs">{t.wedding_date}</p>
+          {/* Sección de Reseñas de Clientes (Reales) */}
+          <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+            <h3 className="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
+              <span className="text-2xl">👥</span> Reseñas de Clientes (Reales)
+            </h3>
+            
+            {/* Por Aprobar */}
+            <div className="mb-8">
+              <h4 className="text-md font-semibold text-slate-700 mb-4 border-b pb-2">Por Aprobar ({pendingTestimonials.length})</h4>
+              {pendingTestimonials.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {pendingTestimonials.map((t) => (
+                    <div key={t.id} className="bg-amber-50 rounded-xl p-4 border border-amber-200 shadow-sm flex flex-col justify-between">
+                      <div>
+                        <div className="flex items-center gap-3 mb-2">
+                          {t.avatar_url ? (
+                            <img src={t.avatar_url} className="w-8 h-8 rounded-full border border-slate-200" alt="" />
+                          ) : (
+                            <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-xs font-bold text-slate-400">
+                              {t.client_name.charAt(0)}
+                            </div>
+                          )}
+                          <div>
+                            <p className="font-bold text-slate-900 text-sm">{t.client_name}</p>
+                            <div className="flex items-center gap-2">
+                               <div className="flex text-amber-400 text-xs">{"★".repeat(t.rating || 5)}{"☆".repeat(5 - (t.rating || 5))}</div>
+                               <p className="text-slate-500 text-xs">{t.wedding_date}</p>
+                            </div>
                           </div>
                         </div>
+                        <p className="text-slate-700 text-sm italic mb-4">"{t.text}"</p>
                       </div>
-                      <p className="text-slate-700 text-sm italic mb-4">"{t.text}"</p>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => approvePending(t)}
+                          className="flex-1 bg-emerald-500 text-white text-xs font-bold py-2 rounded-lg hover:bg-emerald-600 transition-colors"
+                        >
+                          Aprobar y Publicar
+                        </button>
+                        <button
+                          onClick={() => rejectPending(t.id)}
+                          className="px-3 py-2 bg-slate-100 text-slate-600 text-xs font-bold rounded-lg hover:bg-slate-200 transition-colors"
+                        >
+                          Rechazar
+                        </button>
+                      </div>
                     </div>
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => approvePending(t)}
-                        className="flex-1 bg-emerald-500 text-white text-xs font-bold py-2 rounded-lg hover:bg-emerald-600 transition-colors"
-                      >
-                        Aprobar y Publicar
-                      </button>
-                      <button
-                        onClick={() => rejectPending(t.id)}
-                        className="px-3 py-2 bg-slate-100 text-slate-600 text-xs font-bold rounded-lg hover:bg-slate-200 transition-colors"
-                      >
-                        Rechazar
-                      </button>
-                    </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
+              ) : (
+                <p className="text-sm text-slate-500 italic">No hay reseñas pendientes por aprobar.</p>
+              )}
+            </div>
+
+            {/* Aprobadas */}
+            <div>
+              <h4 className="text-md font-semibold text-slate-700 mb-4 border-b pb-2">Aprobadas y Publicadas</h4>
+              <div className="space-y-4">
+                {(content.testimonialsList || []).filter(t => t.type === 'real').length > 0 ? (
+                  (content.testimonialsList || []).map((testimonial, index) => {
+                    if (testimonial.type !== 'real') return null;
+                    return (
+                      <div key={index} className="bg-emerald-50 border border-emerald-100 p-4 rounded-xl flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
+                        <div className="flex-1">
+                          <p className="font-semibold text-emerald-800 flex items-center gap-2 mb-2">
+                            <span className="text-lg">✅</span> {testimonial.name}
+                          </p>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-4 bg-white/60 p-3 rounded-lg border border-emerald-100/50">
+                             <div><strong className="text-emerald-900/60 text-[10px] uppercase tracking-wider block mb-0.5">Calificación</strong> <span className="text-amber-500 text-xs">{"★".repeat(testimonial.rating || 5)}{"☆".repeat(5 - (testimonial.rating || 5))}</span></div>
+                             <div><strong className="text-emerald-900/60 text-[10px] uppercase tracking-wider block mb-0.5">Fecha</strong> <span className="text-xs text-slate-600">{testimonial.date}</span></div>
+                             <div className="sm:col-span-2"><strong className="text-emerald-900/60 text-[10px] uppercase tracking-wider block mb-0.5">Comentario</strong> <span className="text-xs text-slate-700 italic">"{testimonial.text}"</span></div>
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => removeTestimonial(index)}
+                          className="text-white bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap"
+                        >
+                          Eliminar
+                        </button>
+                      </div>
+                    );
+                  })
+                ) : (
+                  <p className="text-sm text-slate-500 italic">No hay reseñas reales publicadas aún.</p>
+                )}
               </div>
             </div>
-          )}
+          </div>
           {/* Sección Hero */}
           <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
             <h3 className="text-xl font-bold text-slate-800 mb-4">Sección Hero</h3>
@@ -1175,19 +1215,21 @@ const LandingPageEditor = () => {
             </div>
           </div>
 
-          {/* Sección Testimonios */}
+          {/* Sección Testimonios Ficticios */}
           <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xl font-bold text-slate-800">Sección Testimonios</h3>
+              <h3 className="text-xl font-bold text-slate-800 flex items-center gap-2">
+                <span className="text-2xl">✍️</span> Testimonios Ficticios (Manuales)
+              </h3>
               <button
                 onClick={addTestimonial}
                 className="px-4 py-2 bg-rose-500 text-white rounded-lg hover:bg-rose-600 transition-colors"
               >
-                + Agregar Testimonio
+                + Crear Ficticio
               </button>
             </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-slate-700 mb-2">Título de Sección</label>
+            <div className="mb-8 bg-slate-50 border border-slate-100 p-4 rounded-xl">
+              <label className="block text-sm font-medium text-slate-700 mb-2">Título de la Sección Pública</label>
               <input
                 type="text"
                 value={content.testimonialsTitle || ''}
@@ -1195,91 +1237,82 @@ const LandingPageEditor = () => {
                 className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-transparent"
                 placeholder="Lo que dicen las parejas"
               />
+              <p className="text-xs text-slate-500 mt-2">Este título se muestra en la página principal, agrumando tanto las reseñas reales como las ficticias.</p>
             </div>
+
             <div className="space-y-4">
-              {(content.testimonialsList || []).map((testimonial, index) => (
-                <div key={index} className="p-4 bg-slate-50 rounded-lg border border-slate-200">
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-sm font-medium text-slate-700">Testimonio {index + 1}</span>
-                    <button
-                      onClick={() => removeTestimonial(index)}
-                      className="text-red-500 hover:text-red-700 text-sm"
-                    >
-                      Eliminar
-                    </button>
-                  </div>
-                  {testimonial.type === 'real' ? (
-                    <div className="mb-3 bg-emerald-50 border border-emerald-100 p-4 rounded-xl text-sm text-slate-700">
-                      <p className="font-semibold text-emerald-800 flex items-center gap-2 mb-3">
-                        <span className="text-xl">✅</span> Reseña Real de Cliente
-                      </p>
-                      <p className="mb-4 text-xs text-emerald-700/80">No se permite edición para mantener la autenticidad. Si fue aprobada por error, puedes eliminarla.</p>
-                      <div className="grid grid-cols-2 gap-y-3 gap-x-4 bg-white/60 p-3 rounded-lg border border-emerald-100/50">
-                         <div><strong className="text-emerald-900/60 text-[10px] uppercase tracking-wider block mb-0.5">Nombre</strong> {testimonial.name}</div>
-                         <div><strong className="text-emerald-900/60 text-[10px] uppercase tracking-wider block mb-0.5">Calificación</strong> <span className="text-amber-500">{"★".repeat(testimonial.rating || 5)}{"☆".repeat(5 - (testimonial.rating || 5))}</span></div>
-                         <div><strong className="text-emerald-900/60 text-[10px] uppercase tracking-wider block mb-0.5">Fecha</strong> {testimonial.date}</div>
-                         <div className="col-span-2"><strong className="text-emerald-900/60 text-[10px] uppercase tracking-wider block mb-0.5">Comentario</strong> {testimonial.text}</div>
+              {(content.testimonialsList || []).filter(t => t.type !== 'real').length > 0 ? (
+                (content.testimonialsList || []).map((testimonial, index) => {
+                  if (testimonial.type === 'real') return null;
+                  return (
+                    <div key={index} className="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                      <div className="flex items-center justify-between mb-3">
+                        <span className="text-sm font-medium text-slate-700">Reseña Manual</span>
+                        <button
+                          onClick={() => removeTestimonial(index)}
+                          className="text-red-500 hover:text-red-700 text-sm font-medium"
+                        >
+                          Eliminar
+                        </button>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mb-3">
+                        <div>
+                          <label className="block text-xs font-medium text-slate-600 mb-1">Nombres</label>
+                          <input
+                            type="text"
+                            value={testimonial.name}
+                            onChange={(e) => updateTestimonial(index, 'name', e.target.value)}
+                            className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"
+                            placeholder="Ana & Carlos"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium text-slate-600 mb-1">Fecha</label>
+                          <input
+                            type="text"
+                            value={testimonial.date}
+                            onChange={(e) => updateTestimonial(index, 'date', e.target.value)}
+                            className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"
+                            placeholder="Mayo 2024"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium text-slate-600 mb-1">Calificación (1-5)</label>
+                          <input
+                            type="number"
+                            min="1"
+                            max="5"
+                            value={testimonial.rating || 5}
+                            onChange={(e) => updateTestimonial(index, 'rating', parseInt(e.target.value) || 5)}
+                            className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"
+                          />
+                        </div>
+                        <div className="lg:col-span-3">
+                          <label className="block text-xs font-medium text-slate-600 mb-1">URL Avatar (Opcional)</label>
+                          <input
+                            type="text"
+                            value={testimonial.avatarUrl}
+                            onChange={(e) => updateTestimonial(index, 'avatarUrl', e.target.value)}
+                            className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"
+                          />
+                        </div>
+                        <div className="lg:col-span-3">
+                          <label className="block text-xs font-medium text-slate-600 mb-1">Comentario</label>
+                          <textarea
+                            value={testimonial.text}
+                            onChange={(e) => updateTestimonial(index, 'text', e.target.value)}
+                            rows={2}
+                            className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"
+                          />
+                        </div>
                       </div>
                     </div>
-                  ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3 mb-3">
-                      <div>
-                        <label className="block text-xs font-medium text-slate-600 mb-1">Tipo</label>
-                        <div className="w-full px-3 py-2 border border-slate-200 bg-slate-100 rounded-lg text-sm text-slate-500 font-medium whitespace-nowrap overflow-hidden text-ellipsis">Ficticio</div>
-                      </div>
-                      <div>
-                        <label className="block text-xs font-medium text-slate-600 mb-1">Nombres</label>
-                        <input
-                          type="text"
-                          value={testimonial.name}
-                          onChange={(e) => updateTestimonial(index, 'name', e.target.value)}
-                          className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"
-                          placeholder="Ana & Carlos"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-medium text-slate-600 mb-1">Fecha</label>
-                        <input
-                          type="text"
-                          value={testimonial.date}
-                          onChange={(e) => updateTestimonial(index, 'date', e.target.value)}
-                          className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"
-                          placeholder="Mayo 2024"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-medium text-slate-600 mb-1">Calificación (1-5)</label>
-                        <input
-                          type="number"
-                          min="1"
-                          max="5"
-                          value={testimonial.rating || 5}
-                          onChange={(e) => updateTestimonial(index, 'rating', parseInt(e.target.value) || 5)}
-                          className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"
-                        />
-                      </div>
-                      <div className="lg:col-span-2">
-                        <label className="block text-xs font-medium text-slate-600 mb-1">URL Avatar (Opcional)</label>
-                        <input
-                          type="text"
-                          value={testimonial.avatarUrl}
-                          onChange={(e) => updateTestimonial(index, 'avatarUrl', e.target.value)}
-                          className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"
-                        />
-                      </div>
-                      <div className="lg:col-span-5">
-                        <label className="block text-xs font-medium text-slate-600 mb-1">Comentario</label>
-                        <textarea
-                          value={testimonial.text}
-                          onChange={(e) => updateTestimonial(index, 'text', e.target.value)}
-                          rows={2}
-                          className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"
-                        />
-                      </div>
-                    </div>
-                  )}
-                </div>
-              ))}
+                  );
+                })
+              ) : (
+                <p className="text-sm text-slate-500 italic">No hay reseñas ficticias creadas.</p>
+              )}
             </div>
           </div>
 
