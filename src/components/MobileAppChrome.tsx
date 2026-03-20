@@ -6,7 +6,7 @@ export function MobileAppChrome() {
 
   // Update Theme Color meta tag for native browser integration
   useEffect(() => {
-    const themeColor = '#000000'; // Black for immersive hero/nav blending
+    const themeColor = '#fdf8f4'; // Silk-bg for neutral blending
     let meta = document.querySelector('meta[name="theme-color"]');
     if (!meta) {
       meta = document.createElement('meta');
@@ -24,15 +24,15 @@ export function MobileAppChrome() {
       document.head.appendChild(appleMeta);
     }
 
-    // Status bar style for immersive backgrounds - Translucent allows content behind
+    // Status bar style - 'default' for content behind but clear visibility
     let statusMeta = document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
     if (!statusMeta) {
       statusMeta = document.createElement('meta');
       statusMeta.setAttribute('name', 'apple-mobile-web-app-status-bar-style');
-      statusMeta.setAttribute('content', 'black-translucent');
+      statusMeta.setAttribute('content', 'default');
       document.head.appendChild(statusMeta);
     } else {
-      statusMeta.setAttribute('content', 'black-translucent');
+      statusMeta.setAttribute('content', 'default');
     }
   }, []);
 
@@ -81,9 +81,9 @@ export function MobileAppChrome() {
           className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-2xl border border-white/40 dark:border-slate-700/40 shadow-[0_20px_50px_-10px_rgba(0,0,0,0.4)] rounded-[32px] px-7 py-4 flex items-center justify-between pointer-events-auto w-full max-w-[340px]"
         >
           <NavIcon label="Inicio" icon="🏠" onClick={() => scrollToSection('hero')} isActive={activeSection === 'hero'} />
+          <NavIcon label="Fotos" icon="📸" onClick={() => scrollToSection('gallery')} isActive={activeSection === 'gallery'} />
           <NavIcon label="Mapa" icon="📍" onClick={() => scrollToSection('location')} isActive={activeSection === 'location'} />
           <NavIcon label="RSVP" icon="💌" onClick={() => scrollToSection('rsvp')} isActive={activeSection === 'rsvp'} />
-          <NavIcon label="Fotos" icon="📸" onClick={() => scrollToSection('gallery')} isActive={activeSection === 'gallery'} />
         </motion.div>
       </div>
     </>
