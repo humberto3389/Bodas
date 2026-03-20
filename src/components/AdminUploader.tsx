@@ -12,7 +12,7 @@ interface AdminUploaderProps {
   onDelete: (bucket: 'gallery' | 'audio' | 'videos', fileName: string) => Promise<void>
   getPublicUrl: (bucket: 'gallery' | 'audio' | 'videos', path: string) => string
   setFileAsBackground?: (url: string) => void
-  onUpload?: (bucket: 'gallery' | 'audio' | 'videos', file: File) => Promise<string | null>
+  onUpload?: (bucket: 'gallery' | 'audio' | 'videos', file: File, customFolder?: string) => Promise<string | null>
   currentBackground?: string
   onProgress?: (progress: { isUploading: boolean; progress: number; fileName: string }) => void
   client?: any
@@ -21,6 +21,7 @@ interface AdminUploaderProps {
   planRequired?: 'premium' | 'deluxe'
   clientId?: string
   onUpgradeClick?: () => void
+  customFolder?: string
 }
 
 export default function AdminUploader({
@@ -40,6 +41,7 @@ export default function AdminUploader({
   planRequired,
   clientId,
   onUpgradeClick,
+  customFolder,
 }: AdminUploaderProps) {
   const inputRef = useRef<HTMLInputElement | null>(null)
   const [uploading, setUploading] = useState(false)
@@ -112,7 +114,7 @@ export default function AdminUploader({
         }
 
         if (onUpload) {
-          const url = await onUpload(bucket, fileToUpload);
+          const url = await onUpload(bucket, fileToUpload, customFolder);
           if (!url) throw new Error('Error al subir archivo');
         } else {
           const fileName = fileToUpload.name
@@ -339,7 +341,7 @@ export default function AdminUploader({
                   <div className="absolute top-3 right-3 flex gap-2 z-20">
                     {!file.isSystem && (
                       <button
-                        onClick={(e) => { e.stopPropagation(); onDelete(bucket, file.name); }}
+                        onClick={(e) => { e.stopPropagation(); onDelete(bucket, file.path); }}
                         className="p-2.5 bg-white shadow-lg text-slate-400 rounded-xl opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-rose-500 hover:text-white scale-90 group-hover:scale-100 transform"
                         title="Eliminar"
                       >

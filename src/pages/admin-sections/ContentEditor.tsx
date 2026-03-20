@@ -493,6 +493,7 @@ export function ContentEditor({
                                 <AdminUploader
                                     title=""
                                     bucket="gallery"
+                                    customFolder="hero"
                                     files={imageFiles}
                                     onUploadSuccess={async () => { }}
                                     onUpload={onUpload}
@@ -555,6 +556,7 @@ export function ContentEditor({
                                 <AdminUploader
                                     title=""
                                     bucket="videos"
+                                    customFolder="hero"
                                     files={videoFiles}
                                     onUploadSuccess={async () => { }}
                                     onUpload={onUpload}
@@ -580,6 +582,30 @@ export function ContentEditor({
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="space-y-4">
+                                <label className="flex items-center justify-between p-4 bg-white rounded-2xl border border-indigo-100/50 shadow-sm cursor-pointer hover:shadow-md hover:border-indigo-200 transition-all duration-300 group">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-10 h-10 bg-indigo-50 text-indigo-500 rounded-xl flex items-center justify-center group-hover:bg-indigo-500 group-hover:text-white transition-colors duration-300">
+                                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <p className="text-xs font-black text-slate-900 uppercase tracking-widest">Usar Video Subido</p>
+                                            <p className="text-[10px] text-slate-500 font-medium">Mostrar video de principal en lugar de foto</p>
+                                        </div>
+                                    </div>
+                                    <div className="relative">
+                                        <input
+                                            type="checkbox"
+                                            name="heroDisplayMode"
+                                            checked={editForm.heroDisplayMode === 'video'}
+                                            onChange={(e) => setEditForm({ ...editForm, heroDisplayMode: e.target.checked ? 'video' : 'image' })}
+                                            className="sr-only peer"
+                                        />
+                                        <div className="w-11 h-6 bg-slate-200 rounded-full peer peer-checked:bg-indigo-600 transition-all duration-300 after:content-[''] after:absolute after:top-1 after:left-1 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-5 shadow-inner"></div>
+                                    </div>
+                                </label>
+
                                 <label className="flex items-center justify-between p-4 bg-white rounded-2xl border border-rose-100/50 shadow-sm cursor-pointer hover:shadow-md hover:border-rose-200 transition-all duration-300 group">
                                     <div className="flex items-center gap-4">
                                         <div className="w-10 h-10 bg-rose-50 text-rose-500 rounded-xl flex items-center justify-center group-hover:bg-rose-500 group-hover:text-white transition-colors duration-300">

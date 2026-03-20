@@ -34,9 +34,11 @@ export default function Admin() {
     logout,
     rsvps,
     messages,
-    imageFiles,
+    galleryFiles,
+    heroFiles,
     audioFiles,
     videoFiles,
+    heroVideoFiles,
     handleUpload,
     handleDelete,
     deleteRSVP,
@@ -283,9 +285,9 @@ export default function Admin() {
                   saveStatus={saveStatus}
                   onSave={saveClientProfile}
                   client={clientSession}
-                  imageFiles={imageFiles}
+                  imageFiles={heroFiles}
                   audioFiles={audioFiles}
-                  videoFiles={videoFiles}
+                  videoFiles={heroVideoFiles}
                   onUpload={handleUpload}
                   onDelete={handleDelete}
                   getPublicUrl={getPublicUrl}
@@ -307,7 +309,7 @@ export default function Admin() {
             {activeTab === 'media' && (
               <motion.div key="media" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
                 <MediaManager
-                  imageFiles={imageFiles}
+                  imageFiles={galleryFiles}
                   videoFiles={videoFiles}
                   onDelete={handleDelete}
                   onUpload={handleUpload}
