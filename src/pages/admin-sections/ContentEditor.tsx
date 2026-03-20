@@ -185,16 +185,19 @@ export function ContentEditor({
                             <div className="w-2 h-6 sm:h-8 bg-gradient-to-b from-violet-500 to-violet-600 rounded-full"></div>
                             <h2 className="text-base sm:text-lg font-semibold text-slate-900">Ceremonia</h2>
                         </div>
-                        <label className="flex items-center gap-2 cursor-pointer">
-                            <input
-                                type="checkbox"
-                                name="isCeremonySameAsReception"
-                                checked={editForm.isCeremonySameAsReception}
-                                onChange={handleChange}
-                                className="w-4 h-4 rounded border-slate-300 text-violet-500 focus:ring-2 focus:ring-violet-500/20"
-                            />
-                            <span className="text-xs sm:text-sm text-slate-600">Misma ubicación</span>
-                        </label>
+                        <div className="flex items-center gap-2">
+                            <label className="flex items-center gap-2 cursor-pointer">
+                                <input
+                                    type="checkbox"
+                                    name="isCeremonySameAsReception"
+                                    checked={editForm.isCeremonySameAsReception}
+                                    onChange={handleChange}
+                                    className="w-4 h-4 rounded border-slate-300 text-violet-500 focus:ring-2 focus:ring-violet-500/20"
+                                />
+                                <span className="text-xs sm:text-sm text-slate-600">Misma ubicación</span>
+                            </label>
+                            <AdminHelpTooltip content="Si la ceremonia es en el mismo lugar que la recepción, marca esto para ahorrar tiempo." />
+                        </div>
                     </div>
 
                     {!editForm.isCeremonySameAsReception ? (
@@ -233,7 +236,10 @@ export function ContentEditor({
                             </div>
 
                             <div>
-                                <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1.5 sm:mb-2">Referencia</label>
+                                <div className="flex items-center gap-1.5 mb-1.5 sm:mb-2">
+                                    <label className="block text-xs sm:text-sm font-medium text-slate-700">Referencia</label>
+                                    <AdminHelpTooltip content="Ej: Frente al parque central, portón blanco, etc. Ayuda a tus invitados a no perderse." />
+                                </div>
                                 <input
                                     type="text"
                                     name="ceremonyReference"
@@ -290,16 +296,19 @@ export function ContentEditor({
                             <div className="w-2 h-6 sm:h-8 bg-gradient-to-b from-amber-500 to-amber-600 rounded-full"></div>
                             <h2 className="text-base sm:text-lg font-semibold text-slate-900">Recepción</h2>
                         </div>
-                        <label className="flex items-center gap-2 cursor-pointer">
-                            <input
-                                type="checkbox"
-                                name="isReceptionSameAsCeremony"
-                                checked={editForm.isReceptionSameAsCeremony}
-                                onChange={handleChange}
-                                className="w-4 h-4 rounded border-slate-300 text-amber-500 focus:ring-2 focus:ring-amber-500/20"
-                            />
-                            <span className="text-xs sm:text-sm text-slate-600">Misma ubicación</span>
-                        </label>
+                        <div className="flex items-center gap-2">
+                            <label className="flex items-center gap-2 cursor-pointer">
+                                <input
+                                    type="checkbox"
+                                    name="isReceptionSameAsCeremony"
+                                    checked={editForm.isReceptionSameAsCeremony}
+                                    onChange={handleChange}
+                                    className="w-4 h-4 rounded border-slate-300 text-amber-500 focus:ring-2 focus:ring-amber-500/20"
+                                />
+                                <span className="text-xs sm:text-sm text-slate-600">Misma ubicación</span>
+                            </label>
+                            <AdminHelpTooltip content="Si la recepción es en el mismo lugar que la ceremonia, marca esto para ahorrar tiempo." />
+                        </div>
                     </div>
 
                     {!editForm.isReceptionSameAsCeremony ? (
@@ -544,7 +553,7 @@ export function ContentEditor({
                             <div className="flex items-center justify-between">
                                 <label className="flex items-center gap-1.5 text-sm font-medium text-slate-700">
                                     Música de fondo
-                                    <AdminHelpTooltip content="Sube el archivo MP3 de tu canción favorita. Se reproducirá automáticamente al abrir la invitación." />
+                                    <AdminHelpTooltip content="Sube tu canción favorita (MP3). Nota: En iPhones y algunos navegadores, el usuario debe tocar la pantalla para que el audio empiece a sonar por reglas de privacidad." />
                                 </label>
                                 {!isPremium && (
                                     <button
@@ -626,10 +635,11 @@ export function ContentEditor({
                                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
                                             </svg>
                                         </div>
-                                        <div>
+                                        <div className="flex items-center gap-1.5">
                                             <p className="text-xs font-black text-slate-900 uppercase tracking-widest">Usar Video Subido</p>
-                                            <p className="text-[10px] text-slate-500 font-medium">Mostrar video de principal en lugar de foto</p>
+                                            <AdminHelpTooltip content="Activa esto si prefieres que tus invitados vean tu video cinemático en lugar de la foto de portada al abrir la invitación." />
                                         </div>
+                                        <p className="text-[10px] text-slate-500 font-medium">Mostrar video principal en lugar de foto</p>
                                     </div>
                                     <div className="relative">
                                         <input
@@ -650,10 +660,11 @@ export function ContentEditor({
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
                                             </svg>
                                         </div>
-                                        <div>
+                                        <div className="flex items-center gap-1.5">
                                             <p className="text-xs font-black text-slate-900 uppercase tracking-widest">Audio en video</p>
-                                            <p className="text-[10px] text-slate-500 font-medium">Habilitar sonido original del video</p>
+                                            <AdminHelpTooltip content="Permite que el video de portada tenga sonido. Te recomendamos dejarlo apagado para no interrumpir la música de fondo de la invitación." />
                                         </div>
+                                        <p className="text-[10px] text-slate-500 font-medium">Habilitar sonido original del video</p>
                                     </div>
                                     <div className="relative">
                                         <input

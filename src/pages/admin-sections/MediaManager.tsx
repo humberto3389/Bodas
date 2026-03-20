@@ -99,7 +99,10 @@ export function MediaManager({
 
                     {effectivePlan === 'deluxe' && (
                         <div className="flex items-center gap-2 sm:gap-3 bg-white/50 px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-full border border-white/60 whitespace-nowrap">
-                            <span className="text-xs sm:text-sm text-slate-600 font-medium">Audio en Video</span>
+                            <div className="flex items-center gap-1.5">
+                                <span className="text-xs sm:text-sm text-slate-600 font-medium">Audio en Video</span>
+                                <AdminHelpTooltip content="Si activas esta opción, el video se escuchará con su sonido original. Si la apagas, se mantendrá la música de fondo de tu invitación mientras se ve el video." />
+                            </div>
                             <button
                                 onClick={() => onToggleAudio(!cinemaVideoAudioEnabled)}
                                 className={`relative inline-flex h-5 sm:h-6 w-9 sm:w-11 items-center rounded-full transition-colors ${cinemaVideoAudioEnabled ? 'bg-green-500' : 'bg-slate-300'}`}

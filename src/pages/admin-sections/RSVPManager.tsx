@@ -137,8 +137,18 @@ export function RSVPManager({ rsvps, totalGuests, totalNotAttending, onDownloadC
                             <thead>
                                 <tr className="text-neutral-400 text-[9px] uppercase tracking-widest font-bold">
                                     <th className="px-6 py-2">Invitado Principal</th>
-                                    <th className="px-6 py-2">Contacto</th>
-                                    <th className="px-6 py-2 text-center">Total</th>
+                                    <th className="px-6 py-2">
+                                        <div className="flex items-center gap-1.5 justify-start">
+                                            Contacto
+                                            <AdminHelpTooltip content="Email y teléfono que el invitado dejó para recibir actualizaciones." />
+                                        </div>
+                                    </th>
+                                    <th className="px-6 py-2">
+                                        <div className="flex items-center gap-1.5 justify-center">
+                                            Total
+                                            <AdminHelpTooltip content="Este número se calcula sumando al invitado principal más la lista de acompañantes que escribió." />
+                                        </div>
+                                    </th>
                                     <th className="px-6 py-2 text-right">Fecha</th>
                                     <th className="px-6 py-2 text-center">Acción</th>
                                 </tr>

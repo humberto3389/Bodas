@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import { usePadrinos, type Padrino, type PadrinoFormData } from '../../hooks/usePadrinos';
 import { LoadingSpinner } from '../../components/LoadingSpinner';
+import { AdminHelpTooltip } from '../../components/AdminHelpTooltip';
 
 interface PadrinosManagerProps {
     clientId: string;
@@ -140,7 +141,10 @@ export function PadrinosManager({ clientId, onUpload }: PadrinosManagerProps) {
             {/* Header */}
             <div className="flex justify-between items-center">
                 <div>
-                    <h3 className="text-lg font-semibold text-neutral-800">Padrinos y Madrinas</h3>
+                    <div className="flex items-center gap-1.5">
+                        <h3 className="text-lg font-semibold text-neutral-800">Padrinos y Madrinas</h3>
+                        <AdminHelpTooltip content="Personas especiales que quieres destacar (padres, testigos, etc.). Aparecerán con sus fotos y roles en una sección dedicada." />
+                    </div>
                     <p className="text-sm text-neutral-500">Gestiona las personas especiales de tu ceremonia</p>
                 </div>
                 <button

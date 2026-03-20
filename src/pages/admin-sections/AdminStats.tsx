@@ -146,7 +146,10 @@ export function AdminStats({ totalRsvps, totalGuests, totalNotAttending, totalMe
                             📢
                         </div>
                         <div>
-                            <h3 className="font-bold text-slate-900">Difusión de Cambios</h3>
+                            <div className="flex items-center gap-1.5">
+                                <h3 className="font-bold text-slate-900">Difusión de Cambios</h3>
+                                <AdminHelpTooltip content="Copia o envía un mensaje predefinido con tu enlace para avisar a todos tus invitados sobre cambios de última hora (ej: cambio de horario)." />
+                            </div>
                             <p className="text-xs text-slate-500">Genera un mensaje para avisar a tus invitados por WhatsApp</p>
                         </div>
                     </div>
