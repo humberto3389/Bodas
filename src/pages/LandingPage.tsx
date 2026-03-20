@@ -135,8 +135,9 @@ const DarkModeSnowParticle = ({ index: _index, mobile = false }: { index?: numbe
 const FloatingParticles = ({ mobile = false }: { mobile?: boolean }) => {
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {Array.from({ length: mobile ? 8 : 20 }).map((_, i) => {
+      {Array.from({ length: mobile ? 6 : 20 }).map((_, i) => {
         const size = mobile ? (Math.random() * 2 + 1) : (Math.random() * 3 + 2);
+        const duration = mobile ? (25 + Math.random() * 25) : (20 + Math.random() * 20); // Más lento en móvil para reducir uso de CPU
         return (
           <motion.div
             key={i}
@@ -145,14 +146,17 @@ const FloatingParticles = ({ mobile = false }: { mobile?: boolean }) => {
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
             }}
-            animate={{
+            animate={mobile ? {
+              y: [0, -60, 0],
+              opacity: [0, 0.4, 0],
+            } : {
               y: [0, -100, 0],
               x: [0, Math.random() * 50 - 25, 0],
               rotate: [0, 180, 360],
               scale: [0, 1, 0],
             }}
             transition={{
-              duration: 20 + Math.random() * 20,
+              duration: duration,
               repeat: Infinity,
               delay: Math.random() * 10,
               ease: "easeInOut"
@@ -244,6 +248,7 @@ export default function LandingPage() {
   const [isDark, setIsDark] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [showDemoIframe, setShowDemoIframe] = useState(false);
   const [content, setContent] = useState<LandingPageContent | null>(null);
 
   useEffect(() => {
@@ -326,15 +331,15 @@ export default function LandingPage() {
       {/* Partículas de fondo */}
       <FloatingParticles mobile={isMobile} />
 
-      {/* Partículas geométricas */}
-      {Array.from({ length: isMobile ? 8 : 15 }).map((_, i) => (
+      {/* Partículas geométricas - Reducidas en móvil */}
+      {Array.from({ length: isMobile ? 4 : 15 }).map((_, i) => (
         <GeometricParticle key={i} index={i} />
       ))}
 
       {/* Partículas de nieve SOLO en modo oscuro para el landing page */}
       {isDark && (
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          {Array.from({ length: isMobile ? 15 : 35 }).map((_, i) => (
+          {Array.from({ length: isMobile ? 8 : 35 }).map((_, i) => (
             <DarkModeSnowParticle key={i} index={i} mobile={isMobile} />
           ))}
         </div>
@@ -347,9 +352,9 @@ export default function LandingPage() {
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8 }}
       >
-        {/* Partículas de nieve en el navbar - SIEMPRE visibles */}
+        {/* Partículas de nieve en el navbar - Reducidas en móvil */}
         <div className="absolute inset-0 overflow-hidden" aria-hidden="true">
-          {Array.from({ length: isMobile ? 6 : 20 }).map((_, i) => (
+          {Array.from({ length: isMobile ? 4 : 20 }).map((_, i) => (
             <NavbarSnowParticle key={i} index={i} mobile={isMobile} />
           ))}
         </div>
@@ -553,16 +558,14 @@ export default function LandingPage() {
             {/* Título principal */}
             <motion.h1
               className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-bold text-slate-900 dark:text-white leading-tight"
-              initial={{ opacity: 0, y: 20 }}
+              initial={false} // Desactivar animación inicial en móvil para ganar LCP
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
+              transition={{ duration: 0.3 }}
             >
               <span className="block">{content?.heroTitleLine1 || 'Donde cada'}</span>
               <motion.span
                 className="bg-gradient-to-r from-rose-400 via-rose-500 to-amber-500 bg-clip-text text-transparent"
-                initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 0.4 }}
               >
                 {content?.heroTitleHighlight || 'suspiro'}
               </motion.span>
@@ -685,14 +688,34 @@ export default function LandingPage() {
                 {/* Notch */}
                 <div className="absolute top-0 inset-x-0 h-6 bg-slate-900 rounded-b-3xl w-1/2 mx-auto z-20" />
                 
-                {/* Contenido (Demo Interactivo en iframe) */}
-                <iframe 
-                  src={content?.demoUrl || 'https://suspiro-nupcial.vercel.app/invitacion/humberto-nelida'}
-                  title="Demo de Invitación"
-                  className="w-full h-full border-0 absolute inset-0 z-10"
-                  allow="fullscreen; autoplay"
-                  loading="lazy"
-                />
+                {/* Contenido (Demo Interactivo en iframe - Cargado diferido) */}
+                <div 
+                  className="w-full h-full absolute inset-0 z-10 bg-slate-800 flex items-center justify-center p-8"
+                  ref={(el) => {
+                    if (el && !showDemoIframe) {
+                      const observer = new IntersectionObserver((entries) => {
+                        if (entries[0].isIntersecting) {
+                          setShowDemoIframe(true);
+                          observer.disconnect();
+                        }
+                      }, { rootMargin: '200px' });
+                      observer.observe(el);
+                    }
+                  }}
+                >
+                  {showDemoIframe ? (
+                    <iframe 
+                      src={content?.demoUrl || 'https://suspiro-nupcial.vercel.app/invitacion/humberto-nelida'}
+                      title="Demo de Invitación"
+                      className="w-full h-full border-0 absolute inset-0"
+                      allow="fullscreen; autoplay"
+                    />
+                  ) : (
+                    <div className="text-white/40 text-[10px] text-center">
+                      Cargando demo...
+                    </div>
+                  )}
+                </div>
                 
                 
                 {/* Overlay gradiente inferior para estética (ignora clics para no bloquear el iframe) */}
@@ -793,13 +816,13 @@ export default function LandingPage() {
                 {/* Efecto de gradiente al hover */}
                 <div className="absolute inset-0 bg-gradient-to-br from-rose-50/50 to-amber-50/50 dark:from-rose-900/10 dark:to-amber-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-                {/* Icono animado */}
+                {/* Icono animado - Simplificado en móvil */}
                 <motion.div
                   className="relative z-10 text-5xl mb-6"
-                  animate={{
-                    scale: hoveredCard === index ? 1.1 : 1,
-                    rotate: hoveredCard === index ? 5 : 0
-                  }}
+                  animate={!isMobile && hoveredCard === index ? {
+                    scale: 1.1,
+                    rotate: 5
+                  } : {}}
                   transition={{ type: "spring", stiffness: 300 }}
                 >
                   {feature.icon}
@@ -1055,8 +1078,8 @@ export default function LandingPage() {
 
       {/* Footer Mejorado */}
       <footer className="bg-slate-900 text-white py-20 relative overflow-hidden">
-        {/* Efecto de partículas en el footer */}
-        {Array.from({ length: 8 }).map((_, i) => (
+        {/* Efecto de partículas en el footer - Desactivado en móvil para performance */}
+        {!isMobile && Array.from({ length: 8 }).map((_, i) => (
           <motion.div
             key={i}
             className="absolute bottom-0 w-1 h-1 bg-rose-400/20 rounded-full"
