@@ -161,7 +161,6 @@ export function ContentEditor({
                                     className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all text-sm"
                                 />
                             </div>
-                            {/* Removed redundant generic TimePicker */}
                         </div>
 
                         <div>
@@ -515,334 +514,288 @@ export function ContentEditor({
                     </div>
                 </div>
 
-                {/* Multimedia */}
-                <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-[0_4px_20px_rgba(0,0,0,0.03)] lg:col-span-2">
-                    <div className="flex items-center gap-3 mb-6">
-                        <div className="w-2 h-8 bg-gradient-to-b from-slate-700 to-slate-900 rounded-full"></div>
-                        <h2 className="text-lg font-semibold text-slate-900">Multimedia</h2>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        {/* Imagen de portada */}
-                        <div className="md:col-span-2 space-y-4">
-                            <label className="flex items-center gap-1.5 text-sm font-medium text-slate-700">
-                                Imagen principal
-                                <AdminHelpTooltip content="Esta es la gran foto de bienvenida que tus invitados verán apenas abran la invitación." />
-                            </label>
-                            <div className="bg-slate-50 rounded-xl border-2 border-dashed border-slate-200 p-4">
-                                <AdminUploader
-                                    title=""
-                                    bucket="gallery"
-                                    customFolder="hero"
-                                    files={imageFiles}
-                                    onUploadSuccess={async () => { }}
-                                    onUpload={onUpload}
-                                    onDelete={async (b, f) => { await onDelete(b, f); }}
-                                    getPublicUrl={getPublicUrl}
-                                    setFileAsBackground={(url) => setEditForm({ ...editForm, heroBackgroundUrl: url })}
-                                    currentBackground={editForm.heroBackgroundUrl}
-                                    client={client}
-                                    maxFiles={1}
-                                    onUpgradeClick={onUpgradeClick}
-                                />
+                {/* Multimedia - Sección Rediseñada */}
+                <div className="bg-white rounded-3xl p-4 sm:p-8 border border-slate-200 shadow-[0_4px_30px_rgba(0,0,0,0.05)] lg:col-span-2 overflow-hidden relative">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-slate-50 rounded-bl-[100px] -z-0 opacity-50"></div>
+                    
+                    <div className="relative z-10">
+                        <div className="flex items-center gap-3 mb-8">
+                            <div className="w-2 h-10 bg-gradient-to-b from-indigo-500 to-indigo-700 rounded-full"></div>
+                            <div>
+                                <h2 className="text-xl font-bold text-slate-900 leading-none">Fondo de Portada</h2>
+                                <p className="text-xs text-slate-500 mt-1">Elige lo primero que verán tus invitados</p>
                             </div>
                         </div>
 
-                        {/* Audio */}
-                        <div className="md:col-span-1 space-y-4">
-                            <div className="flex items-center justify-between">
-                                <label className="flex items-center gap-1.5 text-sm font-medium text-slate-700">
-                                    Música de fondo
-                                    <AdminHelpTooltip content="Sube tu canción favorita (MP3). Nota: En iPhones y algunos navegadores, el usuario debe tocar la pantalla para que el audio empiece a sonar por reglas de privacidad." />
-                                </label>
-                                {!isPremium && (
-                                    <button
-                                        onClick={onUpgradeClick}
-                                        className="text-[10px] font-black uppercase tracking-widest bg-amber-100 text-amber-700 px-2 py-1 rounded hover:bg-amber-200 transition-colors"
-                                    >
-                                        ⭐ Premium
-                                    </button>
-                                )}
-                            </div>
-                            <div className={`bg-slate-50 rounded-xl border-2 border-dashed border-slate-200 p-4 transition-opacity ${!isPremium ? 'opacity-50 pointer-events-none' : ''}`}>
-                                <AdminUploader
-                                    title=""
-                                    bucket="audio"
-                                    files={audioFiles}
-                                    onUploadSuccess={async () => { }}
-                                    onUpload={onUpload}
-                                    onDelete={async (b, f) => { await onDelete(b, f); }}
-                                    getPublicUrl={getPublicUrl}
-                                    setFileAsBackground={(url) => setEditForm({ ...editForm, backgroundAudioUrl: url })}
-                                    currentBackground={editForm.backgroundAudioUrl}
-                                    client={client}
-                                    maxFiles={1}
-                                    onUpgradeClick={onUpgradeClick}
-                                />
-                            </div>
+                        {/* Selector de modo */}
+                        <div className="grid grid-cols-2 gap-4 mb-8 bg-slate-100 p-1.5 rounded-2xl max-w-md">
+                            <button
+                                type="button"
+                                onClick={() => setEditForm({ ...editForm, heroDisplayMode: 'image' })}
+                                className={`flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-300 ${editForm.heroDisplayMode === 'image'
+                                    ? 'bg-white text-indigo-600 shadow-lg ring-1 ring-slate-200 scale-[1.02]'
+                                    : 'text-slate-500 hover:text-slate-700'
+                                }`}
+                            >
+                                <span className="text-lg">🖼️</span>
+                                Foto Estática
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    if (isDeluxe) {
+                                        setEditForm({ ...editForm, heroDisplayMode: 'video' });
+                                    } else {
+                                        onUpgradeClick?.();
+                                    }
+                                }}
+                                className={`flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-300 relative ${editForm.heroDisplayMode === 'video'
+                                    ? 'bg-white text-rose-600 shadow-lg ring-1 ring-slate-200 scale-[1.02]'
+                                    : 'text-slate-500 hover:text-slate-700'
+                                }`}
+                            >
+                                <span className="text-lg">🎬</span>
+                                Video Animado
+                                {!isDeluxe && <span className="absolute -top-1 -right-1 flex h-3 w-3"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span><span className="relative inline-flex rounded-full h-3 w-3 bg-rose-500"></span></span>}
+                            </button>
                         </div>
 
-                        {/* Video */}
-                        <div className="md:col-span-1 space-y-4">
-                            <div className="flex items-center justify-between">
-                                <label className="flex items-center gap-1.5 text-sm font-medium text-slate-700">
-                                    Video de portada
-                                    <AdminHelpTooltip content="Si tienes el plan Deluxe, puedes mostrar un video cinemático en lugar de una foto de portada." />
-                                </label>
-                                {!isDeluxe && (
-                                    <button
-                                        onClick={onUpgradeClick}
-                                        className="text-[10px] font-black uppercase tracking-widest bg-slate-100 text-slate-600 px-2 py-1 rounded hover:bg-slate-200 transition-colors"
-                                    >
-                                        💎 Deluxe
-                                    </button>
-                                )}
-                            </div>
-                            <div className={`bg-slate-50 rounded-xl border-2 border-dashed border-slate-200 p-4 transition-opacity ${!isDeluxe ? 'opacity-50 pointer-events-none' : ''}`}>
-                                <AdminUploader
-                                    title=""
-                                    bucket="videos"
-                                    customFolder="hero"
-                                    files={videoFiles}
-                                    onUploadSuccess={async () => { }}
-                                    onUpload={onUpload}
-                                    onDelete={async (b, f) => { await onDelete(b, f); }}
-                                    getPublicUrl={getPublicUrl}
-                                    setFileAsBackground={(url) => setEditForm({ ...editForm, heroBackgroundVideoUrl: url })}
-                                    currentBackground={editForm.heroBackgroundVideoUrl}
-                                    client={client}
-                                    maxFiles={1}
-                                    clientId={clientId}
-                                    onUpgradeClick={onUpgradeClick}
-                                />
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Opciones avanzadas */}
-                    <div className="mt-8 pt-8 border-t border-slate-100">
-                        <div className="flex items-center gap-3 mb-6">
-                            <div className="w-2 h-8 bg-gradient-to-b from-indigo-500 to-indigo-600 rounded-full"></div>
-                            <h3 className="text-lg font-semibold text-slate-900">Configuración avanzada</h3>
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {/* Área de carga dinámica */}
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                            {/* Visualizador / Uploader */}
                             <div className="space-y-4">
-                                <label className="flex items-center justify-between p-4 bg-white rounded-2xl border border-indigo-100/50 shadow-sm cursor-pointer hover:shadow-md hover:border-indigo-200 transition-all duration-300 group">
-                                    <div className="flex items-center gap-4">
-                                        <div className="w-10 h-10 bg-indigo-50 text-indigo-500 rounded-xl flex items-center justify-center group-hover:bg-indigo-500 group-hover:text-white transition-colors duration-300">
-                                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                            </svg>
+                                {editForm.heroDisplayMode === 'image' ? (
+                                    <div className="animate-in fade-in slide-in-from-left-4 duration-500">
+                                        <div className="flex items-center justify-between mb-4">
+                                            <h3 className="text-sm font-bold text-slate-800 uppercase tracking-widest flex items-center gap-2">
+                                                📷 Sube tu foto de portada
+                                                <AdminHelpTooltip content="Esta foto aparecerá de fondo en toda la pantalla de bienvenida." />
+                                            </h3>
                                         </div>
-                                        <div className="flex items-center gap-1.5">
-                                            <p className="text-xs font-black text-slate-900 uppercase tracking-widest">Usar Video Subido</p>
-                                            <AdminHelpTooltip content="Activa esto si prefieres que tus invitados vean tu video cinemático en lugar de la foto de portada al abrir la invitación." />
+                                        <div className="bg-slate-50 rounded-3xl border-2 border-dashed border-slate-200 p-4 hover:border-indigo-400 transition-colors">
+                                            <AdminUploader
+                                                title=""
+                                                bucket="gallery"
+                                                customFolder="hero"
+                                                files={imageFiles}
+                                                onUploadSuccess={async () => { }}
+                                                onUpload={onUpload}
+                                                onDelete={async (b, f) => { await onDelete(b, f); }}
+                                                getPublicUrl={getPublicUrl}
+                                                setFileAsBackground={(url) => setEditForm({ ...editForm, heroBackgroundUrl: url })}
+                                                currentBackground={editForm.heroBackgroundUrl}
+                                                client={client}
+                                                maxFiles={1}
+                                                onUpgradeClick={onUpgradeClick}
+                                            />
                                         </div>
-                                        <p className="text-[10px] text-slate-500 font-medium">Mostrar video principal en lugar de foto</p>
                                     </div>
-                                    <div className="relative">
-                                        <input
-                                            type="checkbox"
-                                            name="heroDisplayMode"
-                                            checked={editForm.heroDisplayMode === 'video'}
-                                            onChange={(e) => setEditForm({ ...editForm, heroDisplayMode: e.target.checked ? 'video' : 'image' })}
-                                            className="sr-only peer"
-                                        />
-                                        <div className="w-11 h-6 bg-slate-200 rounded-full peer peer-checked:bg-indigo-600 transition-all duration-300 after:content-[''] after:absolute after:top-1 after:left-1 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-5 shadow-inner"></div>
-                                    </div>
-                                </label>
+                                ) : (
+                                    <div className="animate-in fade-in slide-in-from-right-4 duration-500">
+                                        <div className="flex items-center justify-between mb-4">
+                                            <h3 className="text-sm font-bold text-slate-800 uppercase tracking-widest flex items-center gap-2">
+                                                📹 Sube tu Video de portada
+                                                <AdminHelpTooltip content="Video cinemático que se reproduce automáticamente (Plan Deluxe)." />
+                                            </h3>
+                                            <span className="text-[10px] font-black bg-rose-100 text-rose-600 px-2 py-1 rounded-full uppercase">VIP Deluxe</span>
+                                        </div>
+                                        <div className="bg-slate-50 rounded-3xl border-2 border-dashed border-slate-200 p-4 hover:border-rose-400 transition-colors">
+                                            <AdminUploader
+                                                title=""
+                                                bucket="videos"
+                                                customFolder="hero"
+                                                files={videoFiles}
+                                                onUploadSuccess={async () => { }}
+                                                onUpload={onUpload}
+                                                onDelete={async (b, f) => { await onDelete(b, f); }}
+                                                getPublicUrl={getPublicUrl}
+                                                setFileAsBackground={(url) => setEditForm({ ...editForm, heroBackgroundVideoUrl: url })}
+                                                currentBackground={editForm.heroBackgroundVideoUrl}
+                                                client={client}
+                                                maxFiles={1}
+                                                clientId={clientId}
+                                                onUpgradeClick={onUpgradeClick}
+                                            />
+                                        </div>
 
-                                <label className="flex items-center justify-between p-4 bg-white rounded-2xl border border-rose-100/50 shadow-sm cursor-pointer hover:shadow-md hover:border-rose-200 transition-all duration-300 group">
-                                    <div className="flex items-center gap-4">
-                                        <div className="w-10 h-10 bg-rose-50 text-rose-500 rounded-xl flex items-center justify-center group-hover:bg-rose-500 group-hover:text-white transition-colors duration-300">
-                                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
-                                            </svg>
-                                        </div>
-                                        <div className="flex items-center gap-1.5">
-                                            <p className="text-xs font-black text-slate-900 uppercase tracking-widest">Audio en video</p>
-                                            <AdminHelpTooltip content="Permite que el video de portada tenga sonido. Te recomendamos dejarlo apagado para no interrumpir la música de fondo de la invitación." />
-                                        </div>
-                                        <p className="text-[10px] text-slate-500 font-medium">Habilitar sonido original del video</p>
-                                    </div>
-                                    <div className="relative">
-                                        <input
-                                            type="checkbox"
-                                            name="heroVideoAudioEnabled"
-                                            checked={editForm.heroVideoAudioEnabled}
-                                            onChange={handleChange}
-                                            className="sr-only peer"
-                                        />
-                                        <div className="w-10 h-6 bg-slate-200 rounded-full peer peer-checked:bg-rose-500 transition-all duration-300 after:content-[''] after:absolute after:top-1 after:left-1 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-4 shadow-inner"></div>
-                                    </div>
-                                </label>
-
-                                <div className="p-5 bg-white rounded-2xl border border-amber-100/50 shadow-sm">
-                                    <div className="flex items-center gap-3 mb-4">
-                                        <div className="w-8 h-8 bg-amber-50 text-amber-500 rounded-lg flex items-center justify-center">
-                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" />
-                                            </svg>
-                                        </div>
-                                        <p className="text-xs font-black text-slate-900 uppercase tracking-widest">Modo de visualización</p>
-                                    </div>
-                                    <div className="flex p-1 bg-slate-50 rounded-xl border border-slate-100">
-                                        {['image', 'video'].map((mode) => (
-                                            <button
-                                                key={mode}
-                                                type="button"
-                                                onClick={() => setEditForm({ ...editForm, heroDisplayMode: mode })}
-                                                className={`flex-1 py-2 px-4 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all duration-300 ${editForm.heroDisplayMode === mode
-                                                    ? 'bg-white text-rose-600 shadow-md ring-1 ring-rose-100'
-                                                    : 'text-slate-400 hover:text-slate-600'
-                                                    }`}
-                                            >
-                                                {mode === 'image' ? 'Imagen' : 'Video Solo'}
+                                        {/* Opción de Audio solo para Video */}
+                                        <div className="mt-6 p-4 bg-rose-50 rounded-2xl border border-rose-100 flex items-center justify-between group cursor-pointer" onClick={() => setEditForm({...editForm, heroVideoAudioEnabled: !editForm.heroVideoAudioEnabled})}>
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center text-rose-500 shadow-sm transition-transform group-hover:scale-110">
+                                                    {editForm.heroVideoAudioEnabled ? '🔊' : '🔇'}
+                                                </div>
+                                                <div>
+                                                    <p className="text-[11px] font-black text-slate-900 uppercase tracking-tighter">Audio del Video</p>
+                                                    <p className="text-[10px] text-slate-500">¿Deseas que el video se escuche?</p>
+                                                </div>
+                                            </div>
+                                            <button className={`w-10 h-5 rounded-full transition-colors relative ${editForm.heroVideoAudioEnabled ? 'bg-rose-500' : 'bg-slate-300'}`}>
+                                                <div className={`absolute top-1 w-3 h-3 bg-white rounded-full transition-transform ${editForm.heroVideoAudioEnabled ? 'left-6' : 'left-1'}`} />
                                             </button>
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-[0_4px_20px_rgba(0,0,0,0.03)] relative overflow-hidden">
-                                {!isDeluxe && (
-                                    <div
-                                        onClick={onUpgradeClick}
-                                        className="absolute inset-0 z-10 bg-slate-50/40 backdrop-blur-[2px] cursor-pointer flex items-center justify-center group"
-                                    >
-                                        <div className="bg-white px-6 py-3 rounded-2xl shadow-xl border border-slate-100 transform group-hover:scale-110 transition-transform">
-                                            <p className="text-[10px] font-black text-slate-900 uppercase tracking-widest flex items-center gap-2">
-                                                <span>🔒 Bloqueado</span>
-                                                <span className="text-rose-500">Exclusivo Deluxe</span>
-                                            </p>
                                         </div>
                                     </div>
                                 )}
-                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-2 h-8 bg-gradient-to-b from-amber-400 to-amber-600 rounded-full"></div>
-                                        <div>
-                                            <h3 className="text-lg font-semibold text-slate-900">Efectos Especiales</h3>
-                                            <p className="text-[10px] text-slate-500 font-medium uppercase tracking-widest mt-0.5">Animación Deluxe</p>
-                                        </div>
-                                    </div>
+                            </div>
 
-                                    <label className="flex items-center gap-3 px-4 py-2 bg-slate-50/80 rounded-xl border border-slate-100 cursor-pointer hover:bg-slate-100 transition-colors">
-                                        <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Activar Todo</span>
-                                        <div className="relative inline-flex items-center">
-                                            <input
-                                                type="checkbox"
-                                                checked={editForm.advancedAnimations?.enabled}
-                                                onChange={(e) => setEditForm({
-                                                    ...editForm,
-                                                    advancedAnimations: { ...(editForm.advancedAnimations || {}), enabled: e.target.checked }
-                                                })}
-                                                className="sr-only peer"
-                                            />
-                                            <div className="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-rose-500 shadow-inner"></div>
-                                        </div>
-                                    </label>
+                            {/* Música de Fondo - Separada por simplicidad */}
+                            <div className="lg:border-l lg:pl-8 border-slate-100 space-y-4">
+                                <div className="flex items-center justify-between mb-2">
+                                    <h3 className="text-sm font-bold text-slate-800 uppercase tracking-widest flex items-center gap-2">
+                                        🎵 Música de Fondo
+                                        <AdminHelpTooltip content="Sube el MP3 que sonará durante toda la navegación." />
+                                    </h3>
+                                    {!isPremium && <span className="text-[10px] font-black bg-amber-100 text-amber-600 px-2 py-1 rounded-full uppercase tracking-tighter">Premium</span>}
                                 </div>
-
-                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                                    {[
-                                        { id: 'particleEffects', label: 'Brillo Mágico', sub: 'Partículas', icon: '✨', activeClass: 'border-rose-100 bg-white shadow-md', iconClass: 'bg-rose-50 text-rose-500' },
-                                        { id: 'parallaxScrolling', label: 'Parallax', sub: 'Efecto Profundidad', icon: '💎', activeClass: 'border-amber-100 bg-white shadow-md', iconClass: 'bg-amber-50 text-amber-500' },
-                                        { id: 'floatingElements', label: 'Flotantes', sub: 'Movimiento Suave', icon: '🎈', activeClass: 'border-indigo-100 bg-white shadow-md', iconClass: 'bg-indigo-50 text-indigo-500' }
-                                    ].map((effect) => (
-                                        <button
-                                            key={effect.id}
-                                            type="button"
-                                            disabled={!isDeluxe}
-                                            onClick={() => setEditForm({
-                                                ...editForm,
-                                                advancedAnimations: { ...(editForm.advancedAnimations || {}), [effect.id]: !editForm.advancedAnimations?.[effect.id] }
-                                            })}
-                                            className={`relative flex items-center gap-4 p-4 rounded-2xl border transition-all duration-300 text-left ${editForm.advancedAnimations?.[effect.id]
-                                                ? effect.activeClass
-                                                : 'bg-slate-50/50 border-transparent hover:border-slate-200'
-                                                } ${!isDeluxe ? 'cursor-not-allowed' : ''}`}
-                                        >
-                                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-xl transition-all duration-500 shadow-sm ${editForm.advancedAnimations?.[effect.id] ? effect.iconClass : 'bg-slate-200/50 grayscale opacity-40'
-                                                }`}>
-                                                {effect.icon}
-                                            </div>
-
-                                            <div className="flex-1">
-                                                <p className={`text-[10px] font-black uppercase tracking-widest ${editForm.advancedAnimations?.[effect.id] ? 'text-slate-900' : 'text-slate-400'
-                                                    }`}>
-                                                    {effect.label}
-                                                </p>
-                                                <p className="text-[8px] font-medium text-slate-500 uppercase tracking-wider">
-                                                    {effect.sub}
-                                                </p>
-                                            </div>
-
-                                            {editForm.advancedAnimations?.[effect.id] && (
-                                                <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></div>
-                                            )}
-                                        </button>
-                                    ))}
+                                <div className={`bg-slate-50 rounded-3xl border-2 border-dashed border-slate-200 p-4 transition-all ${!isPremium ? 'opacity-40 grayscale pointer-events-none' : 'hover:border-amber-400'}`}>
+                                    <AdminUploader
+                                        title=""
+                                        bucket="audio"
+                                        files={audioFiles}
+                                        onUploadSuccess={async () => { }}
+                                        onUpload={onUpload}
+                                        onDelete={async (b, f) => { await onDelete(b, f); }}
+                                        getPublicUrl={getPublicUrl}
+                                        setFileAsBackground={(url) => setEditForm({ ...editForm, backgroundAudioUrl: url })}
+                                        currentBackground={editForm.backgroundAudioUrl}
+                                        client={client}
+                                        maxFiles={1}
+                                        onUpgradeClick={onUpgradeClick}
+                                    />
+                                </div>
+                                <div className="p-3 bg-blue-50/50 rounded-xl border border-blue-100">
+                                    <p className="text-[10px] text-blue-600 flex items-start gap-2">
+                                        <span>ℹ️</span>
+                                        La música de fondo se detiene automáticamente si un video con audio se está reproduciendo.
+                                    </p>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                {/* Padrinos (Disponible para todos los planes) */}
-                {clientId && (
-                    <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-[0_4px_20px_rgba(0,0,0,0.03)] lg:col-span-2">
-                        <div className="flex items-center gap-3 mb-6">
-                            <div className="w-2 h-8 bg-gradient-to-b from-fuchsia-500 to-fuchsia-600 rounded-full"></div>
-                            <h2 className="text-lg font-semibold text-slate-900">Padrinos y madrinas</h2>
+                {/* Animaciones Avanzadas / Efectos Especiales */}
+                <div className="bg-white rounded-3xl p-4 sm:p-8 border border-slate-200 shadow-[0_4px_30px_rgba(0,0,0,0.05)] lg:col-span-2 relative overflow-hidden">
+                    {!isDeluxe && (
+                        <div
+                            onClick={onUpgradeClick}
+                            className="absolute inset-0 z-20 bg-slate-50/40 backdrop-blur-[2px] cursor-pointer flex items-center justify-center group"
+                        >
+                            <div className="bg-white px-6 py-3 rounded-2xl shadow-xl border border-slate-100 transform group-hover:scale-110 transition-transform flex items-center gap-3">
+                                <span className="text-xl">🔒</span>
+                                <div className="text-left">
+                                    <p className="text-[10px] font-black text-slate-900 uppercase tracking-widest leading-none">Sección Bloqueada</p>
+                                    <p className="text-[9px] text-rose-500 font-bold uppercase mt-1">Exclusivo Plan Deluxe</p>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
+                        <div className="flex items-center gap-3">
+                            <div className="w-2 h-10 bg-gradient-to-b from-rose-500 to-rose-700 rounded-full"></div>
+                            <div>
+                                <h2 className="text-xl font-bold text-slate-900 leading-none">Efectos Especiales</h2>
+                                <p className="text-xs text-slate-500 mt-1">Dale un toque mágico a tu invitación</p>
+                            </div>
                         </div>
 
+                        <label className="flex items-center gap-3 px-4 py-2 bg-slate-100 rounded-xl border border-slate-200 cursor-pointer hover:bg-slate-200 transition-colors">
+                            <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Activar Todo</span>
+                            <div className="relative inline-flex items-center">
+                                <input
+                                    type="checkbox"
+                                    checked={editForm.advancedAnimations?.enabled}
+                                    onChange={(e) => setEditForm({
+                                        ...editForm,
+                                        advancedAnimations: { ...(editForm.advancedAnimations || {}), enabled: e.target.checked }
+                                    })}
+                                    className="sr-only peer"
+                                />
+                                <div className="w-9 h-5 bg-slate-300 rounded-full peer peer-checked:bg-rose-500 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-4 shadow-inner"></div>
+                            </div>
+                        </label>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {[
+                            { id: 'particleEffects', label: 'Brillo Mágico', sub: 'Partículas', icon: '✨', activeClass: 'border-rose-100 bg-white shadow-lg ring-1 ring-rose-50', iconClass: 'bg-rose-50 text-rose-500' },
+                            { id: 'parallaxScrolling', label: 'Parallax', sub: 'Efecto Profundidad', icon: '💎', activeClass: 'border-amber-100 bg-white shadow-lg ring-1 ring-amber-50', iconClass: 'bg-amber-50 text-amber-500' },
+                            { id: 'floatingElements', label: 'Flotantes', sub: 'Movimiento Suave', icon: '🎈', activeClass: 'border-indigo-100 bg-white shadow-lg ring-1 ring-indigo-50', iconClass: 'bg-indigo-50 text-indigo-500' }
+                        ].map((effect) => (
+                            <button
+                                key={effect.id}
+                                type="button"
+                                disabled={!isDeluxe}
+                                onClick={() => setEditForm({
+                                    ...editForm,
+                                    advancedAnimations: { ...(editForm.advancedAnimations || {}), [effect.id]: !editForm.advancedAnimations?.[effect.id] }
+                                })}
+                                className={`relative flex items-center gap-4 p-5 rounded-2xl border transition-all duration-300 text-left ${editForm.advancedAnimations?.[effect.id]
+                                    ? effect.activeClass
+                                    : 'bg-slate-50/50 border-transparent hover:border-slate-200'
+                                    } ${!isDeluxe ? 'cursor-not-allowed opacity-40 grayscale' : ''}`}
+                            >
+                                <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-2xl transition-all duration-500 shadow-sm ${editForm.advancedAnimations?.[effect.id] ? effect.iconClass : 'bg-slate-200/50'
+                                    }`}>
+                                    {effect.icon}
+                                </div>
+
+                                <div className="flex-1">
+                                    <p className={`text-xs font-black uppercase tracking-widest ${editForm.advancedAnimations?.[effect.id] ? 'text-slate-900' : 'text-slate-400'
+                                        }`}>
+                                        {effect.label}
+                                    </p>
+                                    <p className="text-[10px] font-medium text-slate-500 uppercase tracking-wider">
+                                        {effect.sub}
+                                    </p>
+                                </div>
+
+                                {editForm.advancedAnimations?.[effect.id] && (
+                                    <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.5)]"></div>
+                                )}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Padrinos */}
+                {clientId && (
+                    <div className="bg-white rounded-3xl p-4 sm:p-8 border border-slate-200 shadow-[0_4px_30px_rgba(0,0,0,0.05)] lg:col-span-2">
+                        <div className="flex items-center gap-3 mb-8">
+                            <div className="w-2 h-10 bg-gradient-to-b from-fuchsia-500 to-fuchsia-700 rounded-full"></div>
+                            <div>
+                                <h2 className="text-xl font-bold text-slate-900 leading-none">Padrinos y Madrinas</h2>
+                                <p className="text-xs text-slate-500 mt-1">Personas especiales de tu ceremonia</p>
+                            </div>
+                        </div>
                         <PadrinosManager clientId={clientId} onUpload={onUpload} />
                     </div>
                 )}
             </div>
 
-            {/* Fixed Save Button */}
-            <div className="fixed bottom-3 sm:bottom-6 right-3 sm:right-6 z-50">
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="bg-white rounded-full shadow-[0_8px_30px_rgba(0,0,0,0.12)] border border-slate-200 overflow-hidden"
+            {/* Botón Flotante de Guardado */}
+            <div className="fixed bottom-6 right-6 z-50">
+                <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={onSave}
+                    disabled={saveStatus === 'saving'}
+                    className={`group px-8 py-4 rounded-full font-black text-xs uppercase tracking-[0.2em] text-white transition-all shadow-2xl flex items-center gap-3 min-w-[200px] justify-center ${
+                        saveStatus === 'saving' ? 'bg-slate-700 cursor-not-allowed' :
+                        saveStatus === 'success' ? 'bg-emerald-500' :
+                        saveStatus === 'error' ? 'bg-rose-500' :
+                        'bg-slate-900 hover:bg-black shadow-[0_10px_30px_-10px_rgba(0,0,0,0.5)]'
+                    }`}
                 >
-                    <motion.button
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                        onClick={onSave}
-                        disabled={saveStatus === 'saving'}
-                        className={`px-4 sm:px-8 py-2.5 sm:py-4 font-bold text-[9px] sm:text-[10px] uppercase tracking-[0.15em] sm:tracking-[0.2em] text-white transition-all flex items-center justify-center gap-2 sm:gap-3 min-h-[40px] sm:min-h-auto ${saveStatus === 'saving' ? 'bg-slate-600' :
-                            saveStatus === 'success' ? 'bg-emerald-500' :
-                                saveStatus === 'error' ? 'bg-rose-500' :
-                                    'bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 shadow-[0_10px_20px_-5px_rgba(0,0,0,0.3)] hover:shadow-[0_15px_30px_-5px_rgba(0,0,0,0.4)]'
-                            }`}
-                    >
-                        {saveStatus === 'saving' ? (
-                            <>
-                                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                                <span>Guardando...</span>
-                            </>
-                        ) : saveStatus === 'success' ? (
-                            <>
-                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                                </svg>
-                                <span>Guardado</span>
-                            </>
-                        ) : (
-                            <>
-                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                                </svg>
-                                <span>Guardar cambios</span>
-                            </>
-                        )}
-                    </motion.button>
-                </motion.div>
+                    {saveStatus === 'saving' ? (
+                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    ) : (
+                        <span className="text-lg group-hover:rotate-12 transition-transform">
+                            {saveStatus === 'success' ? '✅' : '💾'}
+                        </span>
+                    )}
+                    <span>{saveStatus === 'saving' ? 'Guardando...' : saveStatus === 'success' ? '¡Guardado!' : 'Guardar Cambios'}</span>
+                </motion.button>
             </div>
         </motion.div>
     );
