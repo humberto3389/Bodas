@@ -73,31 +73,35 @@ export function HeroSection({ clientData, videos }: HeroSectionProps) {
     const isDesktop = typeof window !== 'undefined' && window.innerWidth >= 1024;
 
     useEffect(() => {
-        // Manage Audio Token
-        if (showVideo && heroVideoAudioEnabled && isInView) {
-            requestFocus('hero');
-        } else {
-            releaseFocus('hero');
-        }
+        const video = videoRef.current;
+        if (!showVideo || !video) return;
 
-        // Manage Video Playback/Mute
-        if (videoRef.current) {
-            if (heroVideoAudioEnabled) {
-                // Si el audio está habilitado, comportamiento de foco estricto
-                if (isInView) {
-                    videoRef.current.muted = false; // Desmutear
-                    videoRef.current.play().catch(() => { });
-                    requestFocus('hero'); // Asegurar foco
+        const handlePlayback = async () => {
+            try {
+                if (heroVideoAudioEnabled && isInView) {
+                    // Intentar reproducir con audio si está en vista
+                    video.muted = false;
+                    await video.play();
+                    requestFocus('hero');
+                } else if (isInView) {
+                    // Reproducir silenciado si está en vista
+                    video.muted = true;
+                    await video.play();
+                    releaseFocus('hero');
                 } else {
-                    videoRef.current.pause();
-                    releaseFocus('hero'); // Soltar foco
+                    video.pause();
+                    releaseFocus('hero');
                 }
-            } else {
-                // Si el audio está deshabilitado, reproducir muteado como fondo
-                videoRef.current.muted = true;
-                if (videoRef.current.paused) videoRef.current.play().catch(() => { });
+            } catch (error) {
+                // Fallback: si falla con audio (por políticas del navegador), reproducir silenciado
+                if (heroVideoAudioEnabled && isInView) {
+                    video.muted = true;
+                    video.play().catch(() => {});
+                }
             }
-        }
+        };
+
+        handlePlayback();
     }, [showVideo, heroVideoAudioEnabled, isInView, requestFocus, releaseFocus]);
 
     return (

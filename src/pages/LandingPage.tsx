@@ -520,8 +520,8 @@ export default function LandingPage() {
                   })()}
                 </div>
               </motion.div>
-              <p className="text-slate-400 mb-6 max-w-md text-lg leading-relaxed italic opacity-80 font-light">
-                {content?.footerDescription || 'Tejiendo historias de amor que trascienden en el tiempo'}
+              <p className="text-slate-400/60 mb-6 max-w-md text-xs tracking-[0.2em] font-light leading-relaxed">
+                {content?.footerDescription || 'Donde el amor encuentra su lugar'}
               </p>
             </div>
 

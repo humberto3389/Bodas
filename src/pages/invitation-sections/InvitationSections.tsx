@@ -247,8 +247,8 @@ export function InvitationFooter({ clientData }: { clientData: any }) {
                         <span className="font-elegant text-2xl text-slate-800 group-hover:text-rose-600 transition-colors duration-300">
                             Suspiro Nupcial
                         </span>
-                        <span className="text-xs text-rose-500 tracking-[0.2em] font-medium uppercase mt-1 italic opacity-80">
-                            Tejiendo historias de amor que trascienden en el tiempo
+                        <span className="text-[10px] text-rose-500/60 tracking-[0.3em] font-light mt-2">
+                            Donde el amor encuentra su lugar
                         </span>
                     </a>
 
