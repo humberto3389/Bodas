@@ -30,6 +30,15 @@ export interface LandingPageContent {
     description: string;
   }>;
 
+  // Testimonials Section
+  testimonialsTitle: string;
+  testimonialsList: Array<{
+    name: string;
+    date: string;
+    text: string;
+    avatarUrl: string;
+  }>;
+
   // Control Section
   controlSectionTitle: string;
   controlSectionText: string;
@@ -111,6 +120,22 @@ const defaultContent: LandingPageContent = {
     { icon: '📱', title: 'Se ve perfecto en celular', description: 'Diseño responsivo optimizado para cualquier dispositivo.' },
     { icon: '⚡', title: 'Lista en menos de 24 horas', description: 'Tu página web estará lista para compartir rápidamente.' },
     { icon: '🌿', title: 'Sin impresiones', description: 'Olvídate del papel y sé amigable con el medio ambiente.' }
+  ],
+
+  testimonialsTitle: 'Lo que dicen las parejas',
+  testimonialsList: [
+    { 
+      name: 'Mar & Alex', 
+      date: 'Mayo 2024', 
+      text: 'Excelente servicio, muy fácil de usar y a todos los invitados les encantó. La recomendamos 100%.', 
+      avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&q=80' 
+    },
+    { 
+      name: 'Sofía & Diego', 
+      date: 'Octubre 2023', 
+      text: 'Nos ahorró muchísimo estrés. El control de confirmación de asistencia es una maravilla.', 
+      avatarUrl: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=100&h=100&fit=crop&q=80' 
+    }
   ],
 
   controlSectionTitle: 'Tú tienes el control',
@@ -206,6 +231,9 @@ export async function loadLandingPageContent(): Promise<LandingPageContent> {
       featuresDescription: data.features_description || defaultContent.featuresDescription,
       featuresList: Array.isArray(data.features_list) ? data.features_list : defaultContent.featuresList,
 
+      testimonialsTitle: data.testimonials_title || defaultContent.testimonialsTitle,
+      testimonialsList: Array.isArray(data.testimonials_list) ? data.testimonials_list : defaultContent.testimonialsList,
+
       controlSectionTitle: data.control_section_title || defaultContent.controlSectionTitle,
       controlSectionText: data.control_section_text || defaultContent.controlSectionText,
 
@@ -267,6 +295,9 @@ export async function saveLandingPageContent(content: LandingPageContent): Promi
       features_title_highlight: content.featuresTitleHighlight,
       features_description: content.featuresDescription,
       features_list: content.featuresList,
+
+      testimonials_title: content.testimonialsTitle,
+      testimonials_list: content.testimonialsList,
 
       control_section_title: content.controlSectionTitle,
       control_section_text: content.controlSectionText,

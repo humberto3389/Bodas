@@ -510,6 +510,27 @@ const LandingPageEditor = () => {
     setContent({ ...content, featuresList: newFeatures });
   };
 
+  const updateTestimonial = (index: number, field: 'name' | 'date' | 'text' | 'avatarUrl', value: string) => {
+    if (!content) return;
+    const newList = [...(content.testimonialsList || [])];
+    newList[index] = { ...newList[index], [field]: value };
+    setContent({ ...content, testimonialsList: newList });
+  };
+
+  const addTestimonial = () => {
+    if (!content) return;
+    setContent({
+      ...content,
+      testimonialsList: [...(content.testimonialsList || []), { name: 'Nueva Pareja', date: '', text: 'Testimonio increíble...', avatarUrl: '' }]
+    });
+  };
+
+  const removeTestimonial = (index: number) => {
+    if (!content) return;
+    const newList = (content.testimonialsList || []).filter((_, i) => i !== index);
+    setContent({ ...content, testimonialsList: newList });
+  };
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -824,6 +845,84 @@ const LandingPageEditor = () => {
                         className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"
                       />
                     </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Sección Testimonios */}
+          <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xl font-bold text-slate-800">Sección Testimonios</h3>
+              <button
+                onClick={addTestimonial}
+                className="px-4 py-2 bg-rose-500 text-white rounded-lg hover:bg-rose-600 transition-colors"
+              >
+                + Agregar Testimonio
+              </button>
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-slate-700 mb-2">Título de Sección</label>
+              <input
+                type="text"
+                value={content.testimonialsTitle || ''}
+                onChange={(e) => updateContent('testimonialsTitle', e.target.value)}
+                className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-transparent"
+                placeholder="Lo que dicen las parejas"
+              />
+            </div>
+            <div className="space-y-4">
+              {(content.testimonialsList || []).map((testimonial, index) => (
+                <div key={index} className="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-sm font-medium text-slate-700">Testimonio {index + 1}</span>
+                    <button
+                      onClick={() => removeTestimonial(index)}
+                      className="text-red-500 hover:text-red-700 text-sm"
+                    >
+                      Eliminar
+                    </button>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 mb-3">
+                    <div>
+                      <label className="block text-xs font-medium text-slate-600 mb-1">Nombres</label>
+                      <input
+                        type="text"
+                        value={testimonial.name}
+                        onChange={(e) => updateTestimonial(index, 'name', e.target.value)}
+                        className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"
+                        placeholder="Ana & Carlos"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-slate-600 mb-1">Fecha</label>
+                      <input
+                        type="text"
+                        value={testimonial.date}
+                        onChange={(e) => updateTestimonial(index, 'date', e.target.value)}
+                        className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"
+                        placeholder="Mayo 2024"
+                      />
+                    </div>
+                    <div className="lg:col-span-2">
+                      <label className="block text-xs font-medium text-slate-600 mb-1">URL Avatar (Opcional)</label>
+                      <input
+                        type="text"
+                        value={testimonial.avatarUrl}
+                        onChange={(e) => updateTestimonial(index, 'avatarUrl', e.target.value)}
+                        className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-slate-600 mb-1">Comentario</label>
+                    <textarea
+                      value={testimonial.text}
+                      onChange={(e) => updateTestimonial(index, 'text', e.target.value)}
+                      rows={2}
+                      className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"
+                    />
                   </div>
                 </div>
               ))}
@@ -1291,6 +1390,40 @@ const LandingPageContentPreview = ({ content }: { content: LandingPageContent })
                 <div className="text-2xl mb-2">{f.icon}</div>
                 <div className="font-semibold text-slate-900">{f.title}</div>
                 <div className="text-slate-600 text-sm mt-1">{f.description}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials Section Preview */}
+      <section className="px-6 py-10 border-t border-slate-200 bg-slate-50">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-8">
+            <h2 className="text-2xl md:text-3xl font-bold text-slate-900">
+              {content.testimonialsTitle || 'Lo que dicen las parejas'}
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {(content.testimonialsList || []).map((t, i) => (
+              <div key={i} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm flex flex-col justify-between">
+                <div>
+                  <div className="flex text-amber-500 mb-3 text-sm">★★★★★</div>
+                  <div className="italic text-slate-600 mb-4">"{t.text}"</div>
+                </div>
+                <div className="flex items-center gap-3 mt-4">
+                  {t.avatarUrl ? (
+                    <img src={t.avatarUrl} alt={t.name} className="w-10 h-10 rounded-full object-cover bg-slate-200" />
+                  ) : (
+                    <div className="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-slate-500 font-bold border border-slate-300">
+                      {t.name.charAt(0)}
+                    </div>
+                  )}
+                  <div>
+                    <div className="font-bold text-slate-900 text-sm">{t.name}</div>
+                    <div className="text-slate-500 text-xs">{t.date}</div>
+                  </div>
+                </div>
               </div>
             ))}
           </div>
