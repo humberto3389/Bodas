@@ -289,6 +289,7 @@ export function useClientAdmin() {
     const [audioFiles, setAudioFiles] = useState<any[]>([]);
     const [videoFiles, setVideoFiles] = useState<any[]>([]);
     const [heroVideoFiles, setHeroVideoFiles] = useState<any[]>([]);
+    const [decorationFiles, setDecorationFiles] = useState<any[]>([]);
 
     // Load RSVPs and Messages
     const fetchData = useCallback(async () => {
@@ -319,12 +320,13 @@ export function useClientAdmin() {
 
     const loadFiles = useCallback(async () => {
         if (!authed || !clientId) return;
-        const [imgs, heroImgs, auds, vids, heroVids] = await Promise.all([
+        const [imgs, heroImgs, auds, vids, heroVids, decorImgs] = await Promise.all([
             listClientFiles('gallery', 'gallery'),
             listClientFiles('gallery', 'hero'),
             listClientFiles('audio'),
             listClientFiles('videos', 'video'),
-            listClientFiles('videos', 'hero')
+            listClientFiles('videos', 'hero'),
+            listClientFiles('gallery', 'decoration')
         ]);
 
         setGalleryFiles(imgs);
@@ -332,6 +334,7 @@ export function useClientAdmin() {
         setAudioFiles([{ name: 'Música por Defecto', path: '/audio.ogg', created: new Date().toISOString(), isSystem: true }, ...auds]);
         setVideoFiles(vids);
         setHeroVideoFiles([{ name: 'Video por Defecto', path: '/hero.webm', created: new Date().toISOString(), isSystem: true }, ...heroVids]);
+        setDecorationFiles(decorImgs);
     }, [authed, clientId, listClientFiles]);
 
     useEffect(() => {
@@ -477,6 +480,7 @@ export function useClientAdmin() {
         audioFiles,
         videoFiles,
         heroVideoFiles,
+        decorationFiles,
         handleUpload,
         handleDelete,
         fetchData,

@@ -35,10 +35,11 @@ export default function Admin() {
     rsvps,
     messages,
     galleryFiles,
-    heroFiles,
+    heroFiles: heroImageFiles,
     audioFiles,
     videoFiles,
     heroVideoFiles,
+    decorationFiles,
     handleUpload,
     handleDelete,
     deleteRSVP,
@@ -320,7 +321,8 @@ export default function Admin() {
                   saveStatus={saveStatus}
                   onSave={saveClientProfile}
                   client={clientSession}
-                  imageFiles={heroFiles}
+                  heroImageFiles={heroImageFiles}
+                  decorationImageFiles={decorationFiles}
                   audioFiles={audioFiles}
                   videoFiles={heroVideoFiles}
                   onUpload={handleUpload}

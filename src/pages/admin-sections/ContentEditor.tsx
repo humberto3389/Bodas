@@ -12,7 +12,8 @@ interface ContentEditorProps {
     saveStatus: 'idle' | 'saving' | 'success' | 'error';
     onSave: () => void;
     client?: any;
-    imageFiles: MediaFile[];
+    heroImageFiles: MediaFile[];
+    decorationImageFiles: MediaFile[];
     audioFiles: MediaFile[];
     videoFiles: MediaFile[];
     onUpload: (bucket: 'gallery' | 'audio' | 'videos', file: File, customFolder?: string) => Promise<string | null>;
@@ -28,7 +29,8 @@ export function ContentEditor({
     saveStatus,
     onSave,
     client,
-    imageFiles,
+    heroImageFiles,
+    decorationImageFiles,
     audioFiles,
     videoFiles,
     onUpload,
@@ -497,7 +499,8 @@ export function ContentEditor({
                                     <AdminUploader
                                         title=""
                                         bucket="gallery"
-                                        files={imageFiles}
+                                        customFolder="decoration"
+                                        files={decorationImageFiles}
                                         onUploadSuccess={async () => { }}
                                         onUpload={onUpload}
                                         onDelete={async (b, f) => { await onDelete(b, f); }}
@@ -577,7 +580,7 @@ export function ContentEditor({
                                                 title=""
                                                 bucket="gallery"
                                                 customFolder="hero"
-                                                files={imageFiles}
+                                                files={heroImageFiles}
                                                 onUploadSuccess={async () => { }}
                                                 onUpload={onUpload}
                                                 onDelete={async (b, f) => { await onDelete(b, f); }}
