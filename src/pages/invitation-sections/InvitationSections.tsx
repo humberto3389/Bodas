@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence, useInView } from 'framer-motion';
 import { useAudioContext } from '../../contexts/AudioContext';
 import { SectionTitle } from './SectionTitle';
@@ -9,12 +9,44 @@ export function VideoSection({ clientData, videos: propVideos }: { clientData: a
     // Componente interno para manejar referencia de video individualmente
     const VideoPlayer = ({ url, poster, audioEnabled, isInView }: { url: string, poster: string, audioEnabled: boolean, isInView: boolean }) => {
         const videoRef = useRef<HTMLVideoElement>(null);
+        const { requestFocus, releaseFocus } = useAudioContext();
+
+        // Manejar eventos de audio para sincronizar con música de fondo
+        const handlePlayback = useCallback(() => {
+            if (!videoRef.current) return;
+            const isPlaying = !videoRef.current.paused && !videoRef.current.ended;
+            const isUnmuted = !videoRef.current.muted && videoRef.current.volume > 0;
+
+            if (isPlaying && isUnmuted) {
+                requestFocus('cinema');
+            } else {
+                releaseFocus('cinema');
+            }
+        }, [requestFocus, releaseFocus]);
+
+        useEffect(() => {
+            const video = videoRef.current;
+            if (!video) return;
+
+            video.addEventListener('play', handlePlayback);
+            video.addEventListener('pause', handlePlayback);
+            video.addEventListener('volumechange', handlePlayback);
+            video.addEventListener('ended', handlePlayback);
+
+            return () => {
+                video.removeEventListener('play', handlePlayback);
+                video.removeEventListener('pause', handlePlayback);
+                video.removeEventListener('volumechange', handlePlayback);
+                video.removeEventListener('ended', handlePlayback);
+                releaseFocus('cinema'); // Asegurar liberación al desmontar
+            };
+        }, [handlePlayback, releaseFocus]);
 
         useEffect(() => {
             if (!videoRef.current) return;
 
             if (audioEnabled) {
-                // Si el audio está habilitado, comportamiento de foco estricto
+                // Si el audio está habilitado por defecto, comportamiento de foco estricto
                 if (isInView) {
                     videoRef.current.muted = false; // Desmutear
                     videoRef.current.play().catch(() => { });
@@ -27,7 +59,6 @@ export function VideoSection({ clientData, videos: propVideos }: { clientData: a
                 if (isInView && videoRef.current.paused) {
                     videoRef.current.play().catch(() => { });
                 } else if (!isInView) {
-                    // Opcional: pausar si no está en vista para ahorrar recursos
                     videoRef.current.pause();
                 }
             }
@@ -62,19 +93,10 @@ export function VideoSection({ clientData, videos: propVideos }: { clientData: a
 
     /* Auto-play slider logic removed for video section to avoid interruption, kept manual only or very slow */
 
-    // Audio Focus Logic
+    // Audio Focus Logic - Removed parent-level focus logic to favor VideoPlayer individual control
     const ref = useRef(null);
     const isInView = useInView(ref, { amount: 0.5 });
-    const { requestFocus, releaseFocus } = useAudioContext();
     const audioEnabled = clientData.cinemaVideoAudioEnabled || false;
-
-    useEffect(() => {
-        if (videos.length > 0 && audioEnabled && isInView) {
-            requestFocus('cinema');
-        } else {
-            releaseFocus('cinema');
-        }
-    }, [videos.length, audioEnabled, isInView, requestFocus, releaseFocus]);
 
     if (videos.length === 0 || clientData.planType !== 'deluxe') return null;
 

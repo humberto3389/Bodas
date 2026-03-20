@@ -7,7 +7,7 @@ interface ShareLinkProps {
 }
 
 export function ShareLink({ subdomain }: ShareLinkProps) {
-    const publicUrl = getClientUrl(subdomain || '');
+    const publicUrl = `${getClientUrl(subdomain || '')}?refresh=true`;
 
     const handleCopy = () => {
         navigator.clipboard.writeText(publicUrl);
