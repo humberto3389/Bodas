@@ -261,7 +261,7 @@ export default function LandingPage() {
       </motion.nav>
 
       {/* Hero Section Ultra Moderna */}
-      <header className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
+      <header className="relative min-h-screen flex items-center justify-center overflow-hidden snap-section">
         {/* Fondo gradiente animado */}
         <div className="absolute inset-0 bg-gradient-to-br from-rose-50/40 via-white to-amber-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-rose-950/20" />
 
@@ -382,26 +382,34 @@ export default function LandingPage() {
       </header>
 
       <React.Suspense fallback={<div className="h-64 flex items-center justify-center">Cargando...</div>}>
-        <DemoSection demoUrl={content?.demoUrl} />
-        <FeaturesSection 
-          featuresList={content?.featuresList}
-          featuresBadge={content?.featuresBadge}
-          featuresTitleLine1={content?.featuresTitleLine1}
-          featuresTitleHighlight={content?.featuresTitleHighlight}
-          featuresDescription={content?.featuresDescription}
-        />
-        <TestimonialsSection 
-          testimonialsList={content?.testimonialsList}
-          testimonialsTitle={content?.testimonialsTitle}
-        />
-        <PricingSection 
-          plansData={content?.plansData}
-          handleWhatsAppClick={handleWhatsAppClick}
-        />
+        <section className="snap-section flex items-center py-10 md:py-20">
+          <DemoSection demoUrl={content?.demoUrl} />
+        </section>
+        <section className="snap-section flex items-center py-10 md:py-20">
+          <FeaturesSection 
+            featuresList={content?.featuresList}
+            featuresBadge={content?.featuresBadge}
+            featuresTitleLine1={content?.featuresTitleLine1}
+            featuresTitleHighlight={content?.featuresTitleHighlight}
+            featuresDescription={content?.featuresDescription}
+          />
+        </section>
+        <section className="snap-section flex items-center py-10 md:py-20">
+          <TestimonialsSection 
+            testimonialsList={content?.testimonialsList}
+            testimonialsTitle={content?.testimonialsTitle}
+          />
+        </section>
+        <section className="snap-section flex items-center py-10 md:py-20">
+          <PricingSection 
+            plansData={content?.plansData}
+            handleWhatsAppClick={handleWhatsAppClick}
+          />
+        </section>
       </React.Suspense>
 
       {/* Sección de Contacto - Diseño Elegante */}
-      <section id="contacto" className="py-32 relative">
+      <section id="contacto" className="py-12 md:py-32 relative snap-section flex items-center">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}

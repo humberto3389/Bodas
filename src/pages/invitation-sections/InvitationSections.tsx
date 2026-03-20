@@ -101,7 +101,7 @@ export function VideoSection({ clientData, videos: propVideos }: { clientData: a
     if (videos.length === 0 || clientData.planType !== 'deluxe') return null;
 
     return (
-        <section ref={ref} id="videos" className="py-20 relative overflow-hidden px-4 sm:px-6">
+        <section ref={ref} id="videos" className="py-10 md:py-20 relative overflow-hidden px-0 sm:px-6">
             <div className="w-full relative px-0 sm:px-6">
                 <SectionTitle subtitle="Cinema">
                     Nuestra Historia
@@ -135,7 +135,7 @@ export function VideoSection({ clientData, videos: propVideos }: { clientData: a
                                         exit={{ opacity: 0, scale: 0.8 }}
                                         transition={{ duration: 0.8, ease: "easeInOut" }}
                                         onClick={() => !isCenter && setCurrentIndex(idx)}
-                                        className={`absolute w-full max-w-5xl aspect-video ${!isCenter ? 'cursor-pointer' : ''}`}
+                                        className={`absolute w-full max-w-[95vw] sm:max-w-5xl aspect-video ${!isCenter ? 'cursor-pointer' : ''}`}
                                     >
                                         <div className="w-full h-full bg-black rounded-3xl overflow-hidden shadow-2xl relative border-2 border-white/10">
                                             {isCenter ? (

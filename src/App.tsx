@@ -225,20 +225,26 @@ export default function App({ clientData: propData }: AppProps) {
           )}
 
           {/* Galería */}
-          <section id="gallery" className="snap-section flex items-center">
-            <Suspense fallback={<div className="h-96" />}>
-              <SmoothReveal delay={0.3}>
-                <GallerySection clientData={client} images={galleryImages.map(img => img.url)} />
-              </SmoothReveal>
-            </Suspense>
-          </section>
+          {galleryImages && galleryImages.length > 0 && (
+            <section id="gallery" className="snap-section flex items-center py-10 md:py-20">
+              <div className="w-full px-0 sm:px-6">
+                <Suspense fallback={<div className="h-96" />}>
+                  <SmoothReveal delay={0.3}>
+                    <GallerySection clientData={client} images={galleryImages.map(img => img.url)} />
+                  </SmoothReveal>
+                </Suspense>
+              </div>
+            </section>
+          )}
 
           {/* Video */}
           {videos && videos.length > 0 && (
-            <section id="video" className="snap-section flex items-center">
-              <Suspense fallback={<div className="h-96" />}>
-                <VideoSection clientData={client} videos={videos} />
-              </Suspense>
+            <section id="video" className="snap-section flex items-center py-10 md:py-20">
+              <div className="w-full px-0 sm:px-6">
+                <Suspense fallback={<div className="h-96" />}>
+                  <VideoSection clientData={client} videos={videos} />
+                </Suspense>
+              </div>
             </section>
           )}
 
@@ -261,18 +267,20 @@ export default function App({ clientData: propData }: AppProps) {
           </section>
 
           {/* RSVP */}
-          <section id="rsvp" className="snap-section flex items-center py-10">
+          <section id="rsvp" className="snap-section flex items-center py-8 md:py-20">
             <Suspense fallback={<div className="h-96" />}>
               <RSVPSection onSubmit={submitRSVP} />
             </Suspense>
           </section>
 
           {/* Guestbook */}
-          <section id="guestbook" className="snap-section flex items-center py-10">
-            <Suspense fallback={<div className="h-96" />}>
-              <GuestbookSection messages={messages} onSendMessage={submitMessage} />
-            </Suspense>
-          </section>
+          {messages && messages.length > 0 && (
+            <section id="guestbook" className="snap-section flex items-center py-8 md:py-16">
+              <Suspense fallback={<div className="h-96" />}>
+                <GuestbookSection messages={messages} onSendMessage={submitMessage} />
+              </Suspense>
+            </section>
+          )}
 
           {/* Footer */}
           <Suspense fallback={null}>
