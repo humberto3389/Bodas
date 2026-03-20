@@ -33,10 +33,13 @@ export interface LandingPageContent {
   // Testimonials Section
   testimonialsTitle: string;
   testimonialsList: Array<{
+    id?: string;
+    type?: 'real' | 'fake';
     name: string;
     date: string;
     text: string;
     avatarUrl: string;
+    rating?: number;
   }>;
 
   // Control Section
@@ -125,16 +128,20 @@ const defaultContent: LandingPageContent = {
   testimonialsTitle: 'Lo que dicen las parejas',
   testimonialsList: [
     { 
+      type: 'fake',
       name: 'Mar & Alex', 
       date: 'Mayo 2024', 
       text: 'Excelente servicio, muy fácil de usar y a todos los invitados les encantó. La recomendamos 100%.', 
-      avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&q=80' 
+      avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&q=80',
+      rating: 5
     },
     { 
+      type: 'fake',
       name: 'Sofía & Diego', 
       date: 'Octubre 2023', 
       text: 'Nos ahorró muchísimo estrés. El control de confirmación de asistencia es una maravilla.', 
-      avatarUrl: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=100&h=100&fit=crop&q=80' 
+      avatarUrl: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=100&h=100&fit=crop&q=80',
+      rating: 5
     }
   ],
 

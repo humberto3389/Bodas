@@ -164,13 +164,15 @@ export default function Admin() {
   }
 
   const [testimonialText, setTestimonialText] = useState('')
+  const [testimonialName, setTestimonialName] = useState(clientSession?.clientName || '')
+  const [testimonialRating, setTestimonialRating] = useState(5)
   const [isSubmittingTestimonial, setIsSubmittingTestimonial] = useState(false)
   const [testimonialSubmitted, setTestimonialSubmitted] = useState(false)
 
   const handleSubmitReview = async () => {
-    if (!testimonialText.trim()) return;
+    if (!testimonialText.trim() || !testimonialName.trim()) return;
     setIsSubmittingTestimonial(true);
-    const result = await submitTestimonial(testimonialText);
+    const result = await submitTestimonial(testimonialText, testimonialName, testimonialRating);
     setIsSubmittingTestimonial(false);
     if (result.success) {
       setTestimonialSubmitted(true);
@@ -294,6 +296,51 @@ export default function Admin() {
                     </motion.div>
                   ) : (
                     <div className="space-y-6">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-medium text-slate-700 mb-2">Tu Nombre (Puedes editarlo)</label>
+                          <input
+                            type="text"
+                            value={testimonialName}
+                            onChange={(e) => setTestimonialName(e.target.value)}
+                            className="w-full px-4 py-3 rounded-2xl border-2 border-slate-100 focus:border-rose-400 focus:outline-none transition-colors"
+                            placeholder="Ana y Carlos"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-slate-700 mb-2">Calificación</label>
+                          <div className="flex items-center gap-1 mt-2">
+                            {[1, 2, 3, 4, 5].map((star) => (
+                              <button
+                                key={star}
+                                onClick={() => setTestimonialRating(star)}
+                                onMouseEnter={(e) => {
+                                  const buttons = e.currentTarget.parentElement?.children;
+                                  if (buttons) {
+                                    for (let i = 0; i < buttons.length; i++) {
+                                      buttons[i].classList.toggle('text-rose-400', i < star);
+                                      buttons[i].classList.toggle('text-slate-200', i >= star);
+                                    }
+                                  }
+                                }}
+                                onMouseLeave={(e) => {
+                                  const buttons = e.currentTarget.parentElement?.children;
+                                  if (buttons) {
+                                    for (let i = 0; i < buttons.length; i++) {
+                                      buttons[i].classList.toggle('text-rose-400', i < testimonialRating);
+                                      buttons[i].classList.toggle('text-slate-200', i >= testimonialRating);
+                                    }
+                                  }
+                                }}
+                                className={`text-3xl transition-colors focus:outline-none ${star <= testimonialRating ? 'text-rose-400' : 'text-slate-200'}`}
+                              >
+                                ★
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                      
                       <div>
                         <label className="block text-sm font-medium text-slate-700 mb-2">Mensaje</label>
                         <textarea

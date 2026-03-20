@@ -725,7 +725,7 @@ const LandingPageEditor = () => {
     setContent({ ...content, featuresList: newFeatures });
   };
 
-  const updateTestimonial = (index: number, field: 'name' | 'date' | 'text' | 'avatarUrl', value: string) => {
+  const updateTestimonial = (index: number, field: 'name' | 'date' | 'text' | 'avatarUrl' | 'rating', value: any) => {
     if (!content) return;
     const newList = [...(content.testimonialsList || [])];
     newList[index] = { ...newList[index], [field]: value };
@@ -736,12 +736,22 @@ const LandingPageEditor = () => {
     if (!content) return;
     setContent({
       ...content,
-      testimonialsList: [...(content.testimonialsList || []), { name: 'Nueva Pareja', date: '', text: 'Testimonio increíble...', avatarUrl: '' }]
+      testimonialsList: [...(content.testimonialsList || []), { id: crypto.randomUUID(), type: 'fake', name: 'Nueva Pareja', date: '', text: 'Testimonio increíble...', avatarUrl: '', rating: 5 }]
     });
   };
 
-  const removeTestimonial = (index: number) => {
+  const removeTestimonial = async (index: number) => {
     if (!content) return;
+    const testimonialToRemove = content.testimonialsList[index];
+    
+    // Si es real, actualizar estado en DB a rejected
+    if (testimonialToRemove.type === 'real' && testimonialToRemove.id) {
+        await supabase
+          .from('client_testimonials')
+          .update({ status: 'rejected' })
+          .eq('id', testimonialToRemove.id);
+    }
+    
     const newList = (content.testimonialsList || []).filter((_, i) => i !== index);
     setContent({ ...content, testimonialsList: newList });
   };
@@ -762,10 +772,13 @@ const LandingPageEditor = () => {
 
     // 2. Agregar a la lista dinámica de la landing page
     const newList = [...(content.testimonialsList || []), {
+      id: t.id,
+      type: 'real' as const,
       name: t.client_name,
       date: t.wedding_date || '',
       text: t.text,
-      avatarUrl: t.avatar_url || ''
+      avatarUrl: t.avatar_url || '',
+      rating: t.rating || 5
     }];
     
     const updatedContent = { ...content, testimonialsList: newList };
@@ -883,7 +896,10 @@ const LandingPageEditor = () => {
                         )}
                         <div>
                           <p className="font-bold text-slate-900 text-sm">{t.client_name}</p>
-                          <p className="text-slate-500 text-xs">{t.wedding_date}</p>
+                          <div className="flex items-center gap-2">
+                             <div className="flex text-amber-400 text-xs">{"★".repeat(t.rating || 5)}{"☆".repeat(5 - (t.rating || 5))}</div>
+                             <p className="text-slate-500 text-xs">{t.wedding_date}</p>
+                          </div>
                         </div>
                       </div>
                       <p className="text-slate-700 text-sm italic mb-4">"{t.text}"</p>
@@ -1192,46 +1208,76 @@ const LandingPageEditor = () => {
                       Eliminar
                     </button>
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 mb-3">
-                    <div>
-                      <label className="block text-xs font-medium text-slate-600 mb-1">Nombres</label>
-                      <input
-                        type="text"
-                        value={testimonial.name}
-                        onChange={(e) => updateTestimonial(index, 'name', e.target.value)}
-                        className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"
-                        placeholder="Ana & Carlos"
-                      />
+                  {testimonial.type === 'real' ? (
+                    <div className="mb-3 bg-emerald-50 border border-emerald-100 p-4 rounded-xl text-sm text-slate-700">
+                      <p className="font-semibold text-emerald-800 flex items-center gap-2 mb-3">
+                        <span className="text-xl">✅</span> Reseña Real de Cliente
+                      </p>
+                      <p className="mb-4 text-xs text-emerald-700/80">No se permite edición para mantener la autenticidad. Si fue aprobada por error, puedes eliminarla.</p>
+                      <div className="grid grid-cols-2 gap-y-3 gap-x-4 bg-white/60 p-3 rounded-lg border border-emerald-100/50">
+                         <div><strong className="text-emerald-900/60 text-[10px] uppercase tracking-wider block mb-0.5">Nombre</strong> {testimonial.name}</div>
+                         <div><strong className="text-emerald-900/60 text-[10px] uppercase tracking-wider block mb-0.5">Calificación</strong> <span className="text-amber-500">{"★".repeat(testimonial.rating || 5)}{"☆".repeat(5 - (testimonial.rating || 5))}</span></div>
+                         <div><strong className="text-emerald-900/60 text-[10px] uppercase tracking-wider block mb-0.5">Fecha</strong> {testimonial.date}</div>
+                         <div className="col-span-2"><strong className="text-emerald-900/60 text-[10px] uppercase tracking-wider block mb-0.5">Comentario</strong> {testimonial.text}</div>
+                      </div>
                     </div>
-                    <div>
-                      <label className="block text-xs font-medium text-slate-600 mb-1">Fecha</label>
-                      <input
-                        type="text"
-                        value={testimonial.date}
-                        onChange={(e) => updateTestimonial(index, 'date', e.target.value)}
-                        className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"
-                        placeholder="Mayo 2024"
-                      />
+                  ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3 mb-3">
+                      <div>
+                        <label className="block text-xs font-medium text-slate-600 mb-1">Tipo</label>
+                        <div className="w-full px-3 py-2 border border-slate-200 bg-slate-100 rounded-lg text-sm text-slate-500 font-medium whitespace-nowrap overflow-hidden text-ellipsis">Ficticio</div>
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-slate-600 mb-1">Nombres</label>
+                        <input
+                          type="text"
+                          value={testimonial.name}
+                          onChange={(e) => updateTestimonial(index, 'name', e.target.value)}
+                          className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"
+                          placeholder="Ana & Carlos"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-slate-600 mb-1">Fecha</label>
+                        <input
+                          type="text"
+                          value={testimonial.date}
+                          onChange={(e) => updateTestimonial(index, 'date', e.target.value)}
+                          className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"
+                          placeholder="Mayo 2024"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-slate-600 mb-1">Calificación (1-5)</label>
+                        <input
+                          type="number"
+                          min="1"
+                          max="5"
+                          value={testimonial.rating || 5}
+                          onChange={(e) => updateTestimonial(index, 'rating', parseInt(e.target.value) || 5)}
+                          className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"
+                        />
+                      </div>
+                      <div className="lg:col-span-2">
+                        <label className="block text-xs font-medium text-slate-600 mb-1">URL Avatar (Opcional)</label>
+                        <input
+                          type="text"
+                          value={testimonial.avatarUrl}
+                          onChange={(e) => updateTestimonial(index, 'avatarUrl', e.target.value)}
+                          className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"
+                        />
+                      </div>
+                      <div className="lg:col-span-5">
+                        <label className="block text-xs font-medium text-slate-600 mb-1">Comentario</label>
+                        <textarea
+                          value={testimonial.text}
+                          onChange={(e) => updateTestimonial(index, 'text', e.target.value)}
+                          rows={2}
+                          className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"
+                        />
+                      </div>
                     </div>
-                    <div className="lg:col-span-2">
-                      <label className="block text-xs font-medium text-slate-600 mb-1">URL Avatar (Opcional)</label>
-                      <input
-                        type="text"
-                        value={testimonial.avatarUrl}
-                        onChange={(e) => updateTestimonial(index, 'avatarUrl', e.target.value)}
-                        className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium text-slate-600 mb-1">Comentario</label>
-                    <textarea
-                      value={testimonial.text}
-                      onChange={(e) => updateTestimonial(index, 'text', e.target.value)}
-                      rows={2}
-                      className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"
-                    />
-                  </div>
+                  )}
                 </div>
               ))}
             </div>

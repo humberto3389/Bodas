@@ -420,20 +420,22 @@ export function useClientAdmin() {
         }
     };
 
-    const submitTestimonial = async (text: string) => {
+    const submitTestimonial = async (text: string, name: string, rating: number) => {
         if (!clientId || !clientSession) return { success: false, error: 'No session' };
         try {
             const { error } = await supabase
                 .from('client_testimonials')
                 .insert({
                     client_id: clientId,
-                    client_name: clientSession.clientName || 'Cliente',
+                    client_name: name || clientSession.clientName || 'Cliente',
                     wedding_date: clientSession.weddingDate 
                         ? (clientSession.weddingDate instanceof Date ? clientSession.weddingDate.toISOString().split('T')[0] : String(clientSession.weddingDate).split('T')[0]) 
                         : null,
                     text: text,
                     avatar_url: clientSession.heroBackgroundUrl || null,
-                    status: 'pending'
+                    status: 'pending',
+                    rating: rating || 5,
+                    is_fake: false
                 });
 
             if (error) throw error;
