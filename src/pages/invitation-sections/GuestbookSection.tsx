@@ -29,7 +29,7 @@ export function GuestbookSection({ messages, onSendMessage }: GuestbookSectionPr
     };
 
     return (
-        <section id="guestbook" className="py-20 relative overflow-hidden px-4 sm:px-6">
+        <section id="guestbook" className="relative overflow-hidden px-4 sm:px-6">
             <div className="section-container">
                 <SectionTitle subtitle="Libro de Visitas">
                     Dedicatorias

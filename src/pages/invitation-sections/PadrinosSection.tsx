@@ -20,7 +20,7 @@ export function PadrinosSection({ padrinos }: PadrinosSectionProps) {
     if (activePadrinos.length === 0) return null;
 
     return (
-        <section id="padrinos" className="py-20 relative overflow-hidden px-4 sm:px-6">
+        <section id="padrinos" className="relative overflow-hidden px-4 sm:px-6">
             <div className="section-container">
                 {/* Section Header */}
                 <SectionTitle subtitle="Corte de Honor">
@@ -31,7 +31,7 @@ export function PadrinosSection({ padrinos }: PadrinosSectionProps) {
                     initial={{ opacity: 0 }}
                     whileInView={{ opacity: 1 }}
                     viewport={{ once: true }}
-                    className="text-lg text-slate-800/60 font-light tracking-wide max-w-lg mx-auto leading-relaxed text-center mb-16"
+                    className="text-lg text-slate-800/60 font-light tracking-wide max-w-lg mx-auto leading-relaxed text-center mb-10"
                 >
                     Personas especiales que nos acompañan y guían en este nuevo camino que comenzamos juntos.
                 </motion.p>

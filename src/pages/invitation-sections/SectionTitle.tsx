@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 export function SectionTitle({ children, subtitle }: { children: React.ReactNode, subtitle?: string }) {
 
     return (
-        <div className="mb-12 sm:mb-20 text-center relative px-4">
+        <div className="mb-8 sm:mb-16 text-center relative px-4">
             {/* Halo decorativo de título sutil */}
             <div className="absolute inset-0 -z-10 flex justify-center items-center pointer-events-none">
                 <div className="w-[300px] h-[300px] bg-rose-100/20 blur-[100px] rounded-full" />
