@@ -207,7 +207,7 @@ export default function App({ clientData: propData }: AppProps) {
 
         <main className="relative z-10 box-border">
           {/* Versículo e Invitación */}
-          <section id="verse">
+          <section id="verse" className="snap-section flex items-center justify-center">
             <SmoothReveal delay={0.2}>
               <VerseSection clientData={client} />
             </SmoothReveal>
@@ -215,8 +215,8 @@ export default function App({ clientData: propData }: AppProps) {
 
           {/* Cuenta Regresiva */}
           {(planType === 'premium' || planType === 'deluxe') && (
-            <section id="countdown">
-              <div className="max-w-7xl mx-auto px-4">
+            <section id="countdown" className="snap-section flex items-center justify-center py-12">
+              <div className="w-full max-w-7xl mx-auto px-4">
                 <Suspense fallback={<div className="h-32" />}>
                   <Countdown date={client.weddingDate} time={client.weddingTime} clientData={client} />
                 </Suspense>
@@ -225,7 +225,7 @@ export default function App({ clientData: propData }: AppProps) {
           )}
 
           {/* Galería */}
-          <section id="gallery">
+          <section id="gallery" className="snap-section flex items-center">
             <Suspense fallback={<div className="h-96" />}>
               <SmoothReveal delay={0.3}>
                 <GallerySection clientData={client} images={galleryImages.map(img => img.url)} />
@@ -235,7 +235,7 @@ export default function App({ clientData: propData }: AppProps) {
 
           {/* Video */}
           {videos && videos.length > 0 && (
-            <section id="video">
+            <section id="video" className="snap-section flex items-center">
               <Suspense fallback={<div className="h-96" />}>
                 <VideoSection clientData={client} videos={videos} />
               </Suspense>
@@ -244,7 +244,7 @@ export default function App({ clientData: propData }: AppProps) {
 
           {/* Padrinos */}
           {(planType === 'premium' || planType === 'deluxe') && client?.id && padrinos && padrinos.length > 0 && (
-            <section id="padrinos">
+            <section id="padrinos" className="snap-section flex items-center">
               <Suspense fallback={<div className="h-96" />}>
                 <PadrinosSection padrinos={padrinos} />
               </Suspense>
@@ -252,7 +252,7 @@ export default function App({ clientData: propData }: AppProps) {
           )}
 
           {/* Ubicación */}
-          <section id="location">
+          <section id="location" className="snap-section flex items-center">
             <Suspense fallback={<div className="h-96" />}>
               <SmoothReveal delay={0.4}>
                 <LocationSection clientData={client} />
@@ -261,14 +261,14 @@ export default function App({ clientData: propData }: AppProps) {
           </section>
 
           {/* RSVP */}
-          <section id="rsvp">
+          <section id="rsvp" className="snap-section flex items-center py-10">
             <Suspense fallback={<div className="h-96" />}>
               <RSVPSection onSubmit={submitRSVP} />
             </Suspense>
           </section>
 
           {/* Guestbook */}
-          <section id="guestbook">
+          <section id="guestbook" className="snap-section flex items-center py-10">
             <Suspense fallback={<div className="h-96" />}>
               <GuestbookSection messages={messages} onSendMessage={submitMessage} />
             </Suspense>
