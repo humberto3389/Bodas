@@ -41,6 +41,24 @@ export function RSVPManager({ rsvps, totalGuests, totalNotAttending, onDownloadC
             animate={{ opacity: 1, x: 0 }}
             className="bg-white/90 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-3 sm:p-6 md:p-8 shadow-xl border border-white/40"
         >
+            <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-3xl p-3 sm:p-6 lg:p-8 shadow-2xl mb-8 -mt-2 sm:-mt-4">
+                <div className="max-w-3xl">
+                    <h1 className="text-xl sm:text-2xl lg:text-3xl font-semibold text-white mb-2 sm:mb-3">Control de Asistencia (RSVP)</h1>
+                    <p className="text-slate-300 text-xs sm:text-sm mb-4">Monitorea quién asistirá a tu boda en tiempo real</p>
+                    <div className="bg-white/10 border border-white/20 p-4 rounded-xl backdrop-blur-md">
+                        <div className="flex items-start gap-3">
+                            <span className="text-2xl">💡</span>
+                            <div>
+                                <h3 className="text-white font-semibold text-sm mb-1">Guía Rápida: Lista de Invitados</h3>
+                                <p className="text-slate-300 text-xs sm:text-sm leading-relaxed">
+                                    Aquí aparecerán automáticamente los nombres de los familiares y amigos que confirmen o rechacen su asistencia desde tu página web. Usa el botón "Descargar Lista" para pasarlo a Excel.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 mb-6 sm:mb-8">
                 <div>
                     <h2 className="text-lg sm:text-2xl font-brush bg-gradient-to-r from-rose-600 to-amber-600 bg-clip-text text-transparent">

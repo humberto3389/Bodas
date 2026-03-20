@@ -119,6 +119,24 @@ export function PadrinosManager({ clientId, onUpload }: PadrinosManagerProps) {
 
     return (
         <div className="space-y-6">
+            <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-3xl p-3 sm:p-6 lg:p-8 shadow-2xl mb-4">
+                <div className="max-w-3xl">
+                    <h1 className="text-xl sm:text-2xl lg:text-3xl font-semibold text-white mb-2 sm:mb-3">Configuración de Padrinos</h1>
+                    <p className="text-slate-300 text-xs sm:text-sm mb-4">Muestra de manera especial a las personas importantes de tu evento</p>
+                    <div className="bg-white/10 border border-white/20 p-4 rounded-xl backdrop-blur-md">
+                        <div className="flex items-start gap-3">
+                            <span className="text-2xl">💡</span>
+                            <div>
+                                <h3 className="text-white font-semibold text-sm mb-1">Guía Rápida: Padrinos y VIPs</h3>
+                                <p className="text-slate-300 text-xs sm:text-sm leading-relaxed">
+                                    Crea las tarjetas con foto, nombre y rol ("Padrino de Anillos", "Padre de la Novia"). Estas aparecerán destacadas en una sección bonita en tu invitación web.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             {/* Header */}
             <div className="flex justify-between items-center">
                 <div>

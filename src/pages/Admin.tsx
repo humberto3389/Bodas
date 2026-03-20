@@ -12,6 +12,7 @@ import { AdminHeader } from './admin-sections/AdminHeader'
 import { AdminStats } from './admin-sections/AdminStats'
 import { ShareLink } from './admin-sections/ShareLink'
 import { ContentEditor } from './admin-sections/ContentEditor'
+import { AdminTour } from '../components/AdminTour'
 import { RSVPManager } from './admin-sections/RSVPManager'
 import { MessageManager } from './admin-sections/MessageManager'
 import { MediaManager } from './admin-sections/MediaManager'
@@ -203,6 +204,14 @@ export default function Admin() {
 
   return (
     <>
+      <ToastContainer toasts={toasts} onClose={removeToast} />
+      {clientId && (
+        <AdminTour 
+          clientId={clientId} 
+          clientName={clientSession?.clientName || 'Cliente'} 
+          setActiveTab={setActiveTab} 
+        />
+      )}
       <div className="min-h-screen bg-gradient-to-br from-rose-50 via-white to-amber-50">
         <AdminHeader
           clientName={clientSession?.clientName || 'Cliente'}

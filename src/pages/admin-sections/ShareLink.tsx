@@ -20,6 +20,18 @@ export function ShareLink({ subdomain }: ShareLinkProps) {
             transition={{ delay: 0.1, duration: 0.5 }}
             className="bg-gradient-to-br from-white to-slate-50 rounded-2xl p-6 shadow-[0_8px_30px_rgba(0,0,0,0.04)] border border-slate-100 mb-8"
         >
+            <div className="mb-6 bg-slate-50 border border-slate-200 p-4 sm:p-6 rounded-2xl shadow-sm">
+                <div className="flex items-start gap-3">
+                    <span className="text-2xl">💡</span>
+                    <div>
+                        <h3 className="text-slate-800 font-bold text-sm mb-1">¿Listo para compartir?</h3>
+                        <p className="text-slate-600 text-xs sm:text-sm leading-relaxed">
+                            Copia este enlace para enviárselo directamente a tus invitados por WhatsApp, Facebook o DMs. Al darle clic a "Ver vista previa" puedes ver cómo está quedando.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
             <div className="flex items-start justify-between mb-6">
                 <div className="flex items-start gap-4">
                     <div className="w-10 h-10 bg-gradient-to-br from-slate-900 to-slate-700 rounded-xl flex items-center justify-center text-white shadow-lg">

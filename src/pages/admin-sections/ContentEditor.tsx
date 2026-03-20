@@ -66,7 +66,18 @@ export function ContentEditor({
             <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-3xl p-3 sm:p-6 lg:p-8 shadow-2xl">
                 <div className="max-w-3xl">
                     <h1 className="text-xl sm:text-2xl lg:text-3xl font-semibold text-white mb-2 sm:mb-3">Configuración de la invitación</h1>
-                    <p className="text-slate-300 text-xs sm:text-sm">Personaliza cada detalle de tu invitación digital</p>
+                    <p className="text-slate-300 text-xs sm:text-sm mb-4">Personaliza cada detalle de tu invitación digital</p>
+                    <div className="bg-white/10 border border-white/20 p-4 rounded-xl backdrop-blur-md">
+                        <div className="flex items-start gap-3">
+                            <span className="text-2xl">💡</span>
+                            <div>
+                                <h3 className="text-white font-semibold text-sm mb-1">Guía Rápida: Textos, Fechas y Música</h3>
+                                <p className="text-slate-300 text-xs sm:text-sm leading-relaxed">
+                                    Esta es la pestaña principal. Aquí configurarás los nombres en la portada, la fecha, los lugares y horarios de la boda. Además, en la parte inferior podrás subir tu foto de portada, tu canción de fondo (audios) y tu video principal.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
