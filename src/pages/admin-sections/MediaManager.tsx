@@ -71,6 +71,7 @@ export function MediaManager({
                     title="Fotos para tu invitación"
                     bucket="gallery"
                     files={imageFiles}
+                    customFolder="gallery"
                     onUploadSuccess={async () => { }}
                     onUpload={onUpload}
                     onDelete={async (b, f) => { await onDelete(b, f); }}
@@ -117,6 +118,7 @@ export function MediaManager({
                     title="Videos para tu galería"
                     bucket="videos"
                     files={videoFiles}
+                    customFolder="video"
                     onUploadSuccess={async () => { }}
                     onUpload={onUpload}
                     onDelete={async (b, f) => { await onDelete(b, f); }}

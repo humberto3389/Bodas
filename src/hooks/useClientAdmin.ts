@@ -308,14 +308,23 @@ export function useClientAdmin() {
     // Load Files Helper
     const listClientFiles = useCallback(async (bucket: 'gallery' | 'audio' | 'videos', customFolder?: string) => {
         if (!clientId) return [];
-        const folder = customFolder || (bucket === 'gallery' ? 'gallery' : bucket === 'audio' ? 'audio' : 'video');
+        const folder = customFolder || (bucket === 'gallery' ? 'gallery' : (bucket === 'audio' ? 'audio' : 'video'));
         const { data } = await supabase.storage.from(bucket).list(`${clientId}/${folder}`, { limit: 200, sortBy: { column: 'created_at', order: 'desc' } });
 
-        return (data || []).filter(f => !f.name.startsWith('.') && f.id).map(f => ({
-            name: f.name,
-            path: `${clientId}/${folder}/${f.name}`,
-            created: f.created_at || new Date().toISOString()
-        }));
+        return (data || [])
+            .filter(f => !f.name.startsWith('.') && f.id)
+            .filter(f => {
+                // Filtro de seguridad: Evitar que archivos de padrinos se cuelen en hero si se subieron allí por error
+                if (folder === 'hero' || folder === 'decoration') {
+                    return !f.name.toLowerCase().startsWith('padrino-');
+                }
+                return true;
+            })
+            .map(f => ({
+                name: f.name,
+                path: `${clientId}/${folder}/${f.name}`,
+                created: f.created_at || new Date().toISOString()
+            }));
     }, [clientId]);
 
     const loadFiles = useCallback(async () => {
@@ -333,7 +342,7 @@ export function useClientAdmin() {
         setHeroFiles([{ name: 'Imagen por Defecto', path: '/boda.webp', created: new Date().toISOString(), isSystem: true }, ...heroImgs]);
         setAudioFiles([{ name: 'Música por Defecto', path: '/audio.ogg', created: new Date().toISOString(), isSystem: true }, ...auds]);
         setVideoFiles(vids);
-        setHeroVideoFiles([{ name: 'Video por Defecto', path: '/hero.webm', created: new Date().toISOString(), isSystem: true }, ...heroVids]);
+        setHeroVideoFiles([{ name: 'Video por Defecto', path: '/hero.mp4', created: new Date().toISOString(), isSystem: true }, ...heroVids]);
         setDecorationFiles(decorImgs);
     }, [authed, clientId, listClientFiles]);
 
@@ -346,7 +355,7 @@ export function useClientAdmin() {
     const handleUpload = async (bucket: 'gallery' | 'audio' | 'videos', file: File, customFolder?: string): Promise<string | null> => {
         if (!clientId) return null;
         try {
-            const folder = customFolder || (bucket === 'gallery' ? 'gallery' : bucket === 'audio' ? 'audio' : 'video');
+            const folder = customFolder || (bucket === 'gallery' ? 'gallery' : (bucket === 'audio' ? 'audio' : 'video'));
             // Validar y limpiar el nombre del archivo para evitar el error "Invalid key" de Supabase
             const cleanName = file.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-zA-Z0-9.\-_]/g, '_').replace(/_+/g, '_');
             const path = `${clientId}/${folder}/${Date.now()}_${cleanName}`;
