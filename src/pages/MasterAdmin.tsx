@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { ConfirmDialog } from '../components/ConfirmDialog.tsx';
@@ -645,6 +645,16 @@ const LandingPageEditor = () => {
                   className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-transparent"
                 />
               </div>
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-slate-700 mb-2">Microcopy (Debajo de botones)</label>
+                <input
+                  type="text"
+                  value={content.heroMicrocopy || ''}
+                  onChange={(e) => updateContent('heroMicrocopy', e.target.value)}
+                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-transparent"
+                  placeholder="Ej: Desde S/39 • Lista en 24h"
+                />
+              </div>
             </div>
             <div className="mt-4">
               <label className="block text-sm font-medium text-slate-700 mb-2">Descripción</label>
@@ -654,6 +664,74 @@ const LandingPageEditor = () => {
                 rows={3}
                 className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-transparent"
               />
+            </div>
+          </div>
+
+          {/* Nueva Sección: Demo y Control */}
+          <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+            <h3 className="text-xl font-bold text-slate-800 mb-4">Sección Demo y Control</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="md:col-span-2">
+                <h4 className="text-md font-semibold text-slate-700 mb-2">Textos de Control</h4>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">Título Control</label>
+                <input
+                  type="text"
+                  value={content.controlSectionTitle || ''}
+                  onChange={(e) => updateContent('controlSectionTitle', e.target.value)}
+                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-transparent"
+                />
+              </div>
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-slate-700 mb-2">Texto Control</label>
+                <textarea
+                  value={content.controlSectionText || ''}
+                  onChange={(e) => updateContent('controlSectionText', e.target.value)}
+                  rows={2}
+                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-transparent"
+                />
+              </div>
+
+              <div className="md:col-span-2 mt-4">
+                <h4 className="text-md font-semibold text-slate-700 mb-2">Textos de Demo</h4>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">Etiqueta/Título Demo</label>
+                <input
+                  type="text"
+                  value={content.demoSectionTitle || ''}
+                  onChange={(e) => updateContent('demoSectionTitle', e.target.value)}
+                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-transparent"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">URL del Demo</label>
+                <input
+                  type="text"
+                  value={content.demoUrl || ''}
+                  onChange={(e) => updateContent('demoUrl', e.target.value)}
+                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-transparent"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">URL del Media (Imagen/Video)</label>
+                <input
+                  type="text"
+                  value={content.demoMediaUrl || ''}
+                  onChange={(e) => updateContent('demoMediaUrl', e.target.value)}
+                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-transparent"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">Texto Botón Demo</label>
+                <input
+                  type="text"
+                  value={content.demoCtaText || ''}
+                  onChange={(e) => updateContent('demoCtaText', e.target.value)}
+                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-transparent"
+                />
+              </div>
             </div>
           </div>
 
@@ -766,12 +844,22 @@ const LandingPageEditor = () => {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">Badge Popular</label>
+                <label className="block text-sm font-medium text-slate-700 mb-2">Badge Popular (General)</label>
                 <input
                   type="text"
                   value={content.plansPopularBadge}
                   onChange={(e) => updateContent('plansPopularBadge', e.target.value)}
                   className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-transparent"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">Etiqueta Plan Destacado</label>
+                <input
+                  type="text"
+                  value={content.pricingHighlightLabel || ''}
+                  onChange={(e) => updateContent('pricingHighlightLabel', e.target.value)}
+                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-transparent"
+                  placeholder="⭐ Más elegido"
                 />
               </div>
               <div>
@@ -1056,6 +1144,31 @@ const LandingPageEditor = () => {
               />
             </div>
           </div>
+
+          {/* Sección Global WhatsApp & Conversión */}
+          <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+            <h3 className="text-xl font-bold text-slate-800 mb-4">Conversión y WhatsApp</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-slate-700 mb-2">Mensaje Base de WhatsApp</label>
+                <textarea
+                  value={content.whatsappMessage || ''}
+                  onChange={(e) => updateContent('whatsappMessage', e.target.value)}
+                  rows={2}
+                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-transparent"
+                />
+              </div>
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-slate-700 mb-2">Texto del Sticky CTA (Móviles)</label>
+                <input
+                  type="text"
+                  value={content.stickyCtaText || ''}
+                  onChange={(e) => updateContent('stickyCtaText', e.target.value)}
+                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-transparent"
+                />
+              </div>
+            </div>
+          </div>
         </div>
       ) : (
         <div className="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
@@ -1123,6 +1236,40 @@ const LandingPageContentPreview = ({ content }: { content: LandingPageContent })
               {content.heroButton2Text}
             </button>
           </div>
+          {content.heroMicrocopy && (
+            <p className="mt-4 text-sm font-medium text-slate-500 flex items-center justify-center gap-2">
+              <span className="text-amber-500">✨</span>
+              {content.heroMicrocopy}
+            </p>
+          )}
+        </div>
+      </section>
+
+      {/* Demo Section Preview */}
+      <section className="px-6 py-10 bg-slate-50">
+        <div className="max-w-5xl mx-auto text-center">
+          <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-6">{content.demoSectionTitle || 'Sección Demo'}</h2>
+          <div className="mx-auto max-w-sm rounded-[2rem] border-[4px] border-slate-800 bg-slate-800 aspect-[9/16] flex items-center justify-center text-slate-400 relative overflow-hidden shadow-xl">
+             {content.demoMediaUrl ? (
+               <img src={content.demoMediaUrl} alt="Demo" className="absolute inset-0 w-full h-full object-cover opacity-60" />
+             ) : (
+               <span>Preview Media</span>
+             )}
+             <button className="relative z-10 bg-white/90 backdrop-blur text-slate-900 font-bold py-2 px-4 rounded-full text-sm shadow-md">
+                {content.demoCtaText || 'Ver Demo'}
+             </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Control Section Preview */}
+      <section className="px-6 py-10 border-t border-slate-200">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-2xl font-bold text-slate-900 mb-3">{content.controlSectionTitle || 'Control Panel'}</h2>
+          <p className="text-slate-600 mb-6 max-w-2xl mx-auto">{content.controlSectionText}</p>
+          <div className="bg-rose-50/50 p-6 rounded-xl border border-rose-100 text-sm text-slate-700 max-w-md mx-auto line-dashed">
+            [Preview Panel de Control]
+          </div>
         </div>
       </section>
 
@@ -1167,11 +1314,16 @@ const LandingPageContentPreview = ({ content }: { content: LandingPageContent })
               const p = content.plansData[tier];
               const popular = tier === 'premium';
               return (
-                <div key={tier} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                <div key={tier} className={`rounded-2xl border ${popular ? 'border-amber-400 ring-2 ring-amber-400/20' : 'border-slate-200'} bg-white p-5 shadow-sm relative ${popular ? '-mt-4' : ''}`}>
+                  {popular && content.pricingHighlightLabel && (
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-gradient-to-r from-amber-400 to-amber-500 text-white text-[10px] font-bold rounded-full whitespace-nowrap shadow-sm uppercase tracking-wider">
+                      {content.pricingHighlightLabel}
+                    </div>
+                  )}
                   <div className="flex items-center justify-between">
                     <div className="font-bold text-slate-900">{p.name}</div>
-                    {popular && (
-                      <span className="px-2 py-1 text-xs rounded-full bg-rose-100 text-rose-800">{content.plansPopularBadge}</span>
+                    {popular && content.plansPopularBadge && (
+                      <span className="px-2 py-1 text-[10px] uppercase font-bold tracking-wider rounded-full bg-rose-100 text-rose-800">{content.plansPopularBadge}</span>
                     )}
                   </div>
                   <div className="mt-2 text-slate-700 text-sm">{p.duration} días • {p.maxGuests >= 999999 ? 'Invitados ILIMITADOS' : `${p.maxGuests} invitados`}</div>
@@ -1201,7 +1353,7 @@ const LandingPageContentPreview = ({ content }: { content: LandingPageContent })
         </div>
       </section>
 
-      <footer className="px-6 py-10 border-t border-slate-200 bg-white">
+      <footer className="px-6 py-10 border-t border-slate-200 bg-white relative pb-24">
         <div className="max-w-5xl mx-auto">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
@@ -1216,6 +1368,13 @@ const LandingPageContentPreview = ({ content }: { content: LandingPageContent })
           </div>
           <div className="mt-6 text-slate-500 text-xs">{content.footerCopyrightText}</div>
         </div>
+
+        {/* Sticky CTA Preview */}
+        {content.stickyCtaText && (
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-[#25D366] text-white px-6 py-3 rounded-full font-bold shadow-lg text-sm flex items-center gap-2 max-w-[90%] w-full sm:w-auto justify-center">
+            <span>📱</span> {content.stickyCtaText}
+          </div>
+        )}
       </footer>
     </div>
   );
