@@ -1,4 +1,4 @@
-﻿import './index.css';
+import './index.css';
 import { useParams } from 'react-router-dom';
 import { useClientAuth } from './contexts/ClientAuthContext';
 import { LoadingSpinner } from './components/LoadingSpinner';
@@ -173,6 +173,7 @@ export default function App({ clientData: propData }: AppProps) {
                   config={client.advancedAnimations}
                   eventDate={client.weddingDate}
                   layer="background"
+                  isMobile={isMobile}
                 />
               </Suspense>
             </div>
@@ -182,6 +183,7 @@ export default function App({ clientData: propData }: AppProps) {
                   config={client.advancedAnimations}
                   eventDate={client.weddingDate}
                   layer="foreground"
+                  isMobile={isMobile}
                 />
               </Suspense>
             </div>

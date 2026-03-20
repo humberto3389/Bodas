@@ -114,6 +114,23 @@ body {
   }
 }
 
+/* Optimización móvil para reducir carga de GPU */
+@media (max-width: 1023px) {
+  .card-luxe {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+  
+  .premium-visuals-active::before,
+  .premium-visuals-active::after {
+    animation-duration: 20s !important; /* Animaciones más lentas consumen menos CPU */
+  }
+
+  .bg-noise {
+    display: none; /* El ruido es costoso de renderizar en cada frame */
+  }
+}
+
 /* Títulos Premium con Gradiente Indigo Real */
 .text-royal {
   @apply bg-clip-text text-transparent bg-gradient-to-br from-indigo-950 via-indigo-900 to-slate-800;

@@ -2,6 +2,7 @@ import { motion, useInView, useScroll, useTransform } from 'framer-motion';
 import { useRef, useEffect } from 'react';
 import { useAudioContext } from '../../contexts/AudioContext';
 import type { ClientToken } from '../../lib/auth-system';
+import { getOptimizedImageUrl } from '../../lib/image-optimization';
 
 import { safeNewDate } from '../../lib/timezone-utils';
 
@@ -104,28 +105,32 @@ export function HeroSection({ clientData }: HeroSectionProps) {
                             ref={videoRef}
                             autoPlay loop muted={!heroVideoAudioEnabled} playsInline
                             preload="metadata"
-                            poster={heroBg}
+                            poster={getOptimizedImageUrl(heroBg, { width: 800, quality: 70 })}
                             className="h-full w-full object-cover brightness-[0.7] contrast-[1.1]"
                         >
                             <source src={heroVideo} type="video/mp4" />
                             <img
-                                src={heroBg}
+                                src={getOptimizedImageUrl(heroBg, { width: 1200, quality: 80 })}
+                                srcSet={`${getOptimizedImageUrl(heroBg, { width: 600, quality: 70 })} 600w, ${getOptimizedImageUrl(heroBg, { width: 1200, quality: 80 })} 1200w`}
+                                sizes="100vw"
                                 className="h-full w-full object-cover"
                                 alt="Boda"
-                                loading="eager"
                                 fetchPriority="high"
                             />
                         </video>
                     ) : (
                         <div
                             className="h-full w-full bg-cover bg-center brightness-[0.7] transition-transform duration-[20s] hover:scale-110"
-                            style={{ backgroundImage: `url(${heroBg})` }}
+                            style={{ 
+                                backgroundImage: `url(${getOptimizedImageUrl(heroBg, { width: isDesktop ? 1920 : 800, quality: 80 })})` 
+                            }}
                         >
                             <img
-                                src={heroBg}
+                                src={getOptimizedImageUrl(heroBg, { width: 1200, quality: 80 })}
+                                srcSet={`${getOptimizedImageUrl(heroBg, { width: 600, quality: 70 })} 600w, ${getOptimizedImageUrl(heroBg, { width: 1200, quality: 80 })} 1200w`}
+                                sizes="100vw"
                                 alt="Boda"
                                 className="hidden"
-                                loading="eager"
                                 fetchPriority="high"
                             />
                         </div>

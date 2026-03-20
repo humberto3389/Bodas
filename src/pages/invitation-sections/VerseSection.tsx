@@ -1,12 +1,13 @@
 import { motion } from 'framer-motion';
 import { SectionTitle } from './SectionTitle';
+import { getOptimizedImageUrl } from '../../lib/image-optimization';
 
 interface VerseSectionProps {
     clientData: any;
 }
 
 export function VerseSection({ clientData }: VerseSectionProps) {
-    const { bibleVerse, bibleVerseBook, invitationText, groomName, brideName } = clientData;
+    const { bibleVerse, bibleVerseBook, invitationText } = clientData;
 
     if (!bibleVerse && !invitationText) return null;
 
@@ -29,8 +30,9 @@ export function VerseSection({ clientData }: VerseSectionProps) {
                         >
                             <div className="absolute inset-0 bg-rose-600/5 blur-2xl rounded-full scale-110" />
                             <img
-                                src={clientData.verseImageUrl}
+                                src={getOptimizedImageUrl(clientData.verseImageUrl, { width: 600, quality: 70 })}
                                 alt="Decoración"
+                                loading="lazy"
                                 className="relative w-full h-auto object-contain mx-auto"
                                 style={{
                                     maskImage: 'radial-gradient(circle, black 60%, transparent 95%)',
