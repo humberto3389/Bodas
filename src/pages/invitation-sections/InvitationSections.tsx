@@ -148,13 +148,15 @@ export function VideoSection({ clientData, videos: propVideos }: { clientData: a
                                             ) : (
                                                 /* Side items show poster/placeholder */
                                                 <div className="w-full h-full relative">
-                                                    <img
-                                                        src={clientData.heroBackgroundUrl}
-                                                        className="w-full h-full object-cover opacity-60"
-                                                        alt="Video thumbnail"
-                                                        loading="lazy"
-                                                        decoding="async"
-                                                    />
+                                                    <video
+                                                        autoPlay
+                                                        loop
+                                                        muted={true}
+                                                        playsInline
+                                                        className="absolute inset-0 w-full h-full object-cover transform scale-105"
+                                                    >
+                                                        <source src={video.url} type="video/mp4" />
+                                                    </video>
                                                     <div className="absolute inset-0 flex items-center justify-center">
                                                         <div className="p-4 rounded-full bg-white/10 backdrop-blur-md border border-white/20">
                                                             <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
@@ -245,8 +247,8 @@ export function InvitationFooter({ clientData }: { clientData: any }) {
                         <span className="font-elegant text-2xl text-slate-800 group-hover:text-rose-600 transition-colors duration-300">
                             Suspiro Nupcial
                         </span>
-                        <span className="text-xs text-rose-500 tracking-[0.2em] font-medium uppercase mt-1">
-                            Creando momentos que perduran
+                        <span className="text-xs text-rose-500 tracking-[0.2em] font-medium uppercase mt-1 italic opacity-80">
+                            Tejiendo historias de amor que trascienden en el tiempo
                         </span>
                     </a>
 

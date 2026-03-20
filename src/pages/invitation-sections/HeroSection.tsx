@@ -121,20 +121,13 @@ export function HeroSection({ clientData, videos }: HeroSectionProps) {
                     {showVideo ? (
                         <video
                             ref={videoRef}
-                            autoPlay loop muted={!heroVideoAudioEnabled} playsInline
-                            preload="metadata"
-                            poster={getOptimizedImageUrl(heroBg, { width: 800, quality: 70 })}
-                            className="h-full w-full object-cover brightness-[0.7] contrast-[1.1]"
+                            autoPlay
+                            loop
+                            muted={true}
+                            playsInline
+                            className="absolute inset-0 w-full h-full object-cover transform scale-105"
                         >
                             <source src={heroVideo} type="video/mp4" />
-                            <img
-                                src={getOptimizedImageUrl(heroBg, { width: 1200, quality: 80 })}
-                                srcSet={`${getOptimizedImageUrl(heroBg, { width: 600, quality: 70 })} 600w, ${getOptimizedImageUrl(heroBg, { width: 1200, quality: 80 })} 1200w`}
-                                sizes="100vw"
-                                className="h-full w-full object-cover"
-                                alt="Boda"
-                                fetchPriority="high"
-                            />
                         </video>
                     ) : (
                         <div

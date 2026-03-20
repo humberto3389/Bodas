@@ -520,8 +520,8 @@ export default function LandingPage() {
                   })()}
                 </div>
               </motion.div>
-              <p className="text-slate-400 mb-6 max-w-md text-lg leading-relaxed">
-                {content?.footerDescription || 'Creamos sitios web excepcionales para bodas, donde cada detalle cuenta la historia única de tu amor. Elegante, moderno y memorable.'}
+              <p className="text-slate-400 mb-6 max-w-md text-lg leading-relaxed italic opacity-80 font-light">
+                {content?.footerDescription || 'Tejiendo historias de amor que trascienden en el tiempo'}
               </p>
             </div>
 
