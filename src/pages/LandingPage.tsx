@@ -444,7 +444,7 @@ export default function LandingPage() {
             whileInView={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
-            className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-white/50 dark:border-slate-700/50"
+            className="w-full max-w-4xl mx-auto"
           >
             <ContactForm selectedPlan={selectedPlan} />
           </motion.div>
