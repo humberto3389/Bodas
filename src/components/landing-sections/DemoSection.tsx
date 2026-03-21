@@ -1,12 +1,18 @@
-import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { useRef } from 'react';
+import { motion, useInView } from 'framer-motion';
 
 interface DemoSectionProps {
   demoUrl?: string;
 }
 
 export const DemoSection = ({ demoUrl }: DemoSectionProps) => {
-  const [showDemoIframe, setShowDemoIframe] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  // Usamos useInView para detectar si la sección está visible.
+  // Solo renderizaremos el iframe cuando esté en vista para ahorrar recursos y detener el audio/video al salir.
+  const isInView = useInView(containerRef, { 
+    once: false, // Queremos que se active/desactive cada vez que entra/sale
+    amount: 0.1  // 10% visible es suficiente para empezar a cargar
+  });
 
   return (
     <section className="py-24 relative overflow-hidden">
@@ -43,35 +49,24 @@ export const DemoSection = ({ demoUrl }: DemoSectionProps) => {
             </button>
           </motion.div>
 
-          <div className="relative mx-auto w-full max-w-[320px] lg:max-w-[400px]">
+          <div className="relative mx-auto w-full max-w-[320px] lg:max-w-[400px]" ref={containerRef}>
             <div className="absolute inset-0 bg-gradient-to-tr from-rose-400/20 to-amber-500/20 blur-3xl rounded-full" />
             
             <div className="relative rounded-[2.5rem] border-[8px] border-slate-900 bg-slate-900 shadow-2xl overflow-hidden aspect-[9/19]">
               <div className="absolute top-0 inset-x-0 h-6 bg-slate-900 rounded-b-3xl w-1/2 mx-auto z-20" />
               
-              <div 
-                className="w-full h-full absolute inset-0 z-10 bg-slate-800 flex items-center justify-center p-8"
-                ref={(el) => {
-                  if (el && !showDemoIframe) {
-                    const observer = new IntersectionObserver((entries) => {
-                      if (entries[0].isIntersecting) {
-                        setShowDemoIframe(true);
-                        observer.disconnect();
-                      }
-                    }, { rootMargin: '200px' });
-                    observer.observe(el);
-                  }
-                }}
-              >
-                {showDemoIframe ? (
+              <div className="w-full h-full absolute inset-0 z-10 bg-slate-800 flex items-center justify-center">
+                {isInView ? (
                   <iframe 
                     src={demoUrl || 'https://suspiro-nupcial.vercel.app/invitacion/humberto-nelida'}
                     title="Demo de Invitación"
                     className="w-full h-full border-0 absolute inset-0"
-                    allow="fullscreen; autoplay"
+                    allow="fullscreen; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   />
                 ) : (
-                  <div className="text-white/40 text-[10px] text-center">Cargando demo...</div>
+                  <div className="text-white/40 text-xs text-center p-8">
+                    Cargando demo interactiva...
+                  </div>
                 )}
               </div>
               <div className="absolute inset-x-0 bottom-0 h-1/6 bg-gradient-to-t from-black/80 to-transparent pointer-events-none z-20" />

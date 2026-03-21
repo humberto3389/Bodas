@@ -63,7 +63,7 @@ export function HeroSection({ clientData, videos }: HeroSectionProps) {
     const ref = useRef(null);
     const videoRef = useRef<HTMLVideoElement>(null);
     const isInView = useInView(ref, { amount: 0.5 }); // 50% visible triggers logic
-    const { requestFocus, releaseFocus } = useAudioContext();
+    const { requestFocus, releaseFocus, isInteracted } = useAudioContext();
 
     // Cinematic Parallax Implementation
     const { scrollY } = useScroll();
@@ -78,13 +78,20 @@ export function HeroSection({ clientData, videos }: HeroSectionProps) {
 
         const handlePlayback = async () => {
             try {
+                // REGLA DE ORO: Si el video tiene audio habilitado en el panel, 
+                // pero el usuario aún no interactuó, debe empezar silenciado para que el navegador permita el autoplay.
+                // Una vez que interactúa (isInteracted), lo desilenciamos.
                 if (heroVideoAudioEnabled && isInView) {
-                    // Intentar reproducir con audio si está en vista
-                    video.muted = false;
+                    if (isInteracted) {
+                        video.muted = false;
+                        requestFocus('hero');
+                    } else {
+                        video.muted = true;
+                        releaseFocus('hero');
+                    }
                     await video.play();
-                    requestFocus('hero');
                 } else if (isInView) {
-                    // Reproducir silenciado si está en vista
+                    // Reproducir silenciado si está en vista pero audio no está habilitado en configuración
                     video.muted = true;
                     await video.play();
                     releaseFocus('hero');
@@ -93,16 +100,15 @@ export function HeroSection({ clientData, videos }: HeroSectionProps) {
                     releaseFocus('hero');
                 }
             } catch (error) {
-                // Fallback: si falla con audio (por políticas del navegador), reproducir silenciado
-                if (heroVideoAudioEnabled && isInView) {
-                    video.muted = true;
-                    video.play().catch(() => {});
-                }
+                // Fallback: si falla por políticas del navegador, asegurar que esté silenciado para que al menos rote
+                console.warn("Hero video playback failed:", error);
+                video.muted = true;
+                video.play().catch(() => {});
             }
         };
 
         handlePlayback();
-    }, [showVideo, heroVideoAudioEnabled, isInView, requestFocus, releaseFocus]);
+    }, [showVideo, heroVideoAudioEnabled, isInView, requestFocus, releaseFocus, isInteracted]);
 
     return (
         <section
