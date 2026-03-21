@@ -5,6 +5,7 @@ type AudioSource = 'hero' | 'cinema';
 interface AudioContextType {
     activeSource: AudioSource | null;
     isInteracted: boolean;
+    setInteracted: (value: boolean) => void;
     requestFocus: (source: AudioSource) => void;
     releaseFocus: (source: AudioSource) => void;
 }
@@ -15,12 +16,16 @@ export function AudioProvider({ children }: { children: ReactNode }) {
     const [activeSource, setActiveSource] = useState<AudioSource | null>(null);
     const [isInteracted, setIsInteracted] = useState(false);
 
+    const setInteracted = useCallback((value: boolean) => {
+        setIsInteracted(value);
+    }, []);
+
     // Listener global para detectar la primera interacción del usuario
-    // Esto es crucial para cumplir con las políticas de autoplay de los navegadores
     useEffect(() => {
+        if (isInteracted) return;
+
         const handleInteraction = () => {
             setIsInteracted(true);
-            // Remover listeners una vez que se detecta la interacción
             const events = ['click', 'keydown', 'touchstart', 'mousedown'];
             events.forEach(event => window.removeEventListener(event, handleInteraction));
         };
@@ -31,7 +36,7 @@ export function AudioProvider({ children }: { children: ReactNode }) {
         return () => {
             events.forEach(event => window.removeEventListener(event, handleInteraction));
         };
-    }, []);
+    }, [isInteracted]);
 
     const requestFocus = useCallback((source: AudioSource) => {
         setActiveSource(source);
@@ -47,7 +52,7 @@ export function AudioProvider({ children }: { children: ReactNode }) {
     }, []);
 
     return (
-        <AudioContext.Provider value={{ activeSource, isInteracted, requestFocus, releaseFocus }}>
+        <AudioContext.Provider value={{ activeSource, isInteracted, setInteracted, requestFocus, releaseFocus }}>
             {children}
         </AudioContext.Provider>
     );

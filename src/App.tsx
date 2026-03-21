@@ -11,6 +11,7 @@ import { AudioProvider } from './contexts/AudioContext';
 import { HeroSection } from './pages/invitation-sections/HeroSection';
 import { VerseSection } from './pages/invitation-sections/VerseSection';
 import { UrgentAlert } from './components/UrgentAlert';
+import { IntroOverlay } from './components/IntroOverlay';
 
 // Componentes lazy-loaded (cargados bajo demanda)
 const Countdown = lazy(() => import('./components/Countdown').then(m => ({ default: m.Countdown })));
@@ -154,6 +155,11 @@ export default function App({ clientData: propData }: AppProps) {
   return (
     <AudioProvider>
       {client && <SEO_Invitation clientData={client} />}
+      <IntroOverlay 
+        brideName={client.brideName || undefined} 
+        groomName={client.groomName || undefined} 
+        coupleName={client.clientName} 
+      />
       <div className={`relative min-h-[100dvh] bg-transparent ${hasPremiumVisuals ? 'premium-visuals-active' : ''}`}>
         {/* 📊 Scroll Progress Bar - Premium */}
         <ScrollProgress />

@@ -46,6 +46,15 @@ export function BackgroundMusic({ src, shouldPlay = true }: { src: string; shoul
             const audio = audioRef.current;
             if (!audio || !effectivelyPlaying) return;
 
+            // PRIORIDAD: Si estamos al inicio de la página (donde está el Hero), 
+            // no activamos la música de fondo todavía para evitar que suenen ambos.
+            // El HeroSection tiene su propio listener directo para el video.
+            const isAtTop = window.scrollY < 300;
+            if (isAtTop) {
+                console.log("BackgroundMusic: Entry at top detected, letting Hero win.");
+                return;
+            }
+
             try {
                 await audio.play();
                 setIsPlaying(true);
