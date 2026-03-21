@@ -38,63 +38,73 @@ export function LocationSection({ clientData }: LocationSectionProps) {
     return (
         <section
             id="location"
-            className="relative overflow-hidden px-4 sm:px-6"
+            className="relative py-24 overflow-hidden px-4 sm:px-6 bg-transparent"
         >
-            <div className="section-container">
+            {/* Background Decorative Elements */}
+            <div className="absolute top-1/4 -right-20 w-80 h-80 bg-rose-100/20 rounded-full blur-[100px] animate-pulse pointer-events-none" />
+            <div className="absolute bottom-1/4 -left-20 w-80 h-80 bg-amber-100/20 rounded-full blur-[100px] pointer-events-none" />
+
+            <div className="max-w-6xl mx-auto relative z-10">
                 <SectionTitle subtitle="Ubicación">
                     Dónde & Cuándo
                 </SectionTitle>
 
-                {/* Cards */}
-                <div className="grid-luxe-2 mt-12">
+                <p className="font-elegant text-slate-500 text-center mb-16 max-w-xl mx-auto leading-relaxed" style={{ fontSize: 'var(--font-size-lg)' }}>
+                    Cada detalle está preparado para recibirte con el corazón. Te compartimos la información de nuestros encuentros.
+                </p>
+
+                {/* Cards Grid */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 mt-12">
                     {locations.map((loc, idx) => (
                         <motion.div
                             key={loc.type}
                             initial={{ opacity: 0, y: 40 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
-                            transition={{ delay: idx * 0.15, duration: 0.7, ease: 'easeOut' }}
-                            className="relative w-full group"
+                            transition={{ delay: idx * 0.2, duration: 0.8, ease: 'easeOut' }}
+                            className="relative group"
                         >
-                            <div className="card-luxe relative h-full px-8 sm:px-10 py-12 text-center rounded-3xl sm:rounded-[3rem]">
-                                {/* Icon */}
-                                <div className="mb-10 flex justify-center">
-                                    <div className="relative">
-                                        <div className="absolute inset-0 rounded-2xl bg-rose-600/10 blur-xl scale-150" />
-                                        <div className="relative w-20 h-20 rounded-2xl bg-rose-50 border border-rose-100 flex items-center justify-center text-4xl group-hover:scale-110 group-hover:bg-rose-100 transition-all duration-500">
-                                            {loc.icon}
-                                        </div>
+                            <div className="bg-white/40 backdrop-blur-3xl border border-white/60 p-8 sm:p-14 rounded-[3rem] sm:rounded-[4rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.06)] h-full flex flex-col items-center text-center transition-all duration-500 hover:shadow-[0_48px_80px_-20px_rgba(0,0,0,0.1)] hover:-translate-y-2">
+                                
+                                {/* Icon Container */}
+                                <div className="mb-12 relative">
+                                    <div className="absolute inset-0 bg-rose-200/40 rounded-3xl blur-2xl scale-125 group-hover:scale-150 transition-transform duration-700" />
+                                    <div className="relative w-24 h-24 rounded-3xl bg-white border border-rose-100 flex items-center justify-center text-5xl shadow-sm transition-all duration-500 group-hover:rotate-6 group-hover:bg-rose-50">
+                                        {loc.icon}
                                     </div>
                                 </div>
 
-                                <span className="block text-[10px] font-black uppercase tracking-[0.4em] text-rose-600/60 mb-4">
+                                <span className="block text-[11px] font-black uppercase tracking-[0.4em] text-rose-500 mb-6 font-sans">
                                     {loc.type}
                                 </span>
 
-                                <h3 className="font-elegant text-slate-900 font-bold mb-6 leading-tight" style={{ fontSize: 'var(--font-size-2xl)' }}>
+                                <h3 className="font-elegant text-slate-900 font-bold mb-6 tracking-wide leading-tight px-4" style={{ fontSize: 'var(--font-size-3xl)' }}>
                                     {loc.name || 'Lugar por definir'}
                                 </h3>
 
-                                {/* Time */}
-                                <div className="inline-flex items-center px-5 py-2 rounded-full border border-rose-100 text-[11px] font-black uppercase text-rose-600 tracking-widest mb-10 bg-rose-50/50">
+                                {/* Time Badge */}
+                                <div className="inline-flex items-center px-6 py-2.5 rounded-full border border-rose-100/80 text-[11px] font-black uppercase text-rose-600 tracking-[0.2em] mb-12 bg-rose-50/50 backdrop-blur-md shadow-sm">
                                     {loc.time}
                                 </div>
 
-                                {/* Address */}
-                                <div className="mb-12 space-y-4 max-w-xs mx-auto">
-                                    <p className="font-elegant font-bold text-slate-800 text-lg">
+                                {/* Address Details */}
+                                <div className="flex-grow space-y-6 mb-14 px-4">
+                                    <p className="font-elegant font-bold text-slate-700 text-xl leading-relaxed">
                                         {loc.address}
                                     </p>
                                     {loc.reference && (
-                                        <p className="text-[10px] font-black tracking-widest uppercase text-slate-400 opacity-60">
-                                            Ref: {loc.reference}
-                                        </p>
+                                        <div className="flex flex-col items-center gap-2">
+                                            <div className="h-px w-8 bg-slate-200" />
+                                            <p className="text-[10px] font-black tracking-widest uppercase text-slate-400 opacity-60">
+                                                Ref: {loc.reference}
+                                            </p>
+                                        </div>
                                     )}
                                 </div>
 
-                                {/* Button */}
+                                {/* Map Button */}
                                 <motion.button
-                                    whileHover={{ scale: 1.02 }}
+                                    whileHover={{ y: -2, boxShadow: "0 10px 25px -5px rgba(225, 29, 72, 0.4)" }}
                                     whileTap={{ scale: 0.98 }}
                                     onClick={() => {
                                         if (loc.mapUrl) {
@@ -108,27 +118,28 @@ export function LocationSection({ clientData }: LocationSectionProps) {
                                             );
                                         }
                                     }}
-                                    className="btn-luxe w-full"
+                                    className="w-full bg-rose-600 hover:bg-rose-700 text-white font-black uppercase tracking-[0.3em] py-5 rounded-2xl shadow-xl shadow-rose-500/20 transition-all text-[11px] flex items-center justify-center gap-3"
                                     aria-label={`Ver ubicación de ${loc.type} en Google Maps`}
                                 >
-                                    Ver Mapa
+                                    <span>📍</span>
+                                    <span>Ver Ubicación</span>
                                 </motion.button>
                             </div>
                         </motion.div>
                     ))}
                 </div>
 
-                {/* Same location note */}
+                {/* Footnote for shared location */}
                 {(clientData.isReceptionSameAsCeremony || clientData.isCeremonySameAsReception) && (
                     <motion.div
                         initial={{ opacity: 0 }}
                         whileInView={{ opacity: 1 }}
                         viewport={{ once: true }}
                         transition={{ delay: 0.9 }}
-                        className="text-center mt-8"
+                        className="text-center mt-12 bg-slate-50/50 backdrop-blur-sm border border-slate-100/50 rounded-2xl py-6 px-10 max-w-sm mx-auto shadow-sm"
                     >
-                        <p className="text-xs font-bold tracking-[0.25em] uppercase text-slate-400">
-                            Ceremonia y Recepción en el mismo lugar
+                        <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-slate-400">
+                            ✨ Ceremonia y Recepción se celebrarán en el mismo lugar ✨
                         </p>
                     </motion.div>
                 )}
