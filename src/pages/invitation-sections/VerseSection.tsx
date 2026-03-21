@@ -21,7 +21,7 @@ export function VerseSection({ clientData }: VerseSectionProps) {
                     </SectionTitle>
 
                     {/* Custom Image Decoration (Verse Image) */}
-                    {clientData?.verseImageUrl && (
+                    {clientData?.verseImageUrl && clientData.verseImageUrl !== 'null' && clientData.verseImageUrl !== 'undefined' && clientData.verseImageUrl !== '' && (
                         <motion.div
                             initial={{ opacity: 0, scale: 0.95 }}
                             whileInView={{ opacity: 1, scale: 1 }}
@@ -31,7 +31,7 @@ export function VerseSection({ clientData }: VerseSectionProps) {
                             <div className="absolute inset-0 bg-rose-600/5 blur-2xl rounded-full scale-110" />
                             <img
                                 src={getOptimizedImageUrl(clientData.verseImageUrl, { width: 600, quality: 70 })}
-                                alt="Decoración"
+                                alt=""
                                 loading="lazy"
                                 className="relative w-full h-auto object-contain mx-auto"
                                 style={{
