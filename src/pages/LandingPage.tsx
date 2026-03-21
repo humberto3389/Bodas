@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import ContactForm from '../components/ContactForm';
@@ -97,7 +97,7 @@ export default function LandingPage() {
   }, []);
 
   return (
-    <div className="min-h-[100dvh] bg-gradient-to-br from-slate-50 via-white to-rose-50/20 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 relative overflow-hidden transition-colors duration-500">
+    <div className="min-h-[100dvh] bg-slate-50 dark:bg-slate-900 relative overflow-hidden transition-colors duration-500">
       <SEO_Landing />
       <LandingParticles isMobile={isMobile} isDark={isDark} />
 
@@ -262,8 +262,8 @@ export default function LandingPage() {
 
       {/* Hero Section Ultra Moderna */}
       <header className="relative min-h-[100dvh] flex items-center justify-center overflow-hidden snap-section">
-        {/* Fondo gradiente animado */}
-        <div className="absolute inset-0 bg-gradient-to-br from-rose-50/40 via-white to-amber-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-rose-950/20" />
+        {/* Fondo gradiente animado - REMOVED for uniform background */}
+        {/* <div className="absolute inset-0 bg-gradient-to-br from-rose-50/40 via-white to-amber-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-rose-950/20" /> */}
 
         {/* Elementos decorativos */}
         <motion.div

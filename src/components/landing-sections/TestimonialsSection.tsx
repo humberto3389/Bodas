@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 
 interface TestimonialsSectionProps {
@@ -8,7 +7,7 @@ interface TestimonialsSectionProps {
 
 export const TestimonialsSection = ({ testimonialsList, testimonialsTitle }: TestimonialsSectionProps) => {
   return (
-    <section className="py-24 relative bg-white dark:bg-slate-800">
+    <section className="py-24 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 className="text-4xl font-bold text-center text-slate-900 dark:text-white mb-16">
           {testimonialsTitle || 'Lo que dicen las parejas'}
