@@ -39,6 +39,31 @@ export function BackgroundMusic({ src, shouldPlay = true }: { src: string; shoul
         };
     }, [src]);
 
+    // EFECTO CRÍTICO: Desbloqueo inmediato mediante gesto real
+    // Similar al HeroSection, esto garantiza que el primer play() ocurra en el tick del evento.
+    useEffect(() => {
+        const unlockAudio = async () => {
+            const audio = audioRef.current;
+            if (!audio || !effectivelyPlaying) return;
+
+            try {
+                await audio.play();
+                setIsPlaying(true);
+            } catch (err) {
+                console.warn("Direct audio unlock failed:", err);
+            }
+
+            const events = ['click', 'touchstart', 'mousedown'];
+            events.forEach(e => window.removeEventListener(e, unlockAudio));
+        };
+
+        if (!isInteracted) {
+            const events = ['click', 'touchstart', 'mousedown'];
+            events.forEach(e => window.addEventListener(e, unlockAudio));
+            return () => events.forEach(e => window.removeEventListener(e, unlockAudio));
+        }
+    }, [effectivelyPlaying, isInteracted]);
+
     // Efecto para manejar play/pause basado en foco, interacción y estado global
     useEffect(() => {
         if (!audioRef.current) return;
@@ -72,8 +97,6 @@ export function BackgroundMusic({ src, shouldPlay = true }: { src: string; shoul
 
     return (
         <div className="fixed bottom-6 right-6 z-50">
-            {/* Si no ha habido interacción, mostramos un botón que invita a activar, 
-                lo cual disparará el listener global de AudioContext */}
             {!isInteracted && (
                 <button
                     onClick={toggle}

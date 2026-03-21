@@ -15,7 +15,16 @@ export function MobileAppChrome() {
     }
     meta.setAttribute('content', themeColor);
 
-    // Add apple-mobile-web-app-capable for standalone feel
+    // Add mobile-web-app-capable for standalone feel (modern standard)
+    let mobileMeta = document.querySelector('meta[name="mobile-web-app-capable"]');
+    if (!mobileMeta) {
+      mobileMeta = document.createElement('meta');
+      mobileMeta.setAttribute('name', 'mobile-web-app-capable');
+      mobileMeta.setAttribute('content', 'yes');
+      document.head.appendChild(mobileMeta);
+    }
+
+    // Keep apple-mobile-web-app-capable for legacy iOS support but the warning says it is deprecated
     let appleMeta = document.querySelector('meta[name="apple-mobile-web-app-capable"]');
     if (!appleMeta) {
       appleMeta = document.createElement('meta');

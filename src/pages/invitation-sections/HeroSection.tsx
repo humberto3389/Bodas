@@ -72,26 +72,58 @@ export function HeroSection({ clientData, videos }: HeroSectionProps) {
     // though Framer Motion hooks are safe in Next.js/Vite typically.
     const isDesktop = typeof window !== 'undefined' && window.innerWidth >= 1024;
 
+    // EFECTO CRÍTICO: Desbloqueo inmediato de audio mediante gesto real
+    // Los navegadores bloquean .play() si ocurre en un microtask o efecto de React (fuera del tick original)
+    useEffect(() => {
+        if (!showVideo || !heroVideoAudioEnabled) return;
+
+        const unlockVideo = async () => {
+            const video = videoRef.current;
+            if (!video) return;
+
+            // Solo desbloquear si está en vista
+            if (isInView) {
+                try {
+                    video.muted = false;
+                    await video.play();
+                    requestFocus('hero');
+                } catch (err) {
+                    console.warn("Direct video unlock failed:", err);
+                }
+            }
+            
+            // Una vez intentado (éxito o fallo), removemos los listeners de este componente
+            const events = ['click', 'touchstart', 'mousedown'];
+            events.forEach(e => window.removeEventListener(e, unlockVideo));
+        };
+
+        if (!isInteracted) {
+            const events = ['click', 'touchstart', 'mousedown'];
+            events.forEach(e => window.addEventListener(e, unlockVideo));
+            return () => events.forEach(e => window.removeEventListener(e, unlockVideo));
+        }
+    }, [showVideo, heroVideoAudioEnabled, isInView, isInteracted, requestFocus]);
+
     useEffect(() => {
         const video = videoRef.current;
         if (!showVideo || !video) return;
 
         const handlePlayback = async () => {
             try {
-                // REGLA DE ORO: Si el video tiene audio habilitado en el panel, 
-                // pero el usuario aún no interactuó, debe empezar silenciado para que el navegador permita el autoplay.
-                // Una vez que interactúa (isInteracted), lo desilenciamos.
+                // Si el audio está habilitado y ya hubo interacción
                 if (heroVideoAudioEnabled && isInView) {
                     if (isInteracted) {
                         video.muted = false;
+                        await video.play();
                         requestFocus('hero');
                     } else {
+                        // Si no hay interacción aún, reproducir silenciado por defecto
                         video.muted = true;
+                        await video.play();
                         releaseFocus('hero');
                     }
-                    await video.play();
                 } else if (isInView) {
-                    // Reproducir silenciado si está en vista pero audio no está habilitado en configuración
+                    // Solo video sin audio
                     video.muted = true;
                     await video.play();
                     releaseFocus('hero');
@@ -100,8 +132,7 @@ export function HeroSection({ clientData, videos }: HeroSectionProps) {
                     releaseFocus('hero');
                 }
             } catch (error) {
-                // Fallback: si falla por políticas del navegador, asegurar que esté silenciado para que al menos rote
-                console.warn("Hero video playback failed:", error);
+                console.warn("Hero video background playback stalled:", error);
                 video.muted = true;
                 video.play().catch(() => {});
             }
