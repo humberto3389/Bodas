@@ -1,28 +1,20 @@
 {
-  "name": "Suspiro Nupcial - Invitaciones Digitales",
-  "short_name": "Suspiro Nupcial",
-  "description": "Invitaciones de boda digitales premium y elegantes. RSVP, música, galería y cuenta regresiva.",
-  "id": "/",
+  "name": "Suspiro Nupcial",
+  "short_name": "Suspiro",
   "start_url": "/",
-  "scope": "/",
   "display": "standalone",
-  "orientation": "portrait",
-  "background_color": "#fdf8f4",
-  "theme_color": "#fdf8f4",
-  "prefer_related_applications": false,
-  "categories": ["lifestyle", "social"],
+  "background_color": "#ffffff",
+  "theme_color": "#ff6b6b",
   "icons": [
     {
       "src": "/icon-192x192.png",
       "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "type": "image/png"
     },
     {
       "src": "/icon-512x512.png",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "type": "image/png"
     }
   ]
 }
