@@ -68,7 +68,7 @@ const ClientCreateForm = ({
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}
-      className="bg-slate-50/50 rounded-2xl p-6 border border-slate-200"
+      className="glass-card-master p-6"
     >
       <h3 className="text-xl font-serif font-bold text-slate-800 mb-6">
         Crear Nuevo Cliente
@@ -259,7 +259,7 @@ const ClientGridView = ({
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: index * 0.1 }}
-        className="bg-white rounded-2xl p-6 shadow-lg border border-slate-100 hover:shadow-xl transition-all duration-300 group cursor-pointer"
+        className="glass-card-master p-6 group cursor-pointer"
         onClick={() => setSelectedClient(client)}
       >
         <div className="flex items-start justify-between mb-4">
@@ -369,7 +369,7 @@ const ClientListView = ({
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ delay: index * 0.05 }}
-        className="bg-white rounded-2xl p-6 shadow-lg border border-slate-100 hover:shadow-xl transition-all duration-300 group cursor-pointer"
+        className="glass-card-master p-6 group cursor-pointer"
         onClick={() => setSelectedClient(client)}
       >
         <div className="flex items-center gap-4">
@@ -832,7 +832,7 @@ const LandingPageEditor = () => {
       className="space-y-6"
     >
       {/* Header con botones de vista */}
-      <div className="flex items-center justify-between bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+      <div className="glass-card-master p-6 mb-6">
         <div>
           <h2 className="text-2xl font-bold text-slate-800 mb-2">Editor de Landing Page</h2>
           <p className="text-slate-600">Administra el contenido de tu página principal</p>
@@ -876,7 +876,7 @@ const LandingPageEditor = () => {
       {viewMode === 'edit' ? (
         <div className="space-y-6">
           {/* Sección de Reseñas de Clientes (Reales) */}
-          <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+          <div className="glass-card-master p-6">
             <h3 className="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
               <span className="text-2xl">👥</span> Reseñas de Clientes (Reales)
             </h3>
@@ -964,7 +964,7 @@ const LandingPageEditor = () => {
             </div>
           </div>
           {/* Sección Hero */}
-          <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+          <div className="glass-card-master p-6">
             <h3 className="text-xl font-bold text-slate-800 mb-4">Sección Hero</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
@@ -1657,8 +1657,14 @@ const LandingPageEditor = () => {
           </div>
         </div>
       ) : (
-        <div className="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
-          <div className="h-[800px] overflow-y-auto">
+        <div className="glass-card-master overflow-hidden border border-slate-200/50 shadow-2xl ring-1 ring-black/5">
+          <div className="bg-slate-100/50 backdrop-blur-md px-4 py-3 border-b border-slate-200/50 flex items-center gap-1.5">
+            <div className="w-2.5 h-2.5 rounded-full bg-rose-400/80" />
+            <div className="w-2.5 h-2.5 rounded-full bg-amber-400/80" />
+            <div className="w-2.5 h-2.5 rounded-full bg-emerald-400/80" />
+            <div className="mx-auto text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none translate-x-[-15px]">Bodas.ai Preview Engine</div>
+          </div>
+          <div className="h-[780px] overflow-y-auto custom-scrollbar bg-white">
             <LandingPageContentPreview content={content} />
           </div>
         </div>
@@ -1826,14 +1832,32 @@ export default function MasterAdmin() {
   // NO mostrar contenido hasta que se confirme la autenticación
   if (isCheckingAuth || !authed) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-rose-50 via-white to-amber-50 flex items-center justify-center p-6">
-        <div className="text-center max-w-sm">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-rose-600 mb-4"></div>
-          <p className="text-neutral-600 font-medium mb-4">
-            {isCheckingAuth ? 'Verificando autenticación...' : 'Redirigiendo al login...'}
+    <div className="min-h-screen bg-[#f8fafc] flex items-center justify-center p-6 relative overflow-hidden">
+        {/* Decorative Background for Loading */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full pointer-events-none opacity-40">
+           <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-indigo-200/50 rounded-full blur-[100px] animate-pulse-slow" />
+           <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-rose-200/50 rounded-full blur-[100px] animation-delay-2000" />
+        </div>
+
+        <div className="glass-card-master p-12 text-center max-w-sm relative z-10">
+          <div className="relative mb-8 inline-block">
+             <div className="w-16 h-16 border-4 border-slate-100 rounded-full" />
+             <div className="absolute inset-0 w-16 h-16 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin" />
+             <div className="absolute inset-0 flex items-center justify-center text-2xl">💍</div>
+          </div>
+          <h2 className="text-xl font-bold text-slate-900 mb-2">Iniciando Bodas.ai</h2>
+          <p className="text-slate-600 font-medium mb-6">
+            {isCheckingAuth ? 'Verificando tus credenciales master...' : 'Preparando tu panel de control...'}
           </p>
-          <p className="text-neutral-400 text-sm mb-6">
-            Si esta pantalla no desaparece en unos segundos, puede haber un problema de conexión con la base de datos.
+          <div className="w-48 h-1 bg-slate-100 rounded-full overflow-hidden mx-auto mb-8">
+             <motion.div 
+                className="h-full bg-gradient-to-r from-indigo-500 to-purple-500"
+                animate={{ width: ["0%", "100%"] }}
+                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+             />
+          </div>
+          <p className="text-slate-400 text-[10px] uppercase tracking-widest font-bold">
+            Master Security Layer Active
           </p>
           <button
             onClick={() => {
@@ -1851,152 +1875,132 @@ export default function MasterAdmin() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-rose-50 via-white to-amber-50">
-      {/* Notifications */}
-      <AnimatePresence>
-        {notification && (
-          <motion.div
-            initial={{ opacity: 0, y: -50, scale: 0.9 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -50, scale: 0.9 }}
-            className={`fixed top-4 right-4 z-50 rounded-2xl p-4 shadow-xl backdrop-blur-sm border ${notification.type === 'success'
-              ? 'bg-amber-500/10 border-amber-200 text-amber-700'
-              : 'bg-rose-500/10 border-rose-200 text-rose-700'
+    <div className="min-h-screen bg-[#f8fafc] flex">
+      {/* Dynamic Background Elements */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-100/30 rounded-full blur-[120px] animate-pulse-slow" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-rose-100/30 rounded-full blur-[120px] animation-delay-2000" />
+      </div>
+
+      {/* Sidebar - Desktop */}
+      <aside className="hidden lg:flex flex-col w-72 h-screen sticky top-0 z-50 glass-sidebar p-6">
+        <div className="flex items-center gap-3 mb-10 px-2">
+          <div className="w-12 h-12 bg-gradient-to-tr from-indigo-600 to-violet-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-indigo-200">
+            <span className="text-2xl">💍</span>
+          </div>
+          <div>
+            <h1 className="text-xl font-bold text-gradient-premium tracking-tighter">Bodas.ai</h1>
+            <p className="text-[10px] font-bold text-indigo-600 uppercase tracking-widest px-1 bg-indigo-50 rounded w-fit">Master Panel</p>
+          </div>
+        </div>
+
+        <nav className="flex-1 space-y-2">
+          {([
+            { id: 'overview', label: 'Panel de Control', icon: '📊' },
+            { id: 'clients', label: 'Clientes & Bodes', icon: '👥' },
+            { id: 'messages', label: 'Mensajes', icon: '✉️' },
+            { id: 'landing', label: 'Landing Page', icon: '🏠' },
+            { id: 'analytics', label: 'Estadísticas', icon: '📈' },
+            { id: 'settings', label: 'Configuración', icon: '⚙️' }
+          ] as Array<{ id: DashboardView; label: string; icon: string }>).map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setDashboardView(tab.id)}
+              className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl transition-all duration-300 group ${
+                dashboardView === tab.id
+                  ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200 scale-[1.02]'
+                  : 'text-slate-600 hover:bg-white hover:text-indigo-600 hover:shadow-sm'
               }`}
-          >
-            <div className="flex items-center gap-3">
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${notification.type === 'success' ? 'bg-amber-500/20' : 'bg-rose-500/20'
-                }`}>
-                {notification.type === 'success' ? '✓' : '⚠'}
-              </div>
-              <span className="font-medium">{notification.message}</span>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Top Navigation Bar */}
-      <nav className="bg-white/90 backdrop-blur-xl border-b border-white/50 sticky top-0 z-40">
-        <div className="w-full px-4 sm:px-6 py-3 sm:py-4">
-          <div className="flex items-center justify-between gap-2 sm:gap-4">
-            <div className="flex items-center gap-2 sm:gap-3 flex-1">
-              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-rose-500 to-amber-500 rounded-xl flex items-center justify-center text-white font-bold text-sm sm:text-lg flex-shrink-0">
-                💍
-              </div>
-              <div className="hidden sm:block">
-                <h1 className="text-lg sm:text-xl font-brush bg-gradient-to-r from-rose-600 to-amber-600 bg-clip-text text-transparent">Panel Master</h1>
-                <p className="text-xs sm:text-sm text-neutral-600">Administrador Principal</p>
-              </div>
-              <div className="sm:hidden">
-                <h1 className="text-sm font-brush bg-gradient-to-r from-rose-600 to-amber-600 bg-clip-text text-transparent">Master</h1>
-              </div>
-            </div>
-
-            {/* Navigation Tabs - Desktop */}
-            <div className="hidden lg:flex bg-rose-50 rounded-xl p-1">
-              {([
-                { id: 'overview', label: 'Resumen', icon: '📊' },
-                { id: 'clients', label: 'Clientes', icon: '👥' },
-                { id: 'messages', label: 'Mensajes', icon: '✉️' },
-                { id: 'landing', label: 'Landing Page', icon: '🏠' },
-                { id: 'analytics', label: 'Analíticas', icon: '📈' },
-                { id: 'settings', label: 'Configuración', icon: '⚙️' }
-              ] as Array<{ id: DashboardView; label: string; icon: string }>).map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => { setDashboardView(tab.id); setMobileMenuOpen(false); }}
-                  className={`px-3 py-2 rounded-lg transition-all duration-300 flex items-center gap-2 text-xs font-medium ${dashboardView === tab.id
-                    ? 'bg-white text-neutral-900 shadow-sm'
-                    : 'text-neutral-600 hover:text-neutral-900 hover:bg-white/50'
-                    }`}
-                >
-                  <span>{tab.icon}</span>
-                  {tab.label}
-                </button>
-              ))}
-            </div>
-
-            <div className="flex items-center gap-1 sm:gap-3">
-              {dashboardView === 'clients' && (
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => setIsCreatingClient(true)}
-                  className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold px-2 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-1 text-xs sm:text-sm whitespace-nowrap"
-                >
-                  <span className="text-lg">+</span>
-                  <span className="hidden sm:inline">Nuevo Cliente</span>
-                  <span className="sm:hidden">Nuevo</span>
-                </motion.button>
+            >
+              <span className={`text-xl transition-transform duration-300 ${dashboardView === tab.id ? '' : 'group-hover:scale-110'}`}>
+                {tab.icon}
+              </span>
+              <span className="font-semibold text-sm">{tab.label}</span>
+              {tab.id === 'messages' && messages.filter(m => m.status === 'new').length > 0 && (
+                <span className="ml-auto bg-rose-500 text-white text-[10px] font-bold px-2 py-1 rounded-full animate-bounce">
+                  {messages.filter(m => m.status === 'new').length}
+                </span>
               )}
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={logout}
-                className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-slate-600 to-slate-700 rounded-lg sm:rounded-xl flex items-center justify-center text-white shadow-lg hover:shadow-xl transition-all duration-300 flex-shrink-0"
-                title="Cerrar sesión"
-              >
-                🚺
-              </motion.button>
+            </button>
+          ))}
+        </nav>
 
-              {/* Mobile menu button */}
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="lg:hidden p-2 text-neutral-700 hover:bg-neutral-100 rounded-lg transition flex-shrink-0"
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              >
-                {mobileMenuOpen ? (
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                ) : (
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                  </svg>
-                )}
-              </motion.button>
+        <div className="mt-auto pt-6 border-t border-slate-200/50">
+          <div className="bg-white/50 rounded-2xl p-4 mb-4 border border-white/50 backdrop-blur-sm">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-8 h-8 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 flex items-center justify-center text-white text-xs font-bold">
+                MA
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-bold text-slate-800 truncate">Master Admin</p>
+                <p className="text-[10px] text-slate-500 truncate">Gestión Global</p>
+              </div>
             </div>
           </div>
-
-          {/* Mobile Menu */}
-          <AnimatePresence>
-            {mobileMenuOpen && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                className="lg:hidden mt-3 pt-3 border-t border-neutral-200"
-              >
-                <div className="flex flex-wrap gap-2">
-                  {([
-                    { id: 'overview', label: 'Resumen', icon: '📊' },
-                    { id: 'clients', label: 'Clientes', icon: '👥' },
-                    { id: 'messages', label: 'Mensajes', icon: '✉️' },
-                    { id: 'landing', label: 'Landing Page', icon: '🏠' },
-                    { id: 'analytics', label: 'Analíticas', icon: '📈' },
-                    { id: 'settings', label: 'Configuración', icon: '⚙️' }
-                  ] as Array<{ id: DashboardView; label: string; icon: string }>).map((tab) => (
-                    <button
-                      key={tab.id}
-                      onClick={() => { setDashboardView(tab.id); setMobileMenuOpen(false); }}
-                      className={`px-3 py-2 rounded-lg transition-all duration-300 flex items-center gap-1 text-xs font-medium whitespace-nowrap ${dashboardView === tab.id
-                        ? 'bg-gradient-to-r from-rose-500 to-amber-500 text-white shadow-sm'
-                        : 'bg-neutral-100 text-neutral-700 hover:bg-neutral-200'
-                        }`}
-                    >
-                      <span>{tab.icon}</span>
-                      {tab.label}
-                    </button>
-                  ))}
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+          <button
+            onClick={logout}
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-500 hover:bg-rose-50 hover:text-rose-600 transition-all duration-300 group"
+          >
+            <span className="text-xl group-hover:rotate-12 transition-transform">🚺</span>
+            <span className="font-semibold text-sm">Cerrar Sesión</span>
+          </button>
         </div>
-      </nav>
+      </aside>
 
-      <div className="w-full px-4 sm:px-6 py-6 sm:py-8">
+      {/* Main Content Area */}
+      <main className="flex-1 min-w-0 flex flex-col">
+        {/* Mobile Header */}
+        <header className="lg:hidden flex items-center justify-between p-4 bg-white/80 backdrop-blur-md sticky top-0 z-40 border-b border-slate-100">
+          <div className="flex items-center gap-2">
+             <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white text-lg">💍</div>
+             <span className="font-bold text-slate-900">Master</span>
+          </div>
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="p-2 bg-slate-100 rounded-lg text-slate-600"
+          >
+            {mobileMenuOpen ? '✕' : '☰'}
+          </button>
+        </header>
+
+        {/* Top Floating Bar - Breadcrumbs & Profile (Desktop) */}
+        <div className="hidden lg:flex items-center justify-between px-8 py-6">
+          <div>
+            <nav className="flex items-center gap-2 text-xs font-medium text-slate-400 uppercase tracking-widest mb-1">
+              <span>Admin</span>
+              <span>/</span>
+              <span className="text-indigo-600">{dashboardView}</span>
+            </nav>
+            <h2 className="text-2xl font-bold text-slate-900 capitalize">
+              {dashboardView === 'overview' ? 'Panel de Resumen' : dashboardView}
+            </h2>
+          </div>
+          
+          <div className="flex items-center gap-4">
+             {dashboardView === 'clients' && (
+                <motion.button
+                  whileHover={{ scale: 1.05, y: -2 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setIsCreatingClient(true)}
+                  className="bg-indigo-600 text-white px-6 py-2.5 rounded-xl font-bold shadow-lg shadow-indigo-200 hover:bg-indigo-700 transition-all flex items-center gap-2 text-sm"
+                >
+                  <span>+</span>
+                  <span>Nuevo Cliente</span>
+                </motion.button>
+             )}
+             <div className="flex items-center gap-3 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-2xl border border-white shadow-sm">
+                <div className="text-right">
+                   <p className="text-xs font-bold text-slate-800">Soporte Bodas</p>
+                   <p className="text-[10px] text-green-500 font-bold uppercase">En línea</p>
+                </div>
+                <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center">👋</div>
+             </div>
+          </div>
+        </div>
+
+        {/* Scrollable Content Container */}
+        <div className="flex-1 p-4 lg:p-8 pt-2 lg:pt-0 overflow-y-auto">
+
         {/* Dashboard Content Based on Active View */}
         <AnimatePresence mode="wait">
           {dashboardView === 'overview' && (
@@ -2009,7 +2013,7 @@ export default function MasterAdmin() {
             >
               {/* Pending Upgrades Alert */}
               {stats.pendingUpgradesCount > 0 && (
-                <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex items-center justify-between shadow-sm">
+                <div className="bg-amber-50/50 backdrop-blur-md border border-amber-200/50 rounded-2xl p-4 flex items-center justify-between shadow-lg shadow-amber-100/20">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center text-amber-600 font-bold text-xl">
                       ⚠️
@@ -2085,7 +2089,7 @@ export default function MasterAdmin() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.1 }}
-                    className="bg-white/90 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg border border-white/50 hover:shadow-xl transition-all duration-300 group"
+                    className="glass-card-master p-4 sm:p-6 group"
                   >
                     <div className="flex items-center justify-between gap-3 sm:gap-4">
                       <div className="flex-1 min-w-0">
@@ -2108,8 +2112,10 @@ export default function MasterAdmin() {
               </div>
 
               {/* Quick Actions */}
-              <div className="bg-white/90 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg border border-white/50">
-                <h3 className="text-base sm:text-lg font-semibold text-slate-800 mb-4">Acciones Rápidas</h3>
+              <div className="glass-card-master p-4 sm:p-6">
+                <h3 className="text-base sm:text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
+                   <span className="text-xl">⚡</span> Acciones Rápidas
+                </h3>
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4">
                   {[
                     { label: 'Crear Cliente', icon: '👥', action: () => setIsCreatingClient(true), color: 'from-blue-500 to-cyan-500' },
@@ -2133,8 +2139,10 @@ export default function MasterAdmin() {
               </div>
 
               {/* Recent Activity */}
-              <div className="bg-white/90 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg border border-white/50">
-                <h3 className="text-base sm:text-lg font-semibold text-slate-800 mb-4">Actividad Reciente</h3>
+              <div className="glass-card-master p-4 sm:p-6">
+                <h3 className="text-base sm:text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
+                   <span className="text-xl">🕒</span> Actividad Reciente
+                </h3>
                 <div className="space-y-2 sm:space-y-4">
                   {clients.slice(0, 5).map((client) => (
                     <div key={client.id} className="flex items-center gap-2 sm:gap-4 p-2 sm:p-3 rounded-lg sm:rounded-xl hover:bg-slate-50 transition-colors duration-200">
@@ -2164,7 +2172,7 @@ export default function MasterAdmin() {
               className="space-y-6"
             >
               {/* Clients Header with Filters */}
-              <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl border border-white/50 overflow-hidden">
+              <div className="glass-card-master overflow-hidden">
                 <div className="p-6 border-b border-slate-100">
                   <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
                     <div>
@@ -2341,7 +2349,7 @@ export default function MasterAdmin() {
               exit={{ opacity: 0, x: 20 }}
               className="space-y-6"
             >
-              <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl border border-white/50 overflow-hidden">
+              <div className="glass-card-master overflow-hidden transition-all duration-500">
                 <div className="p-6 border-b border-slate-100 flex justify-between items-center">
                   <div>
                     <h2 className="text-2xl font-serif font-bold text-slate-800 mb-1">
@@ -2371,9 +2379,9 @@ export default function MasterAdmin() {
                         <motion.div
                           key={msg.id}
                           layout
-                          className={`p-5 rounded-xl border transition-all ${msg.status === 'new'
-                            ? 'bg-rose-50/50 border-rose-200 shadow-md'
-                            : 'bg-white border-slate-200'
+                          className={`glass-card-master p-5 group transition-all duration-300 ${msg.status === 'new'
+                            ? 'ring-2 ring-indigo-500/30'
+                            : ''
                             }`}
                         >
                           {/* Header del mensaje */}
@@ -2514,7 +2522,7 @@ export default function MasterAdmin() {
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: -20 }}
-              className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full"
+              className="bg-white/80 backdrop-blur-2xl rounded-3xl shadow-2xl max-w-2xl w-full border border-white/50 overflow-hidden"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="p-6 border-b border-slate-100">
@@ -2683,7 +2691,7 @@ export default function MasterAdmin() {
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: -20 }}
-              className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+              className="bg-white/80 backdrop-blur-2xl rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-white/50"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="p-6 border-b border-slate-100">
@@ -2920,7 +2928,7 @@ export default function MasterAdmin() {
               initial={{ scale: 0.95, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.95, y: 20 }}
-              className="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-2xl overflow-y-auto max-h-[90vh]"
+              className="bg-white/80 backdrop-blur-2xl rounded-3xl shadow-2xl w-full max-w-2xl overflow-y-auto max-h-[90vh] border border-white/50"
             >
               <div className="p-6 border-b border-slate-200 sticky top-0 bg-white">
                 <h4 className="text-xl font-bold text-slate-800">Editar Cliente</h4>
@@ -3025,6 +3033,88 @@ export default function MasterAdmin() {
           </motion.div>
         )}
       </AnimatePresence>
+      </main>
+
+      {/* Mobile Menu Drawer Overlay */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setMobileMenuOpen(false)}
+              className="lg:hidden fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50"
+            />
+            <motion.div
+              initial={{ x: '-100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '-100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              className="lg:hidden fixed inset-y-0 left-0 w-[280px] bg-white z-[60] shadow-2xl p-6 flex flex-col"
+            >
+              <div className="flex items-center gap-3 mb-8">
+                <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white text-xl">💍</div>
+                <span className="font-bold text-slate-900 text-lg">Bodas Master</span>
+              </div>
+              
+              <nav className="flex-1 space-y-2">
+                {([
+                  { id: 'overview', label: 'Panel de Control', icon: '📊' },
+                  { id: 'clients', label: 'Clientes & Bodes', icon: '👥' },
+                  { id: 'messages', label: 'Mensajes', icon: '✉️' },
+                  { id: 'landing', label: 'Landing Page', icon: '🏠' },
+                  { id: 'analytics', label: 'Estadísticas', icon: '📈' },
+                  { id: 'settings', label: 'Configuración', icon: '⚙️' }
+                ] as Array<{ id: DashboardView; label: string; icon: string }>).map((tab) => (
+                  <button
+                    key={tab.id}
+                    onClick={() => { setDashboardView(tab.id); setMobileMenuOpen(false); }}
+                    className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl transition-all ${
+                      dashboardView === tab.id
+                        ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-100'
+                        : 'text-slate-600 hover:bg-slate-50'
+                    }`}
+                  >
+                    <span className="text-xl">{tab.icon}</span>
+                    <span className="font-semibold text-sm">{tab.label}</span>
+                  </button>
+                ))}
+              </nav>
+
+              <button
+                onClick={logout}
+                className="mt-auto flex items-center gap-3 px-4 py-4 rounded-2xl text-rose-600 bg-rose-50 font-bold"
+              >
+                <span>🚺</span>
+                <span>Cerrar Sesión</span>
+              </button>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      {/* Notifications Floating */}
+      <AnimatePresence>
+        {notification && (
+          <motion.div
+            initial={{ opacity: 0, bottom: -20, scale: 0.9 }}
+            animate={{ opacity: 1, bottom: 24, scale: 1 }}
+            exit={{ opacity: 0, bottom: -20, scale: 0.9 }}
+            className={`fixed bottom-6 right-6 z-[100] rounded-2xl p-4 shadow-2xl border backdrop-blur-md max-w-sm ${
+              notification.type === 'success'
+                ? 'bg-emerald-500/90 border-emerald-400 text-white'
+                : 'bg-rose-500/90 border-rose-400 text-white'
+            }`}
+          >
+            <div className="flex items-center gap-3">
+              <span className="text-xl">{notification.type === 'success' ? '✨' : '⚠️'}</span>
+              <span className="font-bold text-sm">{notification.message}</span>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <ConfirmDialog
         isOpen={dialog.isOpen}
         title={dialog.options.title}
