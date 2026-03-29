@@ -1,6 +1,3 @@
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
-
 /**
  * Middleware para Vercel (Edge Runtime)
  * 
@@ -8,8 +5,9 @@ import type { NextRequest } from 'next/server';
  * Asegurar que los archivos críticos de la PWA sean accesibles públicamente
  * sin autenticación, evitando errores 401/403 que bloquean la instalación.
  */
-export function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
+export default function middleware(request: Request) {
+  const url = new URL(request.url);
+  const { pathname } = url;
 
   // Lista de rutas públicas que NUNCA deben requerir autenticación
   const publicPaths = [
@@ -25,17 +23,17 @@ export function middleware(request: NextRequest) {
 
   // 1. Permitir archivos críticos de PWA
   if (publicPaths.some(path => pathname === path)) {
-    return NextResponse.next();
+    return; // En Vercel Middleware, no retornar nada (o undefined) permite que la petición continúe
   }
 
   // 2. Permitir assets (JS, CSS, Imágenes, Fuentes)
   if (pathname.startsWith('/assets/')) {
-    return NextResponse.next();
+    return;
   }
 
   // 3. Continuar con la ejecución normal para el resto de rutas
   // (Si hay lógica de auth adicional en el proyecto, se aplicará después)
-  return NextResponse.next();
+  return;
 }
 
 /**
