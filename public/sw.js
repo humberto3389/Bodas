@@ -16,6 +16,7 @@ const MAX_PAGES_ENTRIES = 5;
 // Precache on install (app shell + offline fallback)
 const PRECACHE_URLS = [
   '/',
+  '/manifest.json',
   '/offline.html',
 ];
 
