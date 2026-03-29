@@ -551,4 +551,25 @@ body {
 
 .text-gradient-premium {
   @apply bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-purple-600 to-rose-600;
+}
+
+/* ---- PWA Banner Styles ---- */
+.pwa-install-banner,
+.pwa-update-banner {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 1.25rem;
+  padding: 1rem;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.12),
+    0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+/* Hide browser-only elements in standalone PWA mode */
+@media (display-mode: standalone) {
+  .browser-only {
+    display: none !important;
+  }
 }
