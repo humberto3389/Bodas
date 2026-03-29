@@ -71,7 +71,8 @@ self.addEventListener('install', (event) => {
       .catch(err => console.warn('[SW] Precache failed (non-fatal):', err))
   );
 
-  // Do NOT call skipWaiting() — let user decide when to update
+  // Add self.skipWaiting() to activate the new SW immediately
+  self.skipWaiting();
 });
 
 // ---- ACTIVATE ----
@@ -89,13 +90,9 @@ self.addEventListener('activate', (event) => {
           })
       );
     }).then(() => {
-      // Only claim clients on first-ever activation (no existing controller)
-      // This avoids disrupting already-open tabs when updating
-      return self.clients.matchAll().then(clients => {
-        if (clients.length === 0 || !self.registration.active) {
-          return self.clients.claim();
-        }
-      });
+      // Force the Service Worker to take control of all open pages immediately
+      console.log('[SW] controlling clients now');
+      return self.clients.claim();
     })
   );
 
