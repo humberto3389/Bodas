@@ -49,6 +49,15 @@ export default {
         },
       },
       colors: {
+        theme: {
+          bg: 'var(--theme-bg)',
+          surface: 'var(--theme-surface)',
+          primary: 'var(--theme-primary)',
+          accent: 'var(--theme-accent)',
+          text: 'var(--theme-text)',
+          muted: 'var(--theme-muted)',
+          border: 'var(--theme-border)',
+        },
         primary: {
           50: '#f7f8fb',
           100: '#eef0f7',
@@ -61,9 +70,9 @@ export default {
           800: '#333b65',
           900: '#2d3455',
         },
-        gold: '#FFD700',
-        'gold-light': '#F4E4BC',
-        'gold-dark': '#B8860B',
+        gold: '#cda931',
+        'gold-light': '#ffe088',
+        'gold-dark': '#735c00',
         blush: '#f6d7d4',
       },
       fontFamily: {

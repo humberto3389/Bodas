@@ -31,7 +31,7 @@ export function PadrinosSection({ padrinos }: PadrinosSectionProps) {
                     initial={{ opacity: 0 }}
                     whileInView={{ opacity: 1 }}
                     viewport={{ once: true }}
-                    className="text-lg text-slate-800/60 font-light tracking-wide max-w-lg mx-auto leading-relaxed text-center mb-10"
+                    className="text-lg text-theme-muted font-light tracking-wide max-w-lg mx-auto leading-relaxed text-center mb-10"
                 >
                     Personas especiales que nos acompañan y guían en este nuevo camino que comenzamos juntos.
                 </motion.p>
@@ -48,12 +48,12 @@ export function PadrinosSection({ padrinos }: PadrinosSectionProps) {
                                 transition={{ delay: index * 0.15, duration: 0.7 }}
                                 className="group w-full md:w-[calc(50%-2.5rem)] lg:w-[calc(33.333%-2.5rem)] max-w-sm"
                             >
-                                <div className="card-luxe relative h-full p-8 flex flex-col items-center text-center rounded-3xl sm:rounded-[2.5rem]">
+                                <div className="bg-theme-surface border border-theme-border shadow-xl backdrop-blur-md text-theme-text relative h-full p-8 flex flex-col items-center text-center rounded-3xl sm:rounded-[2.5rem]">
                                     {/* Photo Frame */}
                                     <div className="relative mb-8">
-                                        <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-rose-200 to-rose-300 blur-lg opacity-30 group-hover:opacity-60 transition-opacity duration-700" />
+                                        <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-theme-accent/40 to-theme-accent blur-lg opacity-30 group-hover:opacity-60 transition-opacity duration-700" />
                                         {padrino.photo_url ? (
-                                            <div className="relative w-36 h-36 rounded-full overflow-hidden border-[6px] border-white shadow-xl group-hover:scale-105 transition-transform duration-700">
+                                            <div className="relative w-36 h-36 rounded-full overflow-hidden border-[6px] border-theme-surface shadow-xl group-hover:scale-105 transition-transform duration-700">
                                                 <img
                                                     src={padrino.photo_url}
                                                     alt={padrino.name}
@@ -62,28 +62,28 @@ export function PadrinosSection({ padrinos }: PadrinosSectionProps) {
                                                 />
                                             </div>
                                         ) : (
-                                            <div className="relative w-36 h-36 rounded-full bg-stone-100 flex items-center justify-center border-[6px] border-white shadow-xl group-hover:scale-105 transition-transform duration-700">
-                                                <span className="text-4xl font-elegant font-bold text-stone-300">
+                                            <div className="relative w-36 h-36 rounded-full bg-theme-surface flex items-center justify-center border-[6px] border-theme-surface shadow-xl group-hover:scale-105 transition-transform duration-700">
+                                                <span className="text-4xl font-elegant font-bold text-theme-muted">
                                                     {getInitials(padrino.name)}
                                                 </span>
                                             </div>
                                         )}
-                                        <div className="absolute -inset-2 rounded-full border border-rose-200/50 scale-90 opacity-0 group-hover:scale-100 group-hover:opacity-100 transition-all duration-700" />
+                                        <div className="absolute -inset-2 rounded-full border border-theme-accent/50 scale-90 opacity-0 group-hover:scale-100 group-hover:opacity-100 transition-all duration-700" />
                                     </div>
 
                                     {/* Role Badge */}
-                                    <span className="inline-block px-4 py-1.5 rounded-full bg-rose-50 text-[11px] font-black uppercase tracking-[0.2em] text-rose-600 mb-5 border border-rose-100 shadow-sm">
+                                    <span className="inline-block px-4 py-1.5 rounded-full bg-theme-accent/10 text-[11px] font-black uppercase tracking-[0.2em] text-theme-accent mb-5 border border-theme-accent/30 shadow-sm">
                                         {padrino.role}
                                     </span>
 
                                     {/* Name */}
-                                    <h3 className="font-elegant text-4xl text-slate-900 font-bold mb-4 leading-none">
+                                    <h3 className="font-elegant text-4xl text-theme-text font-bold mb-4 leading-none">
                                         {padrino.name}
                                     </h3>
 
                                     {/* Description */}
                                     {padrino.description && (
-                                        <p className="text-base text-stone-500 font-light leading-relaxed max-w-xs">
+                                        <p className="text-base text-theme-muted font-light leading-relaxed max-w-xs">
                                             {padrino.description}
                                         </p>
                                     )}

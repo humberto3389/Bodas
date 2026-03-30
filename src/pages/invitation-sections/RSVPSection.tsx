@@ -87,9 +87,9 @@ export function RSVPSection({ onSubmit, weddingDate }: RSVPSectionProps & { wedd
                     Confirma tu Asistencia
                 </SectionTitle>
                 
-                <p className="font-elegant text-slate-500 text-center mb-16 max-w-xl mx-auto leading-relaxed" style={{ fontSize: 'var(--font-size-lg)' }}>
+                <p className="font-elegant text-theme-muted text-center mb-16 max-w-xl mx-auto leading-relaxed" style={{ fontSize: 'var(--font-size-lg)' }}>
                     Nos encantaría que nos acompañaras en este día inolvidable. 
-                    Por favor, confírmanos antes del <span className="text-rose-600 font-semibold italic">{deadlineStr}</span>.
+                    Por favor, confírmanos antes del <span className="text-theme-accent font-semibold italic">{deadlineStr}</span>.
                 </p>
 
                 <motion.div
@@ -99,29 +99,29 @@ export function RSVPSection({ onSubmit, weddingDate }: RSVPSectionProps & { wedd
                     className="relative"
                 >
                     {/* Decorative Elements */}
-                    <div className="absolute -top-10 -left-10 w-40 h-40 bg-rose-100/30 rounded-full blur-3xl animate-pulse" />
-                    <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-amber-100/30 rounded-full blur-3xl" />
+                    <div className="absolute -top-10 -left-10 w-40 h-40 bg-theme-accent/20 rounded-full blur-3xl animate-pulse" />
+                    <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-theme-primary/10 rounded-full blur-3xl" />
 
                     <form 
                         onSubmit={handleSubmit(handleFormSubmit)}
-                        className="relative z-10 bg-white/40 backdrop-blur-3xl border border-white p-6 sm:p-14 rounded-[2.5rem] sm:rounded-[4rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.08)]"
+                        className="relative z-10 bg-theme-surface/70 backdrop-blur-3xl border border-theme-border p-6 sm:p-14 rounded-[2.5rem] sm:rounded-[4rem] shadow-xl"
                     >
                         <div className="space-y-10">
                             {/* Toggle Selector */}
                             <div className="flex flex-col items-center space-y-4">
-                                <label className="text-[10px] font-bold uppercase tracking-[0.3em] text-slate-400">¿Podrás acompañarnos?</label>
-                                <div className="p-1.5 bg-slate-100/50 rounded-full flex gap-1 border border-slate-200/50">
+                                <label className="text-[10px] font-bold uppercase tracking-[0.3em] text-theme-muted">¿Podrás acompañarnos?</label>
+                                <div className="p-1.5 bg-theme-surface rounded-full flex gap-1 border border-theme-border">
                                     <button
                                         type="button"
                                         onClick={() => setValue('isAttending', true)}
-                                        className={`px-8 py-3 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all duration-300 ${formValues.isAttending ? 'bg-white text-rose-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                                        className={`px-8 py-3 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all duration-300 ${formValues.isAttending ? 'bg-theme-primary text-theme-bg shadow-sm' : 'text-theme-muted hover:text-theme-text'}`}
                                     >
                                         ¡Claro que sí!
                                     </button>
                                     <button
                                         type="button"
                                         onClick={() => setValue('isAttending', false)}
-                                        className={`px-8 py-3 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all duration-300 ${formValues.isAttending === false ? 'bg-white text-slate-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                                        className={`px-8 py-3 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all duration-300 ${formValues.isAttending === false ? 'bg-theme-bg text-theme-text shadow-sm' : 'text-theme-muted hover:text-theme-text'}`}
                                     >
                                         Lamentablemente no
                                     </button>
@@ -131,24 +131,24 @@ export function RSVPSection({ onSubmit, weddingDate }: RSVPSectionProps & { wedd
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                 {/* Nombre */}
                                 <div className="space-y-3">
-                                    <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-600 ml-2">Tu Nombre Completo</label>
+                                    <label className="block text-[10px] font-bold uppercase tracking-wider text-theme-muted ml-2">Tu Nombre Completo</label>
                                     <input
                                         {...register('name', { required: 'Necesitamos tu nombre' })}
-                                        className="w-full bg-white/60 border border-slate-200/50 rounded-2xl px-6 py-4 focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all outline-none text-slate-700 placeholder:text-slate-300 shadow-sm"
+                                        className="w-full bg-theme-bg/60 border border-theme-border rounded-2xl px-6 py-4 focus:ring-2 focus:ring-theme-accent/30 focus:border-theme-accent transition-all outline-none text-theme-text placeholder:text-theme-muted/50 shadow-sm"
                                         placeholder="Nombre y apellido"
                                     />
-                                    {errors.name && <p className="text-rose-500 text-[9px] font-bold mt-1 ml-2 uppercase tracking-tighter">{errors.name.message as string}</p>}
+                                    {errors.name && <p className="text-red-500/80 text-[9px] font-bold mt-1 ml-2 uppercase tracking-tighter">{errors.name.message as string}</p>}
                                 </div>
 
                                 {/* Email */}
                                 <div className="space-y-3">
-                                    <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-600 ml-2">Email (Opcional)</label>
+                                    <label className="block text-[10px] font-bold uppercase tracking-wider text-theme-muted ml-2">Email (Opcional)</label>
                                     <input
                                         {...register('email', { pattern: { value: /^\S+@\S+$/i, message: 'Formato inválido' } })}
-                                        className="w-full bg-white/60 border border-slate-200/50 rounded-2xl px-6 py-4 focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all outline-none text-slate-700 placeholder:text-slate-300 shadow-sm"
+                                        className="w-full bg-theme-bg/60 border border-theme-border rounded-2xl px-6 py-4 focus:ring-2 focus:ring-theme-accent/30 focus:border-theme-accent transition-all outline-none text-theme-text placeholder:text-theme-muted/50 shadow-sm"
                                         placeholder="ejemplo@correo.com"
                                     />
-                                    {errors.email && <p className="text-rose-500 text-[9px] font-bold mt-1 ml-2 uppercase tracking-tighter">{errors.email.message as string}</p>}
+                                    {errors.email && <p className="text-red-500/80 text-[9px] font-bold mt-1 ml-2 uppercase tracking-tighter">{errors.email.message as string}</p>}
                                 </div>
                             </div>
 
@@ -165,16 +165,16 @@ export function RSVPSection({ onSubmit, weddingDate }: RSVPSectionProps & { wedd
                                         
                                         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
                                             <div className="space-y-3">
-                                                <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-600 ml-2">Acompañantes</label>
+                                                <label className="block text-[10px] font-bold uppercase tracking-wider text-theme-muted ml-2">Acompañantes</label>
                                                 <input
                                                     type="number"
                                                     {...register('guests', { min: 0, max: 10 })}
-                                                    className="w-full bg-white/60 border border-slate-200/50 rounded-2xl px-6 py-4 focus:ring-2 focus:ring-rose-500/20 transition-all outline-none text-center font-bold text-slate-700 shadow-sm"
+                                                    className="w-full bg-theme-bg/60 border border-theme-border rounded-2xl px-6 py-4 focus:ring-2 focus:ring-theme-accent/30 transition-all outline-none text-center font-bold text-theme-text shadow-sm"
                                                 />
                                             </div>
                                             
                                             <div className="md:col-span-2 space-y-3">
-                                                <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-600 ml-2">Nombres de Acompañantes</label>
+                                                <label className="block text-[10px] font-bold uppercase tracking-wider text-theme-muted ml-2">Nombres de Acompañantes</label>
                                                 <textarea
                                                     {...register('attendingNames', {
                                                         validate: {
@@ -183,15 +183,15 @@ export function RSVPSection({ onSubmit, weddingDate }: RSVPSectionProps & { wedd
                                                             valid: (v) => formValues.guests > 0 && checkSuspiciousNames(v) || true
                                                         }
                                                     })}
-                                                    className="w-full bg-white/60 border border-slate-200/50 rounded-2xl px-6 py-4 focus:ring-2 focus:ring-rose-500/20 transition-all outline-none text-slate-700 placeholder:text-slate-300 min-h-[120px] resize-none shadow-sm"
+                                                    className="w-full bg-theme-bg/60 border border-theme-border rounded-2xl px-6 py-4 focus:ring-2 focus:ring-theme-accent/30 transition-all outline-none text-theme-text placeholder:text-theme-muted/50 min-h-[120px] resize-none shadow-sm"
                                                     placeholder="Escribe un nombre por línea..."
                                                 />
-                                                {errors.attendingNames && <p className="text-rose-500 text-[10px] font-bold mt-1 ml-2 uppercase">{errors.attendingNames.message as string}</p>}
+                                                {errors.attendingNames && <p className="text-red-500/80 text-[10px] font-bold mt-1 ml-2 uppercase">{errors.attendingNames.message as string}</p>}
                                                 
                                                 {!errors.attendingNames && formValues.guests > 0 && (
-                                                    <div className="bg-rose-50/50 border border-rose-100/50 rounded-xl p-3 flex items-center gap-3">
+                                                    <div className="bg-theme-accent/10 border border-theme-accent/30 rounded-xl p-3 flex items-center gap-3">
                                                         <span className="text-lg">💡</span>
-                                                        <p className="text-[10px] text-rose-700/80 leading-tight">
+                                                        <p className="text-[10px] text-theme-text leading-tight">
                                                             Indica los nombres completos de tus acompañantes (uno por cada línea).
                                                         </p>
                                                     </div>
@@ -207,12 +207,12 @@ export function RSVPSection({ onSubmit, weddingDate }: RSVPSectionProps & { wedd
                                         exit={{ opacity: 0, height: 0 }}
                                         className="space-y-4 pt-4 overflow-hidden"
                                     >
-                                        <div className="bg-slate-50 border border-slate-100 rounded-2xl p-5 text-center">
-                                            <p className="text-slate-500 italic text-sm">Lamentamos que no puedas acompañarnos, se te extrañará.</p>
+                                        <div className="bg-theme-bg border border-theme-border rounded-2xl p-5 text-center">
+                                            <p className="text-theme-muted italic text-sm">Lamentamos que no puedas acompañarnos, se te extrañará.</p>
                                         </div>
                                         <textarea
                                             {...register('notAttendingNames')}
-                                            className="w-full bg-white/60 border border-slate-200/50 rounded-2xl px-6 py-4 outline-none text-slate-700 min-h-[100px] resize-none shadow-sm"
+                                            className="w-full bg-theme-bg/60 border border-theme-border rounded-2xl px-6 py-4 outline-none text-theme-text min-h-[100px] resize-none shadow-sm"
                                             placeholder="¿Quiénes no podrán asistir? (Opcional)"
                                         />
                                     </motion.div>
@@ -221,11 +221,11 @@ export function RSVPSection({ onSubmit, weddingDate }: RSVPSectionProps & { wedd
 
                             <div className="pt-6">
                                 <motion.button
-                                    whileHover={{ y: -2, boxShadow: "0 10px 25px -5px rgba(225, 29, 72, 0.4)" }}
+                                    whileHover={{ y: -2, boxShadow: "0 10px 25px -5px rgba(27, 42, 38, 0.4)" }}
                                     whileTap={{ scale: 0.98 }}
                                     type="submit"
                                     disabled={isSubmitting}
-                                    className="w-full bg-rose-600 hover:bg-rose-700 text-white font-black uppercase tracking-[0.3em] py-5 rounded-2xl shadow-xl shadow-rose-500/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed text-[11px]"
+                                    className="w-full bg-theme-primary hover:bg-theme-primary/90 text-theme-bg font-black uppercase tracking-[0.3em] py-5 rounded-2xl shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed text-[11px]"
                                 >
                                     {isSubmitting ? 'Procesando...' : 
                                      status === 'success' ? '✓ ¡Gracias por confirmar!' : 
@@ -244,14 +244,14 @@ export function RSVPSection({ onSubmit, weddingDate }: RSVPSectionProps & { wedd
                                 exit={{ opacity: 0, scale: 0.9 }}
                                 className="absolute inset-0 z-[20] flex items-center justify-center p-6"
                             >
-                                <div className={`w-full max-w-sm p-10 rounded-[3rem] shadow-2xl text-center backdrop-blur-xl border ${status === 'success' ? 'bg-emerald-50/95 border-emerald-200 text-emerald-800' : 'bg-rose-50/95 border-rose-200 text-rose-800'}`}>
+                                <div className={`w-full max-w-sm p-10 rounded-[3rem] shadow-2xl text-center backdrop-blur-xl border ${status === 'success' ? 'bg-theme-bg/95 border-theme-accent text-theme-text' : 'bg-theme-bg/95 border-red-500/30 text-red-500'}`}>
                                     <div className="text-5xl mb-6">{status === 'success' ? '✨' : '⚠️'}</div>
                                     <h4 className="font-elegant text-2xl mb-4 tracking-wide">{status === 'success' ? '¡Confirmación Recibida!' : 'Hubo un error'}</h4>
                                     <p className="text-sm opacity-80 mb-8">{status === 'success' ? 'Tu respuesta se ha guardado correctamente. ¡Nos vemos pronto!' : errorMessage}</p>
                                     <button 
                                         type="button"
                                         onClick={() => setStatus('idle')}
-                                        className={`px-8 py-3 rounded-full text-[10px] font-bold uppercase tracking-widest border transition-colors ${status === 'success' ? 'border-emerald-200 hover:bg-emerald-100' : 'border-rose-200 hover:bg-rose-100'}`}
+                                        className={`px-8 py-3 rounded-full text-[10px] font-bold uppercase tracking-widest border transition-colors ${status === 'success' ? 'border-theme-accent hover:bg-theme-accent/10 text-theme-text' : 'border-red-200 hover:bg-red-50 text-red-700'}`}
                                     >
                                         Cerrar
                                     </button>

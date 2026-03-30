@@ -35,7 +35,7 @@ export function GuestbookSection({ messages, onSendMessage }: GuestbookSectionPr
                     Dedicatorias
                 </SectionTitle>
 
-                <p className="text-lg text-slate-800/60 font-light tracking-wide max-w-lg mx-auto leading-relaxed text-center mb-8">
+                <p className="text-lg text-theme-muted font-light tracking-wide max-w-lg mx-auto leading-relaxed text-center mb-8">
                     Palabras que guardaremos en el corazón por siempre.
                 </p>
 
@@ -45,11 +45,11 @@ export function GuestbookSection({ messages, onSendMessage }: GuestbookSectionPr
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     onSubmit={handleSubmit}
-                    className="card-luxe p-8 sm:p-12 mb-10 max-w-3xl mx-auto rounded-2xl sm:rounded-[2rem]"
+                    className="bg-theme-surface border border-theme-border shadow-xl backdrop-blur-md text-theme-text p-8 sm:p-12 mb-10 max-w-3xl mx-auto rounded-2xl sm:rounded-[2rem]"
                 >
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-10 mb-10">
                         <div className="space-y-2">
-                            <label className="block text-[10px] font-bold text-slate-900 uppercase tracking-[0.2em]">Tu Identidad</label>
+                            <label className="block text-[10px] font-bold text-theme-muted uppercase tracking-[0.2em]">Tu Identidad</label>
                             <input
                                 value={name}
                                 onChange={e => setName(e.target.value)}
@@ -59,7 +59,7 @@ export function GuestbookSection({ messages, onSendMessage }: GuestbookSectionPr
                             />
                         </div>
                         <div className="space-y-2">
-                            <label className="block text-[10px] font-bold text-slate-900 uppercase tracking-[0.2em]">Tus Deseos</label>
+                            <label className="block text-[10px] font-bold text-theme-muted uppercase tracking-[0.2em]">Tus Deseos</label>
                             <textarea
                                 value={message}
                                 onChange={e => setMessage(e.target.value)}
@@ -76,7 +76,7 @@ export function GuestbookSection({ messages, onSendMessage }: GuestbookSectionPr
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
                             disabled={isSending || !name.trim() || !message.trim()}
-                            className="px-8 py-3 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all duration-300 border bg-rose-600 text-white border-rose-600 shadow-md hover:bg-rose-700 hover:border-rose-700 w-full sm:w-auto min-w-[200px] disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="px-8 py-3 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all duration-300 border bg-theme-primary text-theme-bg border-theme-border shadow-md hover:bg-theme-primary/90 w-full sm:w-auto min-w-[200px] disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             {isSending ? 'Guardando...' : 'Dejar Mensaje'}
                         </motion.button>
@@ -100,18 +100,18 @@ export function GuestbookSection({ messages, onSendMessage }: GuestbookSectionPr
                                         whileInView={{ opacity: 1, scale: 1 }}
                                         viewport={{ once: true }}
                                         layout
-                                        className="bg-white/80 p-8 rounded-2xl shadow-sm border border-slate-100/60 hover:shadow-md transition-shadow"
+                                        className="bg-theme-surface border border-theme-border text-theme-text p-8 rounded-2xl shadow-sm hover:shadow-2xl transition-shadow"
                                     >
                                         <div className="mb-6">
-                                            <p className="font-elegant text-xl text-slate-900/70 italic leading-relaxed">
+                                            <p className="font-elegant text-xl italic leading-relaxed">
                                                 "{m.message}"
                                             </p>
                                         </div>
-                                        <div className="flex items-center justify-between pt-6 border-t border-slate-50">
-                                            <h4 className="font-bold text-xs uppercase tracking-widest text-slate-800">
+                                        <div className="flex items-center justify-between pt-6 border-t border-theme-border">
+                                            <h4 className="font-bold text-xs uppercase tracking-widest text-theme-text">
                                                 {m.name}
                                             </h4>
-                                            <span className="text-[9px] font-bold text-slate-300 uppercase tracking-widest">
+                                            <span className="text-[9px] font-bold text-theme-muted uppercase tracking-widest">
                                                 {m.created_at ? safeNewDate(m.created_at).toLocaleDateString() : '—'}
                                             </span>
                                         </div>

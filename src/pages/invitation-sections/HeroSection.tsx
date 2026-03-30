@@ -189,8 +189,8 @@ export function HeroSection({ clientData, videos }: HeroSectionProps) {
                     )}
                 </motion.div>
                 {/* Dynamic Overlays */}
-                <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/80" />
-                <div className="absolute inset-0 bg-rose-900/05 mix-blend-overlay" />
+                <div className="absolute inset-0 bg-gradient-to-b from-theme-primary/70 via-theme-primary/40 to-theme-primary/95" />
+                <div className="absolute inset-0 mix-blend-overlay bg-theme-accent/10" />
             </div>
 
             {/* Deluxe Animations */}
@@ -237,7 +237,7 @@ export function HeroSection({ clientData, videos }: HeroSectionProps) {
                         transition={{ delay: 0.5, duration: 1 }}
                         className="inline-block mb-6 sm:mb-10"
                     >
-                        <span className="px-4 sm:px-6 py-2 rounded-full bg-white/5 backdrop-blur-xl border border-white/20 text-[9px] sm:text-xs tracking-[0.3em] sm:tracking-[0.5em] font-light uppercase text-rose-100 shadow-2xl break-words">
+                        <span className="px-4 sm:px-6 py-3 rounded-full bg-theme-surface/10 backdrop-blur-xl border border-theme-accent/40 text-[9px] sm:text-xs tracking-[0.3em] sm:tracking-[0.5em] font-light uppercase text-theme-accent shadow-2xl break-words">
                             Nuestra Historia Comienza
                         </span>
                     </motion.div>
@@ -264,7 +264,7 @@ export function HeroSection({ clientData, videos }: HeroSectionProps) {
                                         initial={{ opacity: 0, rotate: -45, scale: 0 }}
                                         animate={{ opacity: 1, rotate: 0, scale: 1 }}
                                         transition={{ delay: 1.2, duration: 0.8, type: "spring" }}
-                                        className="font-brush text-3xl sm:text-5xl md:text-6xl text-gold drop-shadow-lg my-1 sm:my-2 italic"
+                                        className="font-brush text-4xl sm:text-6xl md:text-7xl text-theme-accent drop-shadow-lg my-1 sm:my-2 italic"
                                     >
                                         &
                                     </motion.span>
@@ -291,16 +291,16 @@ export function HeroSection({ clientData, videos }: HeroSectionProps) {
                         className="relative inline-flex flex-col items-center mb-10 sm:mb-14 px-8 sm:px-12 py-6 sm:py-8"
                     >
                         {/* Warm Spotlight Background - Subtle amber/gold glow */}
-                        <div className="absolute inset-0 bg-gradient-radial from-amber-400/[0.08] via-amber-500/[0.04] to-transparent blur-[80px] rounded-full pointer-events-none scale-150" />
-                        <div className="absolute inset-0 bg-gradient-radial from-rose-400/[0.05] to-transparent blur-[60px] rounded-full pointer-events-none scale-125" />
+                        <div className="absolute inset-0 bg-gradient-radial from-theme-accent/[0.15] via-theme-accent/[0.05] to-transparent blur-[80px] rounded-full pointer-events-none scale-150" />
+                        <div className="absolute inset-0 bg-gradient-radial from-theme-surface/[0.1] to-transparent blur-[60px] rounded-full pointer-events-none scale-125" />
 
-                        <div className="relative z-10 flex flex-col items-center gap-2 sm:gap-3">
+                        <div className="relative z-10 flex flex-col items-center gap-2 sm:gap-4">
                             {/* Day Name */}
                             <motion.span
                                 initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 0.7, y: 0 }}
+                                animate={{ opacity: 0.9, y: 0 }}
                                 transition={{ delay: 2.2, duration: 1 }}
-                                className="text-[10px] sm:text-xs tracking-[0.5em] uppercase font-light text-rose-100 mb-1 italic"
+                                className="text-[10px] sm:text-xs tracking-[0.5em] uppercase font-light text-theme-accent mb-1 italic"
                             >
                                 {dayName}
                             </motion.span>
@@ -313,15 +313,15 @@ export function HeroSection({ clientData, videos }: HeroSectionProps) {
                                 className="relative"
                             >
                                 <span
-                                    className="font-elegant text-size-hero tracking-tighter text-white drop-shadow-2xl relative inline-block leading-none"
+                                    className="font-elegant text-size-hero tracking-tighter text-theme-bg drop-shadow-2xl relative inline-block leading-none"
                                     style={{
                                         fontSize: 'var(--font-size-4xl)', // Fallback for custom size
-                                        background: 'linear-gradient(135deg, white 0%, white 30%, #f59e0b 50%, white 70%, white 100%)',
+                                        background: 'linear-gradient(135deg, var(--theme-bg) 0%, var(--theme-bg) 30%, var(--theme-accent) 50%, var(--theme-bg) 70%, var(--theme-bg) 100%)',
                                         backgroundSize: '200% 200%',
                                         backgroundClip: 'text',
                                         WebkitBackgroundClip: 'text',
                                         WebkitTextFillColor: 'transparent',
-                                        animation: 'shimmer-gold-diagonal 4s ease-in-out infinite'
+                                        animation: 'shimmer-gold-diagonal 5s ease-in-out infinite'
                                     }}
                                 >
                                     {dayNum}
@@ -333,9 +333,9 @@ export function HeroSection({ clientData, videos }: HeroSectionProps) {
                                 initial={{ opacity: 0, y: -10 }}
                                 animate={{ opacity: 0.9, y: 0 }}
                                 transition={{ delay: 2.6, duration: 1 }}
-                                className="text-lg sm:text-xl md:text-2xl tracking-[0.3em] font-light text-white/90 uppercase"
+                                className="text-lg sm:text-xl md:text-2xl tracking-[0.3em] font-light text-theme-surface uppercase mt-2"
                             >
-                                {monthName} <span className="opacity-30 mx-3">|</span> {displayYear}
+                                {monthName} <span className="opacity-30 mx-3 text-theme-accent">|</span> {displayYear}
                             </motion.span>
                         </div>
 
@@ -346,11 +346,11 @@ export function HeroSection({ clientData, videos }: HeroSectionProps) {
                             transition={{ delay: 2.8, duration: 1 }}
                             className="mt-6 flex items-center gap-4 opacity-60"
                         >
-                            <div className="w-10 h-[0.5px] bg-gradient-to-r from-transparent to-white/30" />
-                            <span className="text-[9px] sm:text-xs tracking-[0.4em] font-light text-rose-100 uppercase">
+                            <div className="w-10 h-[1px] bg-gradient-to-r from-transparent to-theme-accent/60" />
+                            <span className="text-[9px] sm:text-xs tracking-[0.4em] font-light text-theme-accent uppercase">
                                 {clientData.weddingType || 'Boda'}
                             </span>
-                            <div className="w-10 h-[0.5px] bg-gradient-to-l from-transparent to-white/30" />
+                            <div className="w-10 h-[1px] bg-gradient-to-l from-transparent to-theme-accent/60" />
                         </motion.div>
                     </motion.div>
 
@@ -361,18 +361,18 @@ export function HeroSection({ clientData, videos }: HeroSectionProps) {
                         className="flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-6 w-full px-4 sm:px-0"
                     >
                         <motion.a
-                            whileHover={{ scale: 1.05, boxShadow: "0 0 25px rgba(251, 113, 133, 0.4)" }}
+                            whileHover={{ scale: 1.05, boxShadow: "0 0 25px rgba(191,161,123,0.4)" }}
                             whileTap={{ scale: 0.95 }}
                             href="#rsvp"
-                            className="w-full sm:w-auto px-8 sm:px-10 py-3 sm:py-4 rounded-full bg-rose-600 border border-rose-500 text-white font-bold text-[10px] sm:text-xs tracking-wide sm:tracking-widest uppercase shadow-xl transition-all hover:bg-rose-700"
+                            className="w-full sm:w-auto px-8 sm:px-10 py-3 sm:py-4 rounded-full bg-theme-accent/95 backdrop-blur-md border border-theme-accent text-theme-primary font-bold text-[10px] sm:text-xs tracking-wide sm:tracking-widest uppercase shadow-2xl transition-all hover:bg-theme-accent"
                         >
                             Confirmar Asistencia
                         </motion.a>
                         <motion.a
-                            whileHover={{ scale: 1.05, backgroundColor: "rgba(255,255,255,0.2)" }}
+                            whileHover={{ scale: 1.05, backgroundColor: "rgba(250,249,246,0.15)" }}
                             whileTap={{ scale: 0.95 }}
                             href="#galeria"
-                            className="w-full sm:w-auto px-8 sm:px-10 py-3 sm:py-4 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 text-white font-bold text-[10px] sm:text-xs tracking-wide sm:tracking-widest uppercase hover:shadow-lg transition-all"
+                            className="w-full sm:w-auto px-8 sm:px-10 py-3 sm:py-4 rounded-full bg-theme-surface/10 backdrop-blur-xl border border-theme-accent/40 text-theme-bg font-bold text-[10px] sm:text-xs tracking-wide sm:tracking-widest uppercase hover:shadow-lg transition-all"
                         >
                             Nuestra Galería
                         </motion.a>

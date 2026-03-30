@@ -78,7 +78,7 @@ export function GallerySection({ images }: GallerySectionProps) {
                                 }}
                                 className="absolute inset-0 flex items-center justify-center"
                             >
-                                <div className="relative w-full h-full max-w-5xl mx-auto card-luxe p-2 sm:p-4 bg-white/50 backdrop-blur-sm rounded-[1rem] sm:rounded-[3rem] overflow-hidden shadow-2xl">
+                                <div className="relative w-full h-full max-w-5xl mx-auto p-2 sm:p-4 bg-theme-surface/70 backdrop-blur-md rounded-[1rem] sm:rounded-[3rem] border border-theme-border shadow-2xl overflow-hidden">
                                     <img
                                         src={getOptimizedImageUrl(images[currentIndex], { width: 1200, quality: 80 })}
                                         srcSet={`${getOptimizedImageUrl(images[currentIndex], { width: 600, quality: 70 })} 600w, ${getOptimizedImageUrl(images[currentIndex], { width: 1200, quality: 80 })} 1200w`}
@@ -97,14 +97,14 @@ export function GallerySection({ images }: GallerySectionProps) {
                         <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-between px-4 sm:px-0 z-10 pointer-events-none">
                             <button
                                 onClick={prevSlide}
-                                className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-white/90 backdrop-blur shadow-xl border border-rose-100 flex items-center justify-center text-rose-600 hover:bg-rose-600 hover:text-white transition-all transform hover:scale-110 pointer-events-auto"
+                                className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-theme-surface/90 backdrop-blur shadow-xl border border-theme-accent/30 flex items-center justify-center text-theme-text hover:bg-theme-accent hover:text-theme-primary transition-all transform hover:scale-110 pointer-events-auto"
                                 aria-label="Imagen anterior"
                             >
                                 <ChevronLeft size={32} />
                             </button>
                             <button
                                 onClick={nextSlide}
-                                className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-white/90 backdrop-blur shadow-xl border border-rose-100 flex items-center justify-center text-rose-600 hover:bg-rose-600 hover:text-white transition-all transform hover:scale-110 pointer-events-auto"
+                                className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-theme-surface/90 backdrop-blur shadow-xl border border-theme-accent/30 flex items-center justify-center text-theme-text hover:bg-theme-accent hover:text-theme-primary transition-all transform hover:scale-110 pointer-events-auto"
                                 aria-label="Siguiente imagen"
                             >
                                 <ChevronRight size={32} />
@@ -120,7 +120,7 @@ export function GallerySection({ images }: GallerySectionProps) {
                                         setDirection(idx > currentIndex ? 1 : -1);
                                         setCurrentIndex(idx);
                                     }}
-                                    className={`h-1.5 transition-all duration-500 rounded-full ${idx === currentIndex ? 'w-8 bg-rose-600' : 'w-1.5 bg-rose-200 hover:bg-rose-300'}`}
+                                    className={`h-1.5 transition-all duration-500 rounded-full ${idx === currentIndex ? 'w-8 bg-theme-accent' : 'w-1.5 bg-theme-accent/30 hover:bg-theme-accent/60'}`}
                                     aria-label={`Ir a la imagen ${idx + 1}`}
                                 />
                             ))}

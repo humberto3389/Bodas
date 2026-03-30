@@ -20,11 +20,14 @@
   --font-size-4xl: clamp(2.5rem, 2rem + 2.5vw, 4rem);
   --font-size-hero: clamp(3.5rem, 3rem + 5vw, 7rem);
 
-  /* Luxury Theme Colors - CLEAN PEARL CONTRAST */
-  --color-silk-bg: #f4f6f8;
-  /* Soft Pearl Grey for distinct neutral contrast */
-  --color-silk-accent: #eef1f4;
-  --color-silk-gold: #dcd2c5;
+  /* Velvet & Champagne Theme (Light Mode) */
+  --theme-bg: #FAF9F6;
+  --theme-surface: #F1EFE9;
+  --theme-primary: #1B2A26;
+  --theme-accent: #BFA17B;
+  --theme-text: #2C2C2A;
+  --theme-muted: #666560;
+  --theme-border: rgba(27, 42, 38, 0.1);
 }
 
 html, body {
@@ -34,11 +37,13 @@ html, body {
 }
 
 body {
-  @apply text-slate-900 antialiased selection:bg-rose-500/20 selection:text-rose-600;
-  background-color: var(--color-silk-bg);
+  @apply antialiased selection:bg-theme-accent/20 selection:text-theme-primary;
+  background-color: var(--theme-bg);
+  color: var(--theme-text);
   min-height: 100dvh;
   overflow-x: hidden;
   font-size: var(--font-size-base);
+  transition: background-color 0.4s ease, color 0.4s ease;
 }
 
 /* Section Wrapper */
@@ -53,13 +58,15 @@ body {
   justify-content: center;
 }
 
-.dark body {
-  @apply text-slate-100 antialiased selection:bg-indigo-500/30 selection:text-indigo-400;
-  background:
-    radial-gradient(circle at top left, #1e1b4b 0%, transparent 40%),
-    radial-gradient(circle at bottom right, #312e81 0%, transparent 40%),
-    #020617;
-  background-attachment: fixed;
+.dark {
+  /* Velvet & Champagne Theme (Dark Mode) */
+  --theme-bg: #0D1412;
+  --theme-surface: #15221F;
+  --theme-primary: #FAF9F6;
+  --theme-accent: #D4B895;
+  --theme-text: #F1EFE9;
+  --theme-muted: #A3A8A6;
+  --theme-border: rgba(250, 249, 246, 0.1);
 }
 
 /* --- BOUTIQUE LUXE UTILITIES --- */
