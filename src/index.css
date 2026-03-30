@@ -1,14 +1,82 @@
 @import "tailwindcss";
-@config "../tailwind.config.js";
 @plugin "@tailwindcss/forms";
 
 /* Forzar estrategia por clase para la variante `dark:` en Tailwind v4 */
 @custom-variant dark (&:where(.dark &));
 
 @theme {
-  --font-display: 'Alex Brush', cursive;
-  --font-body: 'Alex Brush', cursive;
-  --font-elegant: 'Cormorant Garamond', serif;
+  --color-theme-bg: var(--theme-bg);
+  --color-theme-surface: var(--theme-surface);
+  --color-theme-primary: var(--theme-primary);
+  --color-theme-accent: var(--theme-accent);
+  --color-theme-text: var(--theme-text);
+  --color-theme-muted: var(--theme-muted);
+  --color-theme-border: var(--theme-border);
+
+  --color-primary-50: #f7f8fb;
+  --color-primary-100: #eef0f7;
+  --color-primary-200: #d7daec;
+  --color-primary-300: #b3bbdb;
+  --color-primary-400: #8793c5;
+  --color-primary-500: #5e6cad;
+  --color-primary-600: #485695;
+  --color-primary-700: #3b467a;
+  --color-primary-800: #333b65;
+  --color-primary-900: #2d3455;
+
+  --color-gold: #cda931;
+  --color-gold-light: #ffe088;
+  --color-gold-dark: #735c00;
+  --color-blush: #f6d7d4;
+
+  --font-display: "Playfair Display", serif;
+  --font-body: Inter, system-ui, sans-serif;
+  --font-sans: "Cormorant Garamond", Georgia, serif;
+  --font-serif: "Cormorant Garamond", Georgia, serif;
+  --font-script: "Dancing Script", cursive;
+  --font-brush: "Dancing Script", cursive;
+  --font-elegant: "Cormorant Garamond", serif;
+
+  --blur-xs: 2px;
+
+  --animate-zoom-slow: zoom 20s ease-in-out infinite;
+  --animate-float-1: float 6s ease-in-out infinite;
+  --animate-float-2: float 8s ease-in-out infinite 2s;
+  --animate-float-3: float 10s ease-in-out infinite 1s;
+  --animate-float-4: float 7s ease-in-out infinite 3s;
+  --animate-glow: glow 2s ease-in-out infinite alternate;
+  --animate-glow-text: glowText 3s ease-in-out infinite alternate;
+  --animate-fade-in-up: fadeInUp 0.8s ease-out forwards;
+  --animate-pulse-slow: pulse 4s ease-in-out infinite;
+  --animate-pulse-medium: pulse 3s ease-in-out infinite;
+  --animate-spin-slow: spin 20s linear infinite;
+  --animate-bounce-slow: bounce 3s infinite;
+  --animate-scroll: scroll 2s infinite;
+
+  @keyframes zoom {
+    0%, 100% { transform: scale(1.1); }
+    50% { transform: scale(1.15); }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0) translateX(0); }
+    50% { transform: translateY(-20px) translateX(10px); }
+  }
+  @keyframes glow {
+    0% { opacity: 0.5; }
+    100% { opacity: 1; }
+  }
+  @keyframes glowText {
+    0% { opacity: 0.8; }
+    100% { opacity: 1; }
+  }
+  @keyframes fadeInUp {
+    0% { opacity: 0; transform: translateY(30px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes scroll {
+    0% { transform: translateY(0); opacity: 1; }
+    100% { transform: translateY(10px); opacity: 0; }
+  }
 }
 
 :root {
