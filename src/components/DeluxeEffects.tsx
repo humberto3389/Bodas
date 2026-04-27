@@ -24,9 +24,9 @@ const PALETTE = {
    🌬️ 1. SWAYING PETALS (Con Física de Viento)
    Reemplaza la lluvia estática con movimiento sinusoidal
 ================================== */
-const SwayingPetals = () => {
+const SwayingPetals = ({ isMobile }: { isMobile: boolean }) => {
     // Aumentamos densidad y complejidad
-    const particles = useMemo(() => Array.from({ length: 18 }).map((_, i) => ({
+    const particles = useMemo(() => Array.from({ length: isMobile ? 8 : 18 }).map((_, i) => ({
         id: i,
         x: Math.random() * 100,
         delay: Math.random() * 8,
@@ -146,7 +146,7 @@ const SparklerTrail = () => {
    🌊 3. LIQUID GOLD AURORA (Fondo Vivo)
    Orbes que se fusionan y mueven orgánicamente (Gooey effect)
 ================================== */
-const LiquidAurora = () => {
+const LiquidAurora = ({ isMobile }: { isMobile: boolean }) => {
     const time = useTime();
     // Movimientos lentos y desfasados
     const y1 = useTransform(time, [0, 20000], [0, 100]);
@@ -155,26 +155,30 @@ const LiquidAurora = () => {
     // Convertir el movimiento en transformaciones CSS
     const orb1Style = useMotionTemplate`translateY(${y1}px) rotate(${rotate1}deg)`;
 
+    // Reducir la intensidad del blur en móviles (muy costoso para GPU)
+    const blurAmount = isMobile ? 'blur-[40px]' : 'blur-[80px]';
+    const orbBlur = isMobile ? 'blur-[30px]' : 'blur-[60px]';
+
     return (
         <div className="fixed inset-0 pointer-events-none z-[0] overflow-hidden opacity-30">
             {/* Contenedor con blur para mezclar colores */}
-            <div className="absolute inset-0 filter blur-[80px]">
+            <div className={`absolute inset-0 filter ${blurAmount}`}>
                 {/* Orbe 1: Oro */}
                 <motion.div
                     style={{ transform: orb1Style }}
-                    className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-amber-200/40 mix-blend-multiply blur-[60px]" // Menos blur, más color
+                    className={`absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-amber-200/40 mix-blend-multiply ${orbBlur}`} // Menos blur, más color
                 />
                 {/* Orbe 2: Rosa */}
                 <motion.div
                     animate={{ x: [0, 50, 0], scale: [1, 1.1, 1] }}
                     transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
-                    className="absolute top-[20%] right-[-10%] w-[40vw] h-[40vw] rounded-full bg-rose-300/40 mix-blend-multiply blur-[60px]"
+                    className={`absolute top-[20%] right-[-10%] w-[40vw] h-[40vw] rounded-full bg-rose-300/40 mix-blend-multiply ${orbBlur}`}
                 />
                 {/* Orbe 3: Cálido Central */}
                 <motion.div
                     animate={{ opacity: [0.4, 0.6, 0.4] }} // Más opacidad
                     transition={{ duration: 5, repeat: Infinity }}
-                    className="absolute top-[40%] left-[30%] w-[30vw] h-[30vw] rounded-full bg-orange-100/60 blur-[50px]"
+                    className={`absolute top-[40%] left-[30%] w-[30vw] h-[30vw] rounded-full bg-orange-100/60 ${isMobile ? 'blur-[25px]' : 'blur-[50px]'}`}
                 />
             </div>
 
@@ -383,9 +387,10 @@ interface DeluxeEffectsProps {
     config: any;
     eventDate?: string | Date;
     layer?: 'background' | 'foreground';
+    isMobile?: boolean;
 }
 
-export const DeluxeEffects = ({ config, layer = 'foreground' }: DeluxeEffectsProps) => {
+export const DeluxeEffects = ({ config, layer = 'foreground', isMobile = false }: DeluxeEffectsProps) => {
     if (!config?.enabled) return null;
 
     // Renderizar solo efectos de fondo
@@ -393,7 +398,7 @@ export const DeluxeEffects = ({ config, layer = 'foreground' }: DeluxeEffectsPro
         return (
             <>
                 {/* Fondo Vivo (Aurora) */}
-                {config.floatingElements && <LiquidAurora />}
+                {config.floatingElements && <LiquidAurora isMobile={isMobile} />}
             </>
         );
     }
@@ -402,21 +407,21 @@ export const DeluxeEffects = ({ config, layer = 'foreground' }: DeluxeEffectsPro
     if (layer === 'foreground') {
         return (
             <>
-                {/* Lluvia y Destellos */}
+                {/* Lluvia y Destellos - Reducidos en móvil */}
                 {config.particleEffects && (
                     <>
-                        <SwayingPetals />
-                        <SparklerTrail />
+                        <SwayingPetals isMobile={isMobile} />
+                        {!isMobile && <SparklerTrail />}
                     </>
                 )}
 
-                {/* Parallax Geométrico */}
+                {/* Parallax Geométrico - Opcional en móvil según config si es pesado */}
                 {config.parallaxScrolling && (
                     <CrystalParallax />
                 )}
 
-                {/* Spotlight */}
-                {config.floatingElements && <GoldenSpotlight />}
+                {/* Spotlight - Desactivado en móvil para ahorrar CPU y eventos mouse */}
+                {config.floatingElements && !isMobile && <GoldenSpotlight />}
             </>
         );
     }

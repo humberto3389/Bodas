@@ -1,7 +1,8 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SectionTitle } from './SectionTitle';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { getOptimizedImageUrl } from '../../lib/image-optimization';
 
 interface GallerySectionProps {
     clientData: any;
@@ -55,13 +56,13 @@ export function GallerySection({ images }: GallerySectionProps) {
     };
 
     return (
-        <section id="galeria" className="py-20 relative overflow-hidden px-4 sm:px-6">
+        <section id="galeria" className="py-10 md:py-20 relative overflow-hidden px-0 sm:px-6">
             <div className="w-full relative px-0 sm:px-6">
                 <SectionTitle subtitle="Recuerdos">
                     Galería de Fotos
                 </SectionTitle>
 
-                <div className="max-w-6xl mx-auto">
+                <div className="w-full">
                     <div className="relative h-[400px] sm:h-[650px] mt-4 sm:mt-12 perspective-2000">
                         <AnimatePresence initial={false} custom={direction}>
                             <motion.div
@@ -77,11 +78,14 @@ export function GallerySection({ images }: GallerySectionProps) {
                                 }}
                                 className="absolute inset-0 flex items-center justify-center"
                             >
-                                <div className="relative w-full h-full max-w-4xl mx-auto card-luxe p-4 bg-white/50 backdrop-blur-sm rounded-[2rem] sm:rounded-[3rem] overflow-hidden shadow-2xl">
+                                <div className="relative w-full h-full max-w-5xl mx-auto card-luxe p-2 sm:p-4 bg-white/50 backdrop-blur-sm rounded-[1rem] sm:rounded-[3rem] overflow-hidden shadow-2xl">
                                     <img
-                                        src={images[currentIndex]}
+                                        src={getOptimizedImageUrl(images[currentIndex], { width: 1200, quality: 80 })}
+                                        srcSet={`${getOptimizedImageUrl(images[currentIndex], { width: 600, quality: 70 })} 600w, ${getOptimizedImageUrl(images[currentIndex], { width: 1200, quality: 80 })} 1200w`}
+                                        sizes="(max-width: 640px) 100vw, 80vw"
                                         alt={`Boda ${currentIndex + 1}`}
                                         className="w-full h-full object-cover rounded-[1.5rem] sm:rounded-[2.5rem]"
+                                        loading="lazy"
                                     />
                                     {/* Overlay con gradiente */}
                                     <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />

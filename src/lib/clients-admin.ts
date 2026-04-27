@@ -58,8 +58,14 @@ export async function createNewClient(data: {
     groomName: string;
 }): Promise<{ success: boolean; client?: Client; token?: string; error?: string }> {
     try {
-        // Normalizar subdominio
-        const normalizedSubdomain = data.subdomain.toLowerCase().trim();
+        // Normalizar subdominio de forma estricta (remover acentos, espacios -> guiones, solo a-z0-9 y -)
+        const normalizedSubdomain = data.subdomain
+            .toLowerCase()
+            .trim()
+            .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // remove accents
+            .replace(/[^a-z0-9]/g, '-') // non-alphanumeric to hyphen
+            .replace(/-+/g, '-') // specific multiple hyphens to single
+            .replace(/^-|-$/g, ''); // specific trailing/leading hyphens
 
         // Verificar que el subdominio no esté duplicado
         const { data: existingClient, error: checkError } = await supabase

@@ -1,4 +1,4 @@
-﻿import './index.css';
+import './index.css';
 import { useParams } from 'react-router-dom';
 import { useClientAuth } from './contexts/ClientAuthContext';
 import { LoadingSpinner } from './components/LoadingSpinner';
@@ -11,6 +11,7 @@ import { AudioProvider } from './contexts/AudioContext';
 import { HeroSection } from './pages/invitation-sections/HeroSection';
 import { VerseSection } from './pages/invitation-sections/VerseSection';
 import { UrgentAlert } from './components/UrgentAlert';
+import { IntroOverlay } from './components/IntroOverlay';
 
 // Componentes lazy-loaded (cargados bajo demanda)
 const Countdown = lazy(() => import('./components/Countdown').then(m => ({ default: m.Countdown })));
@@ -154,7 +155,12 @@ export default function App({ clientData: propData }: AppProps) {
   return (
     <AudioProvider>
       {client && <SEO_Invitation clientData={client} />}
-      <div className={`relative min-h-screen bg-transparent ${hasPremiumVisuals ? 'premium-visuals-active' : ''}`}>
+      <IntroOverlay 
+        brideName={client.brideName || undefined} 
+        groomName={client.groomName || undefined} 
+        coupleName={client.clientName} 
+      />
+      <div className={`relative min-h-[100dvh] bg-transparent ${hasPremiumVisuals ? 'premium-visuals-active' : ''}`}>
         {/* 📊 Scroll Progress Bar - Premium */}
         <ScrollProgress />
 
@@ -173,6 +179,7 @@ export default function App({ clientData: propData }: AppProps) {
                   config={client.advancedAnimations}
                   eventDate={client.weddingDate}
                   layer="background"
+                  isMobile={isMobile}
                 />
               </Suspense>
             </div>
@@ -182,6 +189,7 @@ export default function App({ clientData: propData }: AppProps) {
                   config={client.advancedAnimations}
                   eventDate={client.weddingDate}
                   layer="foreground"
+                  isMobile={isMobile}
                 />
               </Suspense>
             </div>
@@ -201,11 +209,13 @@ export default function App({ clientData: propData }: AppProps) {
         <div className="bg-noise opacity-[0.03] fixed inset-0 pointer-events-none z-[2]" />
 
         {/* CONTINUOUS CONTENT */}
-        <HeroSection clientData={client} />
+        <section className="snap-section w-full flex flex-col items-center">
+          <HeroSection clientData={client} videos={videos} />
+        </section>
 
         <main className="relative z-10 box-border">
           {/* Versículo e Invitación */}
-          <section id="verse">
+          <section id="verse" className="w-full flex flex-col items-center py-12 md:py-24 bg-white/30 backdrop-blur-sm">
             <SmoothReveal delay={0.2}>
               <VerseSection clientData={client} />
             </SmoothReveal>
@@ -213,8 +223,8 @@ export default function App({ clientData: propData }: AppProps) {
 
           {/* Cuenta Regresiva */}
           {(planType === 'premium' || planType === 'deluxe') && (
-            <section id="countdown">
-              <div className="max-w-7xl mx-auto px-4">
+            <section id="countdown" className="w-full flex flex-col items-center py-10 md:py-20">
+              <div className="w-full max-w-7xl mx-auto px-4">
                 <Suspense fallback={<div className="h-32" />}>
                   <Countdown date={client.weddingDate} time={client.weddingTime} clientData={client} />
                 </Suspense>
@@ -223,26 +233,32 @@ export default function App({ clientData: propData }: AppProps) {
           )}
 
           {/* Galería */}
-          <section id="gallery">
-            <Suspense fallback={<div className="h-96" />}>
-              <SmoothReveal delay={0.3}>
-                <GallerySection clientData={client} images={galleryImages.map(img => img.url)} />
-              </SmoothReveal>
-            </Suspense>
-          </section>
+          {galleryImages && galleryImages.length > 0 && (
+            <section id="gallery" className="snap-section w-full flex flex-col items-center py-10 md:py-20">
+              <div className="w-full px-0 sm:px-6">
+                <Suspense fallback={<div className="h-96" />}>
+                  <SmoothReveal delay={0.3}>
+                    <GallerySection clientData={client} images={galleryImages.map(img => img.url)} />
+                  </SmoothReveal>
+                </Suspense>
+              </div>
+            </section>
+          )}
 
           {/* Video */}
           {videos && videos.length > 0 && (
-            <section id="video">
-              <Suspense fallback={<div className="h-96" />}>
-                <VideoSection clientData={client} videos={videos} />
-              </Suspense>
+            <section id="video" className="snap-section w-full flex flex-col items-center py-10 md:py-20">
+              <div className="w-full px-0 sm:px-6">
+                <Suspense fallback={<div className="h-96" />}>
+                  <VideoSection clientData={client} videos={videos} />
+                </Suspense>
+              </div>
             </section>
           )}
 
           {/* Padrinos */}
           {(planType === 'premium' || planType === 'deluxe') && client?.id && padrinos && padrinos.length > 0 && (
-            <section id="padrinos">
+            <section id="padrinos" className="w-full flex flex-col items-center py-12 md:py-24">
               <Suspense fallback={<div className="h-96" />}>
                 <PadrinosSection padrinos={padrinos} />
               </Suspense>
@@ -250,7 +266,7 @@ export default function App({ clientData: propData }: AppProps) {
           )}
 
           {/* Ubicación */}
-          <section id="location">
+          <section id="location" className="snap-section w-full flex flex-col items-center">
             <Suspense fallback={<div className="h-96" />}>
               <SmoothReveal delay={0.4}>
                 <LocationSection clientData={client} />
@@ -259,16 +275,16 @@ export default function App({ clientData: propData }: AppProps) {
           </section>
 
           {/* RSVP */}
-          <section id="rsvp">
+          <section id="rsvp" className="snap-section w-full flex flex-col items-center py-8 md:py-20">
             <Suspense fallback={<div className="h-96" />}>
-              <RSVPSection onSubmit={submitRSVP} />
+              <RSVPSection onSubmit={submitRSVP} weddingDate={client.weddingDate as any} />
             </Suspense>
           </section>
 
           {/* Guestbook */}
-          <section id="guestbook">
+          <section id="guestbook" className="w-full flex flex-col items-center py-12 md:py-24">
             <Suspense fallback={<div className="h-96" />}>
-              <GuestbookSection messages={messages} onSendMessage={submitMessage} />
+              <GuestbookSection messages={messages || []} onSendMessage={submitMessage} />
             </Suspense>
           </section>
 

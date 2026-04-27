@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { PLAN_LIMITS } from '../../lib/plan-limits';
 import { getClientUrl } from '../../lib/config';
+import { AdminHelpTooltip } from '../../components/AdminHelpTooltip';
 
 interface AdminStatsProps {
     totalRsvps: number;
@@ -85,7 +86,17 @@ export function AdminStats({ totalRsvps, totalGuests, totalNotAttending, totalMe
 
                         <div>
                             <p className="text-2xl sm:text-3xl font-semibold text-slate-900 mb-1">{stat.value}</p>
-                            <p className={`text-xs sm:text-sm font-medium ${stat.text} truncate`}>{stat.label}</p>
+                            <div className="flex items-center gap-1.5">
+                                <p className={`text-xs sm:text-sm font-medium ${stat.text} truncate`}>{stat.label}</p>
+                                <AdminHelpTooltip 
+                                    content={
+                                        stat.label === 'Confirmaciones' ? 'Número de personas que han llenado el formulario de asistencia.' :
+                                        stat.label === 'Invitados' ? 'Total de personas (incluyendo acompañantes) que asistirán.' :
+                                        stat.label === 'Mensajes' ? 'Número de mensajes dejados en tu libro de firmas.' :
+                                        'Personas que confirmaron que NO podrán asistir.'
+                                    } 
+                                />
+                            </div>
                         </div>
 
                         <div className="mt-2 sm:mt-4 pt-2 sm:pt-4 border-t border-white/50 hidden sm:block">
@@ -135,7 +146,10 @@ export function AdminStats({ totalRsvps, totalGuests, totalNotAttending, totalMe
                             📢
                         </div>
                         <div>
-                            <h3 className="font-bold text-slate-900">Difusión de Cambios</h3>
+                            <div className="flex items-center gap-1.5">
+                                <h3 className="font-bold text-slate-900">Difusión de Cambios</h3>
+                                <AdminHelpTooltip content="Copia o envía un mensaje predefinido con tu enlace para avisar a todos tus invitados sobre cambios de última hora (ej: cambio de horario)." />
+                            </div>
                             <p className="text-xs text-slate-500">Genera un mensaje para avisar a tus invitados por WhatsApp</p>
                         </div>
                     </div>

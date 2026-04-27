@@ -2,11 +2,13 @@ import { motion, useInView, useScroll, useTransform } from 'framer-motion';
 import { useRef, useEffect } from 'react';
 import { useAudioContext } from '../../contexts/AudioContext';
 import type { ClientToken } from '../../lib/auth-system';
+import { getOptimizedImageUrl } from '../../lib/image-optimization';
 
 import { safeNewDate } from '../../lib/timezone-utils';
 
 interface HeroSectionProps {
     clientData: ClientToken;
+    videos?: { name: string; url: string }[];
 }
 
 // Helper para parsear fecha evitando problemas de zona horaria y NaN en móviles
@@ -15,19 +17,36 @@ function getLocalDate(dateInput: string | Date | undefined): Date {
     return new Date(d.getFullYear(), d.getMonth(), d.getDate());
 }
 
-export function HeroSection({ clientData }: HeroSectionProps) {
+export function HeroSection({ clientData, videos }: HeroSectionProps) {
+    console.log(clientData); // Debugging clientData
     const groom = clientData?.groomName;
     const bride = clientData?.brideName;
     const couple = clientData?.clientName;
     const planType = clientData?.planType || 'basic';
     const heroBg = clientData?.heroBackgroundUrl || '/boda.avif';
-    const heroVideo = clientData?.heroBackgroundVideoUrl || '/hero.mp4';
+    
+    // SMART FALLBACK: Si no hay video específico del hero, usar el primero de la lista de videos subidos
+    const heroVideo = clientData?.heroBackgroundVideoUrl || (videos && videos.length > 0 ? videos[0].url : undefined);
+    
     const heroDisplayMode = clientData?.heroDisplayMode || 'image';
     const heroVideoAudioEnabled = clientData?.heroVideoAudioEnabled || false;
     const advancedAnimations = clientData?.advancedAnimations;
     const foilClass = (planType === 'deluxe' && advancedAnimations?.enabled && advancedAnimations?.floatingElements) ? 'deluxe-foil-text' : '';
 
-    const showVideo = planType === 'deluxe' && heroVideo && heroDisplayMode === 'video';
+    // Safety Fallback: If user provides a video, respect the mode. 
+    // If no mode is set but video exists, we could default to video, 
+    // but the user says it "doesn't change", implying they ARE changing the mode but it's not reflecting.
+    // LOG CRÍTICO para depurar video
+    useEffect(() => {
+        console.log('Hero Background Video State:', {
+            videoUrl: !!heroVideo,
+            displayMode: heroDisplayMode,
+            plan: planType,
+            willShow: !!heroVideo && heroDisplayMode === 'video'
+        });
+    }, [heroVideo, heroDisplayMode, planType]);
+
+    const showVideo = !!heroVideo && heroDisplayMode === 'video';
     const dateObj = clientData?.weddingDate ? getLocalDate(clientData.weddingDate) : new Date(2026, 1, 21);
 
     // Formatting parts for a more modular and elegant design
@@ -44,7 +63,7 @@ export function HeroSection({ clientData }: HeroSectionProps) {
     const ref = useRef(null);
     const videoRef = useRef<HTMLVideoElement>(null);
     const isInView = useInView(ref, { amount: 0.5 }); // 50% visible triggers logic
-    const { requestFocus, releaseFocus } = useAudioContext();
+    const { requestFocus, releaseFocus, isInteracted } = useAudioContext();
 
     // Cinematic Parallax Implementation
     const { scrollY } = useScroll();
@@ -53,33 +72,74 @@ export function HeroSection({ clientData }: HeroSectionProps) {
     // though Framer Motion hooks are safe in Next.js/Vite typically.
     const isDesktop = typeof window !== 'undefined' && window.innerWidth >= 1024;
 
+    // EFECTO CRÍTICO: Desbloqueo inmediato de audio mediante gesto real
+    // Los navegadores bloquean .play() si ocurre en un microtask o efecto de React (fuera del tick original)
     useEffect(() => {
-        // Manage Audio Token
-        if (showVideo && heroVideoAudioEnabled && isInView) {
-            requestFocus('hero');
-        } else {
-            releaseFocus('hero');
-        }
+        if (!showVideo || !heroVideoAudioEnabled) return;
 
-        // Manage Video Playback/Mute
-        if (videoRef.current) {
-            if (heroVideoAudioEnabled) {
-                // Si el audio está habilitado, comportamiento de foco estricto
-                if (isInView) {
-                    videoRef.current.muted = false; // Desmutear
-                    videoRef.current.play().catch(() => { });
-                    requestFocus('hero'); // Asegurar foco
-                } else {
-                    videoRef.current.pause();
-                    releaseFocus('hero'); // Soltar foco
+        const unlockVideo = async () => {
+            const video = videoRef.current;
+            if (!video) return;
+
+            // Solo desbloquear si está en vista
+            if (isInView) {
+                try {
+                    video.muted = false;
+                    await video.play();
+                    requestFocus('hero');
+                } catch (err) {
+                    console.warn("Direct video unlock failed:", err);
                 }
-            } else {
-                // Si el audio está deshabilitado, reproducir muteado como fondo
-                videoRef.current.muted = true;
-                if (videoRef.current.paused) videoRef.current.play().catch(() => { });
             }
+            
+            // Una vez intentado (éxito o fallo), removemos los listeners de este componente
+            const events = ['click', 'touchstart', 'mousedown'];
+            events.forEach(e => window.removeEventListener(e, unlockVideo));
+        };
+
+        if (!isInteracted) {
+            const events = ['click', 'touchstart', 'mousedown'];
+            events.forEach(e => window.addEventListener(e, unlockVideo));
+            return () => events.forEach(e => window.removeEventListener(e, unlockVideo));
         }
-    }, [showVideo, heroVideoAudioEnabled, isInView, requestFocus, releaseFocus]);
+    }, [showVideo, heroVideoAudioEnabled, isInView, isInteracted, requestFocus]);
+
+    useEffect(() => {
+        const video = videoRef.current;
+        if (!showVideo || !video) return;
+
+        const handlePlayback = async () => {
+            try {
+                // Si el audio está habilitado y ya hubo interacción
+                if (heroVideoAudioEnabled && isInView) {
+                    if (isInteracted) {
+                        video.muted = false;
+                        await video.play();
+                        requestFocus('hero');
+                    } else {
+                        // Si no hay interacción aún, reproducir silenciado por defecto
+                        video.muted = true;
+                        await video.play();
+                        releaseFocus('hero');
+                    }
+                } else if (isInView) {
+                    // Solo video sin audio
+                    video.muted = true;
+                    await video.play();
+                    releaseFocus('hero');
+                } else {
+                    video.pause();
+                    releaseFocus('hero');
+                }
+            } catch (error) {
+                console.warn("Hero video background playback stalled:", error);
+                video.muted = true;
+                video.play().catch(() => {});
+            }
+        };
+
+        handlePlayback();
+    }, [showVideo, heroVideoAudioEnabled, isInView, requestFocus, releaseFocus, isInteracted]);
 
     return (
         <section
@@ -102,30 +162,27 @@ export function HeroSection({ clientData }: HeroSectionProps) {
                     {showVideo ? (
                         <video
                             ref={videoRef}
-                            autoPlay loop muted={!heroVideoAudioEnabled} playsInline
-                            preload="metadata"
-                            poster={heroBg}
-                            className="h-full w-full object-cover brightness-[0.7] contrast-[1.1]"
+                            autoPlay
+                            loop
+                            muted={true}
+                            playsInline
+                            className="absolute inset-0 w-full h-full object-cover transform scale-105"
                         >
                             <source src={heroVideo} type="video/mp4" />
-                            <img
-                                src={heroBg}
-                                className="h-full w-full object-cover"
-                                alt="Boda"
-                                loading="eager"
-                                fetchPriority="high"
-                            />
                         </video>
                     ) : (
                         <div
                             className="h-full w-full bg-cover bg-center brightness-[0.7] transition-transform duration-[20s] hover:scale-110"
-                            style={{ backgroundImage: `url(${heroBg})` }}
+                            style={{ 
+                                backgroundImage: `url(${getOptimizedImageUrl(heroBg, { width: isDesktop ? 1920 : 800, quality: 80 })})` 
+                            }}
                         >
                             <img
-                                src={heroBg}
+                                src={getOptimizedImageUrl(heroBg, { width: 1200, quality: 80 })}
+                                srcSet={`${getOptimizedImageUrl(heroBg, { width: 600, quality: 70 })} 600w, ${getOptimizedImageUrl(heroBg, { width: 1200, quality: 80 })} 1200w`}
+                                sizes="100vw"
                                 alt="Boda"
                                 className="hidden"
-                                loading="eager"
                                 fetchPriority="high"
                             />
                         </div>

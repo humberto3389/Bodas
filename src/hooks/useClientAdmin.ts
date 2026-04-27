@@ -284,9 +284,12 @@ export function useClientAdmin() {
 
     const [rsvps, setRsvps] = useState<any[]>([]);
     const [messages, setMessages] = useState<any[]>([]);
-    const [imageFiles, setImageFiles] = useState<any[]>([]);
+    const [galleryFiles, setGalleryFiles] = useState<any[]>([]);
+    const [heroFiles, setHeroFiles] = useState<any[]>([]);
     const [audioFiles, setAudioFiles] = useState<any[]>([]);
     const [videoFiles, setVideoFiles] = useState<any[]>([]);
+    const [heroVideoFiles, setHeroVideoFiles] = useState<any[]>([]);
+    const [decorationFiles, setDecorationFiles] = useState<any[]>([]);
 
     // Load RSVPs and Messages
     const fetchData = useCallback(async () => {
@@ -303,29 +306,44 @@ export function useClientAdmin() {
     }, [authed, fetchData]);
 
     // Load Files Helper
-    const listClientFiles = useCallback(async (bucket: 'gallery' | 'audio' | 'videos') => {
+    const listClientFiles = useCallback(async (bucket: 'gallery' | 'audio' | 'videos', customFolder?: string) => {
         if (!clientId) return [];
-        const folder = bucket === 'gallery' ? 'hero' : bucket === 'audio' ? 'audio' : 'video';
+        const folder = customFolder || (bucket === 'gallery' ? 'gallery' : (bucket === 'audio' ? 'audio' : 'video'));
         const { data } = await supabase.storage.from(bucket).list(`${clientId}/${folder}`, { limit: 200, sortBy: { column: 'created_at', order: 'desc' } });
 
-        return (data || []).filter(f => !f.name.startsWith('.') && f.id).map(f => ({
-            name: f.name,
-            path: `${clientId}/${folder}/${f.name}`,
-            created: f.created_at || new Date().toISOString()
-        }));
+        return (data || [])
+            .filter(f => !f.name.startsWith('.') && f.id)
+            .filter(f => {
+                // Filtro de seguridad: Evitar que archivos de padrinos se cuelen en hero si se subieron allí por error
+                if (folder === 'hero' || folder === 'decoration') {
+                    return !f.name.toLowerCase().startsWith('padrino-');
+                }
+                return true;
+            })
+            .map(f => ({
+                name: f.name,
+                path: `${clientId}/${folder}/${f.name}`,
+                created: f.created_at || new Date().toISOString()
+            }));
     }, [clientId]);
 
     const loadFiles = useCallback(async () => {
         if (!authed || !clientId) return;
-        const [imgs, auds, vids] = await Promise.all([
-            listClientFiles('gallery'),
+        const [imgs, heroImgs, auds, vids, heroVids, decorImgs] = await Promise.all([
+            listClientFiles('gallery', 'gallery'),
+            listClientFiles('gallery', 'hero'),
             listClientFiles('audio'),
-            listClientFiles('videos')
+            listClientFiles('videos', 'video'),
+            listClientFiles('videos', 'hero'),
+            listClientFiles('gallery', 'decoration')
         ]);
 
-        setImageFiles([{ name: 'Imagen por Defecto', path: '/boda.webp', created: new Date().toISOString(), isSystem: true }, ...imgs]);
+        setGalleryFiles(imgs);
+        setHeroFiles([{ name: 'Imagen por Defecto', path: '/boda.webp', created: new Date().toISOString(), isSystem: true }, ...heroImgs]);
         setAudioFiles([{ name: 'Música por Defecto', path: '/audio.ogg', created: new Date().toISOString(), isSystem: true }, ...auds]);
-        setVideoFiles([{ name: 'Video por Defecto', path: '/hero.webm', created: new Date().toISOString(), isSystem: true }, ...vids]);
+        setVideoFiles(vids);
+        setHeroVideoFiles([{ name: 'Video por Defecto', path: '/hero.mp4', created: new Date().toISOString(), isSystem: true }, ...heroVids]);
+        setDecorationFiles(decorImgs);
     }, [authed, clientId, listClientFiles]);
 
     useEffect(() => {
@@ -334,11 +352,13 @@ export function useClientAdmin() {
         return () => clearInterval(i);
     }, [loadFiles]);
 
-    const handleUpload = async (bucket: 'gallery' | 'audio' | 'videos', file: File): Promise<string | null> => {
+    const handleUpload = async (bucket: 'gallery' | 'audio' | 'videos', file: File, customFolder?: string): Promise<string | null> => {
         if (!clientId) return null;
         try {
-            const folder = bucket === 'gallery' ? 'hero' : bucket === 'audio' ? 'audio' : 'video';
-            const path = `${clientId}/${folder}/${file.name}`;
+            const folder = customFolder || (bucket === 'gallery' ? 'gallery' : (bucket === 'audio' ? 'audio' : 'video'));
+            // Validar y limpiar el nombre del archivo para evitar el error "Invalid key" de Supabase
+            const cleanName = file.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-zA-Z0-9.\-_]/g, '_').replace(/_+/g, '_');
+            const path = `${clientId}/${folder}/${Date.now()}_${cleanName}`;
             const { error: uploadError } = await supabase.storage.from(bucket).upload(path, file, { upsert: true });
 
             if (uploadError) throw uploadError;
@@ -352,10 +372,14 @@ export function useClientAdmin() {
         }
     };
 
-    const handleDelete = async (bucket: 'gallery' | 'audio' | 'videos', fileName: string): Promise<boolean> => {
+    const handleDelete = async (bucket: 'gallery' | 'audio' | 'videos', filePath: string): Promise<boolean> => {
         if (!clientId) return false;
-        const folder = bucket === 'gallery' ? 'hero' : bucket === 'audio' ? 'audio' : 'video';
-        const path = `${clientId}/${folder}/${fileName}`;
+        // If it's just a filename and doesn't contain the clientId, try to construct the old path just in case, otherwise use it directly.
+        let path = filePath;
+        if (!path.includes('/')) {
+            const folder = bucket === 'gallery' ? 'hero' : bucket === 'audio' ? 'audio' : 'video';
+            path = `${clientId}/${folder}/${filePath}`;
+        }
 
         try {
             const { error } = await supabase.storage.from(bucket).remove([path]);
@@ -420,6 +444,32 @@ export function useClientAdmin() {
         }
     };
 
+    const submitTestimonial = async (text: string, name: string, rating: number) => {
+        if (!clientId || !clientSession) return { success: false, error: 'No session' };
+        try {
+            const { error } = await supabase
+                .from('client_testimonials')
+                .insert({
+                    client_id: clientId,
+                    client_name: name || clientSession.clientName || 'Cliente',
+                    wedding_date: clientSession.weddingDate 
+                        ? (clientSession.weddingDate instanceof Date ? clientSession.weddingDate.toISOString().split('T')[0] : String(clientSession.weddingDate).split('T')[0]) 
+                        : null,
+                    text: text,
+                    avatar_url: clientSession.heroBackgroundUrl || null,
+                    status: 'pending',
+                    rating: rating || 5,
+                    is_fake: false
+                });
+
+            if (error) throw error;
+            return { success: true };
+        } catch (err: any) {
+            console.error('Error submitting testimonial:', err);
+            return { success: false, error: err.message };
+        }
+    };
+
     return {
         authed,
         clientSession,
@@ -434,12 +484,16 @@ export function useClientAdmin() {
         handleUpgradeRequest,
         rsvps,
         messages,
-        imageFiles,
+        galleryFiles,
+        heroFiles,
         audioFiles,
         videoFiles,
+        heroVideoFiles,
+        decorationFiles,
         handleUpload,
         handleDelete,
         fetchData,
-        deleteRSVP
+        deleteRSVP,
+        submitTestimonial
     };
 }

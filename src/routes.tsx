@@ -1,40 +1,76 @@
 import { createBrowserRouter } from 'react-router-dom';
-import MasterAdmin from './pages/MasterAdmin';
-import MasterAdminLogin from './pages/MasterAdminLogin';
-import Admin from './pages/Admin';
-import LandingPage from './pages/LandingPage';
-import ClientLoginPage from './pages/ClientLoginPage';
-import App from './App';
+import { lazy, Suspense } from 'react';
+import { LoadingSpinner } from './components/LoadingSpinner';
+
+// Lazy load pages
+const MasterAdmin = lazy(() => import('./pages/MasterAdmin'));
+const MasterAdminLogin = lazy(() => import('./pages/MasterAdminLogin'));
+const Admin = lazy(() => import('./pages/Admin'));
+const LandingPage = lazy(() => import('./pages/LandingPage'));
+const ClientLoginPage = lazy(() => import('./pages/ClientLoginPage'));
+const App = lazy(() => import('./App'));
+
+const LoadingFallback = () => (
+  <div className="min-h-screen flex items-center justify-center">
+    <LoadingSpinner size="lg" />
+  </div>
+);
 
 export const router = createBrowserRouter([
   {
     path: '/',
-    element: <LandingPage />,
+    element: (
+      <Suspense fallback={<LoadingFallback />}>
+        <LandingPage />
+      </Suspense>
+    ),
   },
   {
     path: '/login',
-    element: <ClientLoginPage />,
+    element: (
+      <Suspense fallback={<LoadingFallback />}>
+        <ClientLoginPage />
+      </Suspense>
+    ),
   },
   {
     path: '/admin/login',
-    element: <MasterAdminLogin />,
+    element: (
+      <Suspense fallback={<LoadingFallback />}>
+        <MasterAdminLogin />
+      </Suspense>
+    ),
   },
   {
     path: '/admin',
-    element: <MasterAdmin />,
+    element: (
+      <Suspense fallback={<LoadingFallback />}>
+        <MasterAdmin />
+      </Suspense>
+    ),
   },
   {
     path: '/client-admin',
-    element: <Admin />,
+    element: (
+      <Suspense fallback={<LoadingFallback />}>
+        <Admin />
+      </Suspense>
+    ),
   },
   {
     path: '/panel',
-    // Renderiza el sitio del cliente usando el contexto de autenticación
-    element: <App />,
+    element: (
+      <Suspense fallback={<LoadingFallback />}>
+        <App />
+      </Suspense>
+    ),
   },
   {
     path: '/invitacion/:subdomain',
-    // Ruta para previsualización o acceso directo vía URL
-    element: <App />,
+    element: (
+      <Suspense fallback={<LoadingFallback />}>
+        <App />
+      </Suspense>
+    ),
   },
 ]);

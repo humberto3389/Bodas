@@ -128,14 +128,13 @@ async function getPublicPageData(subdomain: string, bypassCache: boolean = false
     try {
       const { data: galleryData, error: galleryError } = await supabase.storage
         .from('gallery')
-        .list(`${clientId}/hero`, { limit: 50, sortBy: { column: 'created_at', order: 'asc' } });
+        .list(`${clientId}/gallery`, { limit: 50, sortBy: { column: 'created_at', order: 'asc' } });
 
       if (!galleryError && galleryData) {
         galleryImages = galleryData
           .filter(f => !f.name.startsWith('.'))
-          .filter(f => !f.name.toLowerCase().includes('padrino'))
           .map(f => {
-            const path = `${clientId}/hero/${f.name}`;
+            const path = `${clientId}/gallery/${f.name}`;
             return { name: path, url: getSafeUrl(path, 'gallery') };
           });
       }

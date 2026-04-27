@@ -4,19 +4,11 @@ import { useAudioContext } from '../../contexts/AudioContext';
 export function BackgroundMusic({ src, shouldPlay = true }: { src: string; shouldPlay?: boolean }) {
     const [userPaused, setUserPaused] = useState(false);
     const audioRef = useRef<HTMLAudioElement | null>(null);
-    const [needsUnlock, setNeedsUnlock] = useState(false);
     const [isPlaying, setIsPlaying] = useState(false);
-    const { activeSource } = useAudioContext();
+    const { activeSource, isInteracted } = useAudioContext();
 
     // Only play if global shouldPlay is true AND no other section has audio focus AND user hasn't paused
     const effectivelyPlaying = shouldPlay && activeSource === null && !userPaused;
-
-    // Ref para acceder al estado actual dentro del event listener sin stale closures
-    const stateRef = useRef({ effectivelyPlaying, userPaused, activeSource });
-
-    useEffect(() => {
-        stateRef.current = { effectivelyPlaying, userPaused, activeSource };
-    }, [effectivelyPlaying, userPaused, activeSource]);
 
     useEffect(() => {
         if (!src) return;
@@ -34,39 +26,9 @@ export function BackgroundMusic({ src, shouldPlay = true }: { src: string; shoul
         audio.addEventListener('play', handlePlay);
         audio.addEventListener('pause', handlePause);
 
-        // Intentar reproducción automática al iniciar
-        const playPromise = audio.play();
-        if (playPromise !== undefined) {
-            playPromise.catch(() => {
-                setNeedsUnlock(true);
-            });
-        }
-
-        const events = ['click', 'keydown', 'pointerdown', 'touchstart'];
-
-        // Función de desbloqueo que siempre lee el estado MÁS RECIENTE
-        const unlock = () => {
-            const { effectivelyPlaying: shouldBePlaying, userPaused: isUserPaused, activeSource: currentSource } = stateRef.current;
-
-            // CRÍTICO: Solo intentar reproducir si:
-            // 1. Debería estar sonando (effectivelyPlaying es true)
-            // 2. No está pausado por el usuario
-            // 3. NO hay otra fuente activa (activeSource es null)
-            if (audioRef.current && audioRef.current.paused && shouldBePlaying && !isUserPaused && currentSource === null) {
-                audioRef.current.play()
-                    .then(() => {
-                        setNeedsUnlock(false);
-                        // Remover listeners una vez desbloqueado para no seguir intentando
-                        events.forEach(e => document.removeEventListener(e, unlock));
-                    })
-                    .catch(() => {
-                        // Si falla de nuevo, mantener los listeners
-                    });
-            }
-        };
-
-        if (needsUnlock) {
-            events.forEach(e => document.addEventListener(e, unlock));
+        // Intentar reproducción automática si ya hubo interacción
+        if (isInteracted && effectivelyPlaying) {
+            audio.play().catch(err => console.warn("Background music play failed:", err));
         }
 
         return () => {
@@ -74,25 +36,54 @@ export function BackgroundMusic({ src, shouldPlay = true }: { src: string; shoul
             audio.src = '';
             audio.removeEventListener('play', handlePlay);
             audio.removeEventListener('pause', handlePause);
-            events.forEach(e => document.removeEventListener(e, unlock));
         };
-    }, [src, needsUnlock]); // Dependencia needsUnlock para re-atar listeners si falla
+    }, [src]);
 
-    // Efecto para manejar play/pause basado en foco y estado global
+    // EFECTO CRÍTICO: Desbloqueo inmediato mediante gesto real
+    // Similar al HeroSection, esto garantiza que el primer play() ocurra en el tick del evento.
+    useEffect(() => {
+        const unlockAudio = async () => {
+            const audio = audioRef.current;
+            if (!audio || !effectivelyPlaying) return;
+
+            // PRIORIDAD: Si estamos al inicio de la página (donde está el Hero), 
+            // no activamos la música de fondo todavía para evitar que suenen ambos.
+            // El HeroSection tiene su propio listener directo para el video.
+            const isAtTop = window.scrollY < 300;
+            if (isAtTop) {
+                console.log("BackgroundMusic: Entry at top detected, letting Hero win.");
+                return;
+            }
+
+            try {
+                await audio.play();
+                setIsPlaying(true);
+            } catch (err) {
+                console.warn("Direct audio unlock failed:", err);
+            }
+
+            const events = ['click', 'touchstart', 'mousedown'];
+            events.forEach(e => window.removeEventListener(e, unlockAudio));
+        };
+
+        if (!isInteracted) {
+            const events = ['click', 'touchstart', 'mousedown'];
+            events.forEach(e => window.addEventListener(e, unlockAudio));
+            return () => events.forEach(e => window.removeEventListener(e, unlockAudio));
+        }
+    }, [effectivelyPlaying, isInteracted]);
+
+    // Efecto para manejar play/pause basado en foco, interacción y estado global
     useEffect(() => {
         if (!audioRef.current) return;
 
-        if (effectivelyPlaying) {
+        if (effectivelyPlaying && isInteracted) {
             const playPromise = audioRef.current.play();
             if (playPromise !== undefined) {
                 playPromise
-                    .then(() => {
-                        // Reproducción exitosa
-                        setIsPlaying(true);
-                    })
+                    .then(() => setIsPlaying(true))
                     .catch((error) => {
-                        console.warn("Autoplay prevented:", error);
-                        setNeedsUnlock(true);
+                        console.warn("Background music autoplay prevented:", error);
                         setIsPlaying(false);
                     });
             }
@@ -100,22 +91,22 @@ export function BackgroundMusic({ src, shouldPlay = true }: { src: string; shoul
             audioRef.current.pause();
             setIsPlaying(false);
         }
-    }, [effectivelyPlaying]);
+    }, [effectivelyPlaying, isInteracted]);
 
     const toggle = () => {
         if (!audioRef.current) return;
         if (audioRef.current.paused) {
             audioRef.current.play().catch(() => { });
-            setUserPaused(false); // Usuario quiere escuchar explícitamente
+            setUserPaused(false);
         } else {
             audioRef.current.pause();
-            setUserPaused(true); // Usuario pausó explícitamente
+            setUserPaused(true);
         }
     };
 
     return (
         <div className="fixed bottom-6 right-6 z-50">
-            {needsUnlock && (
+            {!isInteracted && (
                 <button
                     onClick={toggle}
                     className="group relative bg-rose-600 hover:bg-rose-700 text-white rounded-full p-4 shadow-2xl transition-all duration-300 hover:scale-110 border-2 border-white/50 animate-bounce"
@@ -127,7 +118,7 @@ export function BackgroundMusic({ src, shouldPlay = true }: { src: string; shoul
                     </span>
                 </button>
             )}
-            {!needsUnlock && (
+            {isInteracted && (
                 <button
                     onClick={toggle}
                     className={`group relative backdrop-blur-md rounded-full p-4 shadow-xl transition-all duration-300 hover:scale-110 border border-white/20 ${isPlaying ? 'bg-neutral-900/80 text-white' : 'bg-white/80 text-neutral-800'

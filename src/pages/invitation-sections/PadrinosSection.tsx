@@ -20,7 +20,7 @@ export function PadrinosSection({ padrinos }: PadrinosSectionProps) {
     if (activePadrinos.length === 0) return null;
 
     return (
-        <section id="padrinos" className="py-20 relative overflow-hidden px-4 sm:px-6">
+        <section id="padrinos" className="relative overflow-hidden px-4 sm:px-6">
             <div className="section-container">
                 {/* Section Header */}
                 <SectionTitle subtitle="Corte de Honor">
@@ -31,14 +31,14 @@ export function PadrinosSection({ padrinos }: PadrinosSectionProps) {
                     initial={{ opacity: 0 }}
                     whileInView={{ opacity: 1 }}
                     viewport={{ once: true }}
-                    className="text-lg text-slate-800/60 font-light tracking-wide max-w-lg mx-auto leading-relaxed text-center mb-16"
+                    className="text-lg text-slate-800/60 font-light tracking-wide max-w-lg mx-auto leading-relaxed text-center mb-10"
                 >
                     Personas especiales que nos acompañan y guían en este nuevo camino que comenzamos juntos.
                 </motion.p>
 
                 {/* Padrinos Grid */}
-                <div className="mt-12">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 items-stretch justify-center">
+                <div className="mt-12 w-full">
+                    <div className="flex flex-wrap items-center justify-center gap-10 w-full">
                         {activePadrinos.map((padrino, index) => (
                             <motion.div
                                 key={padrino.id}
@@ -46,7 +46,7 @@ export function PadrinosSection({ padrinos }: PadrinosSectionProps) {
                                 whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true }}
                                 transition={{ delay: index * 0.15, duration: 0.7 }}
-                                className="group h-full"
+                                className="group w-full md:w-[calc(50%-2.5rem)] lg:w-[calc(33.333%-2.5rem)] max-w-sm"
                             >
                                 <div className="card-luxe relative h-full p-8 flex flex-col items-center text-center rounded-3xl sm:rounded-[2.5rem]">
                                     {/* Photo Frame */}

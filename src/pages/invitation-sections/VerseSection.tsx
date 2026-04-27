@@ -1,17 +1,18 @@
 import { motion } from 'framer-motion';
 import { SectionTitle } from './SectionTitle';
+import { getOptimizedImageUrl } from '../../lib/image-optimization';
 
 interface VerseSectionProps {
     clientData: any;
 }
 
 export function VerseSection({ clientData }: VerseSectionProps) {
-    const { bibleVerse, bibleVerseBook, invitationText, groomName, brideName } = clientData;
+    const { bibleVerse, bibleVerseBook, invitationText } = clientData;
 
     if (!bibleVerse && !invitationText) return null;
 
     return (
-        <section id="verse" className="py-20 relative overflow-hidden px-4 sm:px-6">
+        <section id="verse" className="relative overflow-hidden px-4 sm:px-6">
             <div className="section-container">
                 <div className="max-w-4xl mx-auto flex flex-col items-center group">
                     {/* Header Ornamental */}
@@ -20,17 +21,18 @@ export function VerseSection({ clientData }: VerseSectionProps) {
                     </SectionTitle>
 
                     {/* Custom Image Decoration (Verse Image) */}
-                    {clientData?.verseImageUrl && (
+                    {clientData?.verseImageUrl && clientData.verseImageUrl !== 'null' && clientData.verseImageUrl !== 'undefined' && clientData.verseImageUrl !== '' && (
                         <motion.div
                             initial={{ opacity: 0, scale: 0.95 }}
                             whileInView={{ opacity: 1, scale: 1 }}
                             viewport={{ once: true }}
-                            className="mb-12 relative w-full max-w-lg"
+                            className="mb-8 relative w-full max-w-lg"
                         >
                             <div className="absolute inset-0 bg-rose-600/5 blur-2xl rounded-full scale-110" />
                             <img
-                                src={clientData.verseImageUrl}
-                                alt="Decoración"
+                                src={getOptimizedImageUrl(clientData.verseImageUrl, { width: 600, quality: 70 })}
+                                alt=""
+                                loading="lazy"
                                 className="relative w-full h-auto object-contain mx-auto"
                                 style={{
                                     maskImage: 'radial-gradient(circle, black 60%, transparent 95%)',
@@ -47,7 +49,7 @@ export function VerseSection({ clientData }: VerseSectionProps) {
                         viewport={{ once: true }}
                         className="card-luxe overflow-hidden w-full rounded-3xl sm:rounded-[3rem] max-w-4xl mx-auto"
                     >
-                        <div className="relative px-8 sm:px-12 py-16 sm:py-24 text-center space-y-10">
+                        <div className="relative px-8 sm:px-12 py-12 sm:py-20 text-center space-y-10">
                             {/* Bible Verse */}
                             {bibleVerse && (
                                 <motion.div

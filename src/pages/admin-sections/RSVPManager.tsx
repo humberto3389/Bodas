@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { useState } from 'react';
 import type { RSVP } from '../../hooks/useClientData';
 import { getEffectivePlan, PLAN_LIMITS } from '../../lib/plan-limits';
+import { AdminHelpTooltip } from '../../components/AdminHelpTooltip';
 
 interface RSVPManagerProps {
     rsvps: RSVP[];
@@ -41,6 +42,24 @@ export function RSVPManager({ rsvps, totalGuests, totalNotAttending, onDownloadC
             animate={{ opacity: 1, x: 0 }}
             className="bg-white/90 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-3 sm:p-6 md:p-8 shadow-xl border border-white/40"
         >
+            <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-3xl p-3 sm:p-6 lg:p-8 shadow-2xl mb-8 -mt-2 sm:-mt-4">
+                <div className="max-w-3xl">
+                    <h1 className="text-xl sm:text-2xl lg:text-3xl font-semibold text-white mb-2 sm:mb-3">Control de Asistencia (RSVP)</h1>
+                    <p className="text-slate-300 text-xs sm:text-sm mb-4">Monitorea quién asistirá a tu boda en tiempo real</p>
+                    <div className="bg-white/10 border border-white/20 p-4 rounded-xl backdrop-blur-md">
+                        <div className="flex items-start gap-3">
+                            <span className="text-2xl">💡</span>
+                            <div>
+                                <h3 className="text-white font-semibold text-sm mb-1">Guía Rápida: Lista de Invitados</h3>
+                                <p className="text-slate-300 text-xs sm:text-sm leading-relaxed">
+                                    Aquí aparecerán automáticamente los nombres de los familiares y amigos que confirmen o rechacen su asistencia desde tu página web. Usa el botón "Descargar Lista" para pasarlo a Excel.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 mb-6 sm:mb-8">
                 <div>
                     <h2 className="text-lg sm:text-2xl font-brush bg-gradient-to-r from-rose-600 to-amber-600 bg-clip-text text-transparent">
@@ -62,25 +81,31 @@ export function RSVPManager({ rsvps, totalGuests, totalNotAttending, onDownloadC
                     })()}
                 </div>
                 <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
-                    <div className="flex-1 sm:flex-none px-4 py-2 bg-rose-50 rounded-2xl border border-rose-100 flex items-center justify-between sm:justify-start">
-                        <span className="text-rose-400 text-[10px] uppercase tracking-wider font-bold">Asistentes Totales</span>
-                        <span className="text-rose-600 font-bold text-lg sm:ml-3">{totalGuests}</span>
+                    <div className="flex-1 sm:flex-none px-4 py-2 bg-emerald-50 rounded-2xl border border-emerald-100 flex items-center justify-between sm:justify-start gap-2">
+                        <div className="flex items-center gap-1.5">
+                            <span className="text-emerald-400 text-[10px] uppercase tracking-wider font-bold">Asistentes</span>
+                            <AdminHelpTooltip content="Suma total de invitados confirmados (titulares + acompañantes)." />
+                        </div>
+                        <span className="text-emerald-600 font-bold text-lg">{totalGuests}</span>
                     </div>
-                    <div className="flex-1 sm:flex-none px-4 py-2 bg-slate-50 rounded-2xl border border-slate-100 flex items-center justify-between sm:justify-start">
-                        <span className="text-slate-400 text-[10px] uppercase tracking-wider font-bold">Inasistentes</span>
-                        <span className="text-slate-600 font-bold text-lg sm:ml-3">{totalNotAttending}</span>
+                    <div className="flex-1 sm:flex-none px-4 py-2 bg-slate-50 rounded-2xl border border-slate-100 flex items-center justify-between sm:justify-start gap-2">
+                        <div className="flex items-center gap-1.5">
+                            <span className="text-slate-400 text-[10px] uppercase tracking-wider font-bold">Inasistentes</span>
+                            <AdminHelpTooltip content="Personas que han avisado que no podrán asistir." />
+                        </div>
+                        <span className="text-slate-600 font-bold text-lg">{totalNotAttending}</span>
                     </div>
                     <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={() => onDownloadCSV()}
-                        className="p-3 bg-white border border-neutral-200 rounded-2xl text-neutral-600 hover:bg-neutral-50 shadow-sm transition-all flex-shrink-0 flex items-center gap-2"
+                        className="p-3 bg-white border border-neutral-200 rounded-2xl text-neutral-600 hover:bg-neutral-50 shadow-sm transition-all flex-shrink-0 flex items-center gap-2 group"
                         title="Descargar Lista Completa (Excel)"
                     >
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-5 h-5 group-hover:text-emerald-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                         </svg>
-                        <span className="text-[10px] font-bold uppercase tracking-wider hidden sm:inline">Todo</span>
+                        <span className="text-[10px] font-bold uppercase tracking-wider">Excel Total</span>
                     </motion.button>
                 </div>
             </div>
@@ -112,8 +137,18 @@ export function RSVPManager({ rsvps, totalGuests, totalNotAttending, onDownloadC
                             <thead>
                                 <tr className="text-neutral-400 text-[9px] uppercase tracking-widest font-bold">
                                     <th className="px-6 py-2">Invitado Principal</th>
-                                    <th className="px-6 py-2">Contacto</th>
-                                    <th className="px-6 py-2 text-center">Total</th>
+                                    <th className="px-6 py-2">
+                                        <div className="flex items-center gap-1.5 justify-start">
+                                            Contacto
+                                            <AdminHelpTooltip content="Email y teléfono que el invitado dejó para recibir actualizaciones." />
+                                        </div>
+                                    </th>
+                                    <th className="px-6 py-2">
+                                        <div className="flex items-center gap-1.5 justify-center">
+                                            Total
+                                            <AdminHelpTooltip content="Este número se calcula sumando al invitado principal más la lista de acompañantes que escribió." />
+                                        </div>
+                                    </th>
                                     <th className="px-6 py-2 text-right">Fecha</th>
                                     <th className="px-6 py-2 text-center">Acción</th>
                                 </tr>

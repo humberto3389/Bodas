@@ -12,7 +12,7 @@ interface AdminUploaderProps {
   onDelete: (bucket: 'gallery' | 'audio' | 'videos', fileName: string) => Promise<void>
   getPublicUrl: (bucket: 'gallery' | 'audio' | 'videos', path: string) => string
   setFileAsBackground?: (url: string) => void
-  onUpload?: (bucket: 'gallery' | 'audio' | 'videos', file: File) => Promise<string | null>
+  onUpload?: (bucket: 'gallery' | 'audio' | 'videos', file: File, customFolder?: string) => Promise<string | null>
   currentBackground?: string
   onProgress?: (progress: { isUploading: boolean; progress: number; fileName: string }) => void
   client?: any
@@ -21,6 +21,7 @@ interface AdminUploaderProps {
   planRequired?: 'premium' | 'deluxe'
   clientId?: string
   onUpgradeClick?: () => void
+  customFolder?: string
 }
 
 export default function AdminUploader({
@@ -40,6 +41,7 @@ export default function AdminUploader({
   planRequired,
   clientId,
   onUpgradeClick,
+  customFolder,
 }: AdminUploaderProps) {
   const inputRef = useRef<HTMLInputElement | null>(null)
   const [uploading, setUploading] = useState(false)
@@ -67,7 +69,7 @@ export default function AdminUploader({
       const { countFilesInStorage } = await import('../lib/storage-utils');
 
       // Contar archivos desde storage (fuente de verdad)
-      const currentCount = await countFilesInStorage(clientId, bucket);
+      const currentCount = await countFilesInStorage(clientId, bucket as 'gallery' | 'videos');
       const totalAfterUpload = currentCount + selectedFiles.length;
 
       const { allowed, message: limitMsg } = checkLimit(client, resourceType, totalAfterUpload);
@@ -87,8 +89,8 @@ export default function AdminUploader({
       return
     }
 
-    // Validación de tamaño (Max 50MB para fotos, 350MB para videos)
-    const MAX_SIZE_MB = bucket === 'videos' ? 350 : 50;
+    // Validación de tamaño (Max 50MB para fotos, 350MB para videos, 20MB para audio)
+    const MAX_SIZE_MB = bucket === 'videos' ? 350 : bucket === 'gallery' ? 50 : 20;
     const MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024;
     const oversizedFiles = selectedFiles.filter(f => f.size > MAX_SIZE_BYTES);
 
@@ -112,7 +114,7 @@ export default function AdminUploader({
         }
 
         if (onUpload) {
-          const url = await onUpload(bucket, fileToUpload);
+          const url = await onUpload(bucket, fileToUpload, customFolder);
           if (!url) throw new Error('Error al subir archivo');
         } else {
           const fileName = fileToUpload.name
@@ -168,7 +170,14 @@ export default function AdminUploader({
       <div className="flex justify-between items-center mb-6">
         <div>
           <h3 className="text-xl font-semibold text-neutral-800">{title}</h3>
-          <p className="text-sm text-neutral-500">{files.length} archivo(s)</p>
+          <p className="text-sm text-neutral-500 mb-2">{files.length} archivo(s)</p>
+          <div className="text-xs text-slate-600 bg-slate-50/80 p-2.5 rounded-lg border border-slate-200 inline-block shadow-sm">
+             <span className="font-semibold text-indigo-700 flex items-center gap-1.5 mb-1">
+               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+               Guía de subida:
+             </span>
+             {bucket === 'gallery' ? '📸 Formatos: JPG, PNG, WEBP. Tamaño máximo: 50MB por imagen.' : bucket === 'videos' ? '🎥 Formatos: MP4, WEBM. Tamaño máximo: 350MB por video.' : '🎵 Formatos: MP3, WAV, OGG. Tamaño máximo: 20MB por audio.'}
+          </div>
         </div>
         <div>
           <input
@@ -332,7 +341,7 @@ export default function AdminUploader({
                   <div className="absolute top-3 right-3 flex gap-2 z-20">
                     {!file.isSystem && (
                       <button
-                        onClick={(e) => { e.stopPropagation(); onDelete(bucket, file.name); }}
+                        onClick={(e) => { e.stopPropagation(); onDelete(bucket, file.path); }}
                         className="p-2.5 bg-white shadow-lg text-slate-400 rounded-xl opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-rose-500 hover:text-white scale-90 group-hover:scale-100 transform"
                         title="Eliminar"
                       >

@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import { supabase } from '../lib/supabase';
 import type { ClientToken } from '../lib/auth-system';
 import { fetchWeddingDataFromBFF, mapClientDataFromBFF } from '../lib/bff-client';
+import { getEffectivePlan } from '../lib/plan-limits';
 
 export function useInvitation(subdomain?: string, initialData?: ClientToken, refresh: boolean = false) {
     const [urlClient, setUrlClient] = useState<ClientToken | null>(null);
@@ -187,7 +188,10 @@ export function useInvitation(subdomain?: string, initialData?: ClientToken, ref
         return new Date() > new Date(client.expiresAt);
     }, [client?.expiresAt]);
 
-    const planType = client?.planType || 'basic';
+    const planType = useMemo(() => {
+        if (!client) return 'basic';
+        return getEffectivePlan(client);
+    }, [client]);
 
     return {
         client,

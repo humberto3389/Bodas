@@ -13,6 +13,24 @@ export function MessageManager({ messages, onDownloadCSV }: MessageManagerProps)
             animate={{ opacity: 1, x: 0 }}
             className="bg-white/90 backdrop-blur-sm rounded-3xl p-3 sm:p-6 md:p-8 shadow-xl border border-white/40"
         >
+            <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-3xl p-3 sm:p-6 lg:p-8 shadow-2xl mb-8 -mt-2 sm:-mt-4">
+                <div className="max-w-3xl">
+                    <h1 className="text-xl sm:text-2xl lg:text-3xl font-semibold text-white mb-2 sm:mb-3">Libro de Firmas Digital</h1>
+                    <p className="text-slate-300 text-xs sm:text-sm mb-4">Lee los mensajes de cariño de tus seres queridos</p>
+                    <div className="bg-white/10 border border-white/20 p-4 rounded-xl backdrop-blur-md">
+                        <div className="flex items-start gap-3">
+                            <span className="text-2xl">💡</span>
+                            <div>
+                                <h3 className="text-white font-semibold text-sm mb-1">Guía Rápida: Mensajes</h3>
+                                <p className="text-slate-300 text-xs sm:text-sm leading-relaxed">
+                                    Cada vez que un invitado deje un mensaje de felicitación en tu invitación, lo verás aparecer abajo. Puedes descargarlos todos en formato Excel usando el botón Descargar.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 mb-6 sm:mb-8">
                 <div>
                     <h2 className="text-lg sm:text-xl md:text-2xl font-brush bg-gradient-to-r from-rose-600 to-amber-600 bg-clip-text text-transparent">

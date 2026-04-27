@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence, useInView } from 'framer-motion';
 import { useAudioContext } from '../../contexts/AudioContext';
 import { SectionTitle } from './SectionTitle';
@@ -9,12 +9,44 @@ export function VideoSection({ clientData, videos: propVideos }: { clientData: a
     // Componente interno para manejar referencia de video individualmente
     const VideoPlayer = ({ url, poster, audioEnabled, isInView }: { url: string, poster: string, audioEnabled: boolean, isInView: boolean }) => {
         const videoRef = useRef<HTMLVideoElement>(null);
+        const { requestFocus, releaseFocus } = useAudioContext();
+
+        // Manejar eventos de audio para sincronizar con música de fondo
+        const handlePlayback = useCallback(() => {
+            if (!videoRef.current) return;
+            const isPlaying = !videoRef.current.paused && !videoRef.current.ended;
+            const isUnmuted = !videoRef.current.muted && videoRef.current.volume > 0;
+
+            if (isPlaying && isUnmuted) {
+                requestFocus('cinema');
+            } else {
+                releaseFocus('cinema');
+            }
+        }, [requestFocus, releaseFocus]);
+
+        useEffect(() => {
+            const video = videoRef.current;
+            if (!video) return;
+
+            video.addEventListener('play', handlePlayback);
+            video.addEventListener('pause', handlePlayback);
+            video.addEventListener('volumechange', handlePlayback);
+            video.addEventListener('ended', handlePlayback);
+
+            return () => {
+                video.removeEventListener('play', handlePlayback);
+                video.removeEventListener('pause', handlePlayback);
+                video.removeEventListener('volumechange', handlePlayback);
+                video.removeEventListener('ended', handlePlayback);
+                releaseFocus('cinema'); // Asegurar liberación al desmontar
+            };
+        }, [handlePlayback, releaseFocus]);
 
         useEffect(() => {
             if (!videoRef.current) return;
 
             if (audioEnabled) {
-                // Si el audio está habilitado, comportamiento de foco estricto
+                // Si el audio está habilitado por defecto, comportamiento de foco estricto
                 if (isInView) {
                     videoRef.current.muted = false; // Desmutear
                     videoRef.current.play().catch(() => { });
@@ -27,7 +59,6 @@ export function VideoSection({ clientData, videos: propVideos }: { clientData: a
                 if (isInView && videoRef.current.paused) {
                     videoRef.current.play().catch(() => { });
                 } else if (!isInView) {
-                    // Opcional: pausar si no está en vista para ahorrar recursos
                     videoRef.current.pause();
                 }
             }
@@ -62,24 +93,15 @@ export function VideoSection({ clientData, videos: propVideos }: { clientData: a
 
     /* Auto-play slider logic removed for video section to avoid interruption, kept manual only or very slow */
 
-    // Audio Focus Logic
+    // Audio Focus Logic - Removed parent-level focus logic to favor VideoPlayer individual control
     const ref = useRef(null);
     const isInView = useInView(ref, { amount: 0.5 });
-    const { requestFocus, releaseFocus } = useAudioContext();
     const audioEnabled = clientData.cinemaVideoAudioEnabled || false;
-
-    useEffect(() => {
-        if (videos.length > 0 && audioEnabled && isInView) {
-            requestFocus('cinema');
-        } else {
-            releaseFocus('cinema');
-        }
-    }, [videos.length, audioEnabled, isInView, requestFocus, releaseFocus]);
 
     if (videos.length === 0 || clientData.planType !== 'deluxe') return null;
 
     return (
-        <section ref={ref} id="videos" className="py-20 relative overflow-hidden px-4 sm:px-6">
+        <section ref={ref} id="videos" className="py-10 md:py-20 relative overflow-hidden px-0 sm:px-6">
             <div className="w-full relative px-0 sm:px-6">
                 <SectionTitle subtitle="Cinema">
                     Nuestra Historia
@@ -113,7 +135,7 @@ export function VideoSection({ clientData, videos: propVideos }: { clientData: a
                                         exit={{ opacity: 0, scale: 0.8 }}
                                         transition={{ duration: 0.8, ease: "easeInOut" }}
                                         onClick={() => !isCenter && setCurrentIndex(idx)}
-                                        className={`absolute w-full max-w-5xl aspect-video ${!isCenter ? 'cursor-pointer' : ''}`}
+                                        className={`absolute w-full max-w-[95vw] sm:max-w-5xl aspect-video ${!isCenter ? 'cursor-pointer' : ''}`}
                                     >
                                         <div className="w-full h-full bg-black rounded-3xl overflow-hidden shadow-2xl relative border-2 border-white/10">
                                             {isCenter ? (
@@ -126,13 +148,15 @@ export function VideoSection({ clientData, videos: propVideos }: { clientData: a
                                             ) : (
                                                 /* Side items show poster/placeholder */
                                                 <div className="w-full h-full relative">
-                                                    <img
-                                                        src={clientData.heroBackgroundUrl}
-                                                        className="w-full h-full object-cover opacity-60"
-                                                        alt="Video thumbnail"
-                                                        loading="lazy"
-                                                        decoding="async"
-                                                    />
+                                                    <video
+                                                        autoPlay
+                                                        loop
+                                                        muted={true}
+                                                        playsInline
+                                                        className="absolute inset-0 w-full h-full object-cover transform scale-105"
+                                                    >
+                                                        <source src={video.url} type="video/mp4" />
+                                                    </video>
                                                     <div className="absolute inset-0 flex items-center justify-center">
                                                         <div className="p-4 rounded-full bg-white/10 backdrop-blur-md border border-white/20">
                                                             <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
@@ -223,8 +247,8 @@ export function InvitationFooter({ clientData }: { clientData: any }) {
                         <span className="font-elegant text-2xl text-slate-800 group-hover:text-rose-600 transition-colors duration-300">
                             Suspiro Nupcial
                         </span>
-                        <span className="text-xs text-rose-500 tracking-[0.2em] font-medium uppercase mt-1">
-                            Creando momentos que perduran
+                        <span className="text-[10px] text-rose-500/60 tracking-[0.3em] font-light mt-2">
+                            Donde el amor encuentra su lugar
                         </span>
                     </a>
 

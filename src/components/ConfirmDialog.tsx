@@ -73,7 +73,7 @@ export function ConfirmDialog({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50"
+            className="fixed inset-0 bg-slate-900/40 backdrop-blur-md z-50"
             onClick={onCancel}
           />
           
@@ -85,7 +85,7 @@ export function ConfirmDialog({
               exit={{ scale: 0.95, opacity: 0, y: 20 }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
               onClick={(e) => e.stopPropagation()}
-              className={`bg-white rounded-2xl shadow-2xl p-6 max-w-md w-full border ${styles.border} pointer-events-auto`}
+              className={`bg-white/80 backdrop-blur-2xl rounded-3xl shadow-2xl p-6 max-w-md w-full border border-white/50 pointer-events-auto`}
             >
               {/* Icon and Title */}
               <div className="flex items-start gap-4 mb-4">
