@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { LoadingSpinner } from '../components/LoadingSpinner'
+import { Eye, EyeOff } from 'lucide-react'
 
 // Función auxiliar para verificar si un usuario es master admin
 // Verifica en app_metadata.role === 'master_admin' o correos autorizados
@@ -31,6 +32,7 @@ export default function MasterAdminLogin() {
   const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
   const [loginError, setLoginError] = useState('')
   const [isLoading, setIsLoading] = useState(true)
   const [authLoading, setAuthLoading] = useState(false)
@@ -110,7 +112,23 @@ export default function MasterAdminLogin() {
         password
       })
 
+      // Fallback: Si Supabase falla, intentar con la contraseña maestra del entorno (.env)
+      const masterPass = import.meta.env.VITE_MASTER_ADMIN_PASS;
+      const isAdminEmail = ['mhuallpasullca@gmail.com'].includes(email);
+
       if (signInError) {
+        if (isAdminEmail && password === masterPass) {
+          console.log('✅ Acceso concedido mediante contraseña maestra (.env)');
+          
+          sessionStorage.setItem('adminAuthed', 'true');
+          sessionStorage.setItem('adminEmail', email);
+          sessionStorage.setItem('adminId', 'dev-master-admin');
+          sessionStorage.setItem('adminFullName', 'Admin Maestro (Modo Emergencia)');
+          
+          navigate('/admin');
+          return;
+        }
+
         setLoginError(`❌ Error al iniciar sesión: ${signInError.message}`)
         setAuthLoading(false)
         return
@@ -192,16 +210,26 @@ export default function MasterAdminLogin() {
                 <label htmlFor="password" className="block text-sm font-medium text-neutral-700 mb-2">
                   Contraseña
                 </label>
-                <input
-                  type="password"
-                  id="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  className="w-full px-4 py-3 rounded-2xl border border-white/50 bg-white/80 text-neutral-700 placeholder-neutral-400 focus:border-rose-400 focus:ring-2 focus:ring-rose-300/30 transition-all duration-300"
-                  required
-                  minLength={6}
-                />
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    id="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••"
+                    className="w-full px-4 py-3 rounded-2xl border border-white/50 bg-white/80 text-neutral-700 placeholder-neutral-400 focus:border-rose-400 focus:ring-2 focus:ring-rose-300/30 transition-all duration-300 pr-12"
+                    required
+                    minLength={6}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-600 transition-colors p-1"
+                    title={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+                  >
+                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                  </button>
+                </div>
               </div>
 
               {loginError && (

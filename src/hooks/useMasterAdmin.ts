@@ -304,8 +304,24 @@ export function useMasterAdmin() {
 
             try {
                 const { data: { session } } = await supabase.auth.getSession();
+                
+                // Fallback manual desde sessionStorage (para modo emergencia/admin local)
+                const isManualAuth = sessionStorage.getItem('adminAuthed') === 'true';
+                const manualEmail = sessionStorage.getItem('adminEmail');
 
                 if (!session || !isMasterAdmin(session.user)) {
+                    // Si no hay sesión de Supabase, verifiquemos si hay una sesión manual válida
+                    if (isManualAuth && manualEmail === 'mhuallpasullca@gmail.com') {
+                        setAuthed(true);
+                        setAdminInfo({ 
+                            id: sessionStorage.getItem('adminId') || 'dev-master-admin', 
+                            email: manualEmail, 
+                            full_name: sessionStorage.getItem('adminFullName') || 'Admin Maestro'
+                        });
+                        loadClients();
+                        return;
+                    }
+
                     setAuthed(false);
                     navigate('/admin/login', { replace: true });
                     return;
